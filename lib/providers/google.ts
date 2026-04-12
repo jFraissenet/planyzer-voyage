@@ -2,17 +2,18 @@ import { Platform } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
+import i18n from "@/lib/i18n";
 import { supabase } from "../supabase";
 import type { OAuthProvider } from "./types";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export function useGoogleAuth(): OAuthProvider & { loading: boolean } {
-  // Sur le web, on utilise le OAuth Supabase (redirect flow)
-  // Sur mobile, on utilise expo-auth-session + signInWithIdToken
+  const t = i18n.t.bind(i18n);
+
   if (Platform.OS === "web") {
     return {
-      label: "Continuer avec Google",
+      label: t("auth.social.continueWithGoogle"),
       loading: false,
       signIn: async () => {
         const { error } = await supabase.auth.signInWithOAuth({
@@ -39,12 +40,12 @@ export function useGoogleAuth(): OAuthProvider & { loading: boolean } {
     const result = await promptAsync();
 
     if (result.type !== "success") {
-      throw new Error("Connexion Google annulée");
+      throw new Error(t("auth.social.errorGoogleCancelled"));
     }
 
     const idToken = result.params.id_token;
     if (!idToken) {
-      throw new Error("Impossible de récupérer le token Google");
+      throw new Error(t("auth.social.errorGoogleNoToken"));
     }
 
     const { error } = await supabase.auth.signInWithIdToken({
@@ -56,7 +57,7 @@ export function useGoogleAuth(): OAuthProvider & { loading: boolean } {
   }
 
   return {
-    label: "Continuer avec Google",
+    label: t("auth.social.continueWithGoogle"),
     signIn,
     loading: !request,
   };

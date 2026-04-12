@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Button, Separator, Text } from "@/components/ui";
 import { useGoogleAuth } from "@/lib/providers";
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function SocialLoginButtons({ onError }: Props) {
+  const { t } = useTranslation();
   const google = useGoogleAuth();
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +18,7 @@ export function SocialLoginButtons({ onError }: Props) {
     try {
       await signIn();
     } catch (e: any) {
-      onError(e.message ?? "Erreur de connexion");
+      onError(e.message ?? t("auth.social.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -26,7 +28,7 @@ export function SocialLoginButtons({ onError }: Props) {
     <View>
       <View className="my-6 flex-row items-center">
         <Separator className="flex-1" />
-        <Text variant="caption" className="mx-4">ou</Text>
+        <Text variant="caption" className="mx-4">{t("common.or")}</Text>
         <Separator className="flex-1" />
       </View>
 
@@ -37,13 +39,6 @@ export function SocialLoginButtons({ onError }: Props) {
           disabled={loading || google.loading}
           onPress={() => handleProvider(google.signIn)}
         />
-        {/* Ajouter d'autres providers ici :
-        <Button
-          label="Continuer avec Apple"
-          variant="outline"
-          onPress={() => handleProvider(apple.signIn)}
-        />
-        */}
       </View>
     </View>
   );

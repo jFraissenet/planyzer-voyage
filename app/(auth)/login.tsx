@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 import { Link } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signInWithEmail } from "@/lib/auth";
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,11 +21,11 @@ export default function LoginScreen() {
     } catch (e: any) {
       const msg = e.message ?? "";
       if (msg.includes("Invalid login credentials")) {
-        setError("Email ou mot de passe incorrect");
+        setError(t("auth.login.errorInvalidCredentials"));
       } else if (msg.includes("Email not confirmed")) {
-        setError("Veuillez confirmer votre email avant de vous connecter");
+        setError(t("auth.login.errorEmailNotConfirmed"));
       } else {
-        setError(msg || "Erreur de connexion");
+        setError(msg || t("auth.login.errorGeneric"));
       }
     } finally {
       setLoading(false);
@@ -37,24 +39,24 @@ export default function LoginScreen() {
     >
       <View className="flex-1 justify-center px-6">
         <Text variant="h1" className="text-center mb-2">
-          Planyzer
+          {t("auth.login.title")}
         </Text>
         <Text variant="caption" className="text-center mb-10">
-          Organisez vos voyages simplement
+          {t("auth.login.subtitle")}
         </Text>
 
         <View className="gap-4">
           <Input
-            label="Email"
-            placeholder="votre@email.com"
+            label={t("auth.login.emailLabel")}
+            placeholder={t("auth.login.emailPlaceholder")}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <Input
-            label="Mot de passe"
-            placeholder="••••••••"
+            label={t("auth.login.passwordLabel")}
+            placeholder={t("auth.login.passwordPlaceholder")}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -73,7 +75,7 @@ export default function LoginScreen() {
           ) : null}
 
           <Button
-            label={loading ? "Connexion..." : "Se connecter"}
+            label={loading ? t("auth.login.submitting") : t("auth.login.submit")}
             onPress={handleLogin}
             disabled={loading || !email || !password}
           />
@@ -82,11 +84,11 @@ export default function LoginScreen() {
         <SocialLoginButtons onError={setError} />
 
         <View className="flex-row justify-center mt-8">
-          <Text variant="caption">Pas encore de compte ? </Text>
+          <Text variant="caption">{t("auth.login.noAccount")}</Text>
           <Link href="/(auth)/signup" asChild>
             <Pressable>
               <Text className="text-sm text-primary font-semibold">
-                S'inscrire
+                {t("auth.login.signupLink")}
               </Text>
             </Pressable>
           </Link>

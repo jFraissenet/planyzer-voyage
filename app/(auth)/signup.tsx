@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 import { Link } from "expo-router";
+import { useTranslation, Trans } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signUpWithEmail } from "@/lib/auth";
 
 export default function SignupScreen() {
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,24 +18,21 @@ export default function SignupScreen() {
   async function handleSignup() {
     setError("");
     if (password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
+      setError(t("auth.signup.errorPasswordTooShort"));
       return;
     }
     setLoading(true);
     try {
       const data = await signUpWithEmail(email.trim(), password, fullName.trim());
-      // Supabase returns a user with empty identities when the email already exists
       if (data.user && data.user.identities?.length === 0) {
-        setError(
-          "Un compte existe déjà avec cet email. Essayez de vous connecter avec Google ou avec votre mot de passe."
-        );
+        setError(t("auth.signup.errorEmailExists"));
         return;
       }
       if (!data.session) {
         setConfirmationSent(true);
       }
     } catch (e: any) {
-      setError(e.message ?? "Erreur lors de l'inscription");
+      setError(e.message ?? t("auth.signup.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -48,18 +47,20 @@ export default function SignupScreen() {
         {confirmationSent ? (
           <View className="gap-4">
             <Text variant="h1" className="text-center mb-2">
-              Vérifiez vos emails
+              {t("auth.signup.confirmationTitle")}
             </Text>
             <Text variant="caption" className="text-center">
-              Un email de confirmation a été envoyé à{" "}
-              <Text className="text-sm font-semibold">{email}</Text>.
-              {"\n"}Cliquez sur le lien pour activer votre compte.
+              <Trans
+                i18nKey="auth.signup.confirmationMessage"
+                values={{ email }}
+                components={{ bold: <Text className="text-sm font-semibold" /> }}
+              />
             </Text>
             <View className="flex-row justify-center mt-6">
               <Link href="/(auth)/login" asChild>
                 <Pressable>
                   <Text className="text-sm text-primary font-semibold">
-                    Retour à la connexion
+                    {t("auth.signup.backToLogin")}
                   </Text>
                 </Pressable>
               </Link>
@@ -68,31 +69,31 @@ export default function SignupScreen() {
         ) : (
           <>
             <Text variant="h1" className="text-center mb-2">
-              Créer un compte
+              {t("auth.signup.title")}
             </Text>
             <Text variant="caption" className="text-center mb-10">
-              Rejoignez Planyzer
+              {t("auth.signup.subtitle")}
             </Text>
 
             <View className="gap-4">
               <Input
-                label="Nom complet"
-                placeholder="Jean Dupont"
+                label={t("auth.signup.fullNameLabel")}
+                placeholder={t("auth.signup.fullNamePlaceholder")}
                 value={fullName}
                 onChangeText={setFullName}
                 autoCapitalize="words"
               />
               <Input
-                label="Email"
-                placeholder="votre@email.com"
+                label={t("auth.signup.emailLabel")}
+                placeholder={t("auth.signup.emailPlaceholder")}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
               <Input
-                label="Mot de passe"
-                placeholder="6 caractères minimum"
+                label={t("auth.signup.passwordLabel")}
+                placeholder={t("auth.signup.passwordPlaceholder")}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -111,7 +112,7 @@ export default function SignupScreen() {
               ) : null}
 
               <Button
-                label={loading ? "Création..." : "Créer mon compte"}
+                label={loading ? t("auth.signup.submitting") : t("auth.signup.submit")}
                 onPress={handleSignup}
                 disabled={loading || !email || !password || !fullName}
               />
@@ -120,11 +121,11 @@ export default function SignupScreen() {
             <SocialLoginButtons onError={setError} />
 
             <View className="flex-row justify-center mt-8">
-              <Text variant="caption">Déjà un compte ? </Text>
+              <Text variant="caption">{t("auth.signup.hasAccount")}</Text>
               <Link href="/(auth)/login" asChild>
                 <Pressable>
                   <Text className="text-sm text-primary font-semibold">
-                    Se connecter
+                    {t("auth.signup.loginLink")}
                   </Text>
                 </Pressable>
               </Link>

@@ -1,0 +1,72 @@
+{
+  "common": {
+    "or": "ou",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "back": "Retour"
+  },
+  "auth": {
+    "login": {
+      "title": "Planyzer",
+      "subtitle": "Organisez vos voyages simplement",
+      "emailLabel": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ? ",
+      "signupLink": "S'inscrire",
+      "errorInvalidCredentials": "Email ou mot de passe incorrect",
+      "errorEmailNotConfirmed": "Veuillez confirmer votre email avant de vous connecter",
+      "errorGeneric": "Erreur de connexion"
+    },
+    "signup": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez Planyzer",
+      "fullNameLabel": "Nom complet",
+      "fullNamePlaceholder": "Jean Dupont",
+      "emailLabel": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "6 caractères minimum",
+      "submit": "Créer mon compte",
+      "submitting": "Création...",
+      "hasAccount": "Déjà un compte ? ",
+      "loginLink": "Se connecter",
+      "errorPasswordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+      "errorEmailExists": "Un compte existe déjà avec cet email. Essayez de vous connecter avec Google ou avec votre mot de passe.",
+      "errorGeneric": "Erreur lors de l'inscription",
+      "confirmationTitle": "Vérifiez vos emails",
+      "confirmationMessage": "Un email de confirmation a été envoyé à <bold>{{email}}</bold>.\nCliquez sur le lien pour activer votre compte.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "social": {
+      "continueWithGoogle": "Continuer avec Google",
+      "errorGeneric": "Erreur de connexion",
+      "errorGoogleCancelled": "Connexion Google annulée",
+      "errorGoogleNoToken": "Impossible de récupérer le token Google"
+    }
+  },
+  "tabs": {
+    "trips": "Voyages",
+    "explore": "Explorer",
+    "profile": "Profil"
+  },
+  "trips": {
+    "title": "Mes voyages",
+    "empty": "Aucun voyage pour le moment"
+  },
+  "explore": {
+    "title": "Explorer",
+    "subtitle": "Destinations à découvrir"
+  },
+  "profile": {
+    "title": "Profil",
+    "defaultName": "Utilisateur",
+    "emailLabel": "Email",
+    "providerLabel": "Connexion",
+    "languageLabel": "Langue",
+    "logout": "Se déconnecter"
+  }
+}

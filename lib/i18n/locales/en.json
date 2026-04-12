@@ -1,0 +1,72 @@
+{
+  "common": {
+    "or": "or",
+    "loading": "Loading...",
+    "error": "Error",
+    "back": "Back"
+  },
+  "auth": {
+    "login": {
+      "title": "Planyzer",
+      "subtitle": "Plan your trips with ease",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account? ",
+      "signupLink": "Sign up",
+      "errorInvalidCredentials": "Invalid email or password",
+      "errorEmailNotConfirmed": "Please confirm your email before logging in",
+      "errorGeneric": "Login error"
+    },
+    "signup": {
+      "title": "Create an account",
+      "subtitle": "Join Planyzer",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "6 characters minimum",
+      "submit": "Create my account",
+      "submitting": "Creating...",
+      "hasAccount": "Already have an account? ",
+      "loginLink": "Log in",
+      "errorPasswordTooShort": "Password must be at least 6 characters",
+      "errorEmailExists": "An account already exists with this email. Try logging in with Google or your password.",
+      "errorGeneric": "Registration error",
+      "confirmationTitle": "Check your emails",
+      "confirmationMessage": "A confirmation email has been sent to <bold>{{email}}</bold>.\nClick the link to activate your account.",
+      "backToLogin": "Back to login"
+    },
+    "social": {
+      "continueWithGoogle": "Continue with Google",
+      "errorGeneric": "Login error",
+      "errorGoogleCancelled": "Google login cancelled",
+      "errorGoogleNoToken": "Unable to retrieve Google token"
+    }
+  },
+  "tabs": {
+    "trips": "Trips",
+    "explore": "Explore",
+    "profile": "Profile"
+  },
+  "trips": {
+    "title": "My trips",
+    "empty": "No trips yet"
+  },
+  "explore": {
+    "title": "Explore",
+    "subtitle": "Destinations to discover"
+  },
+  "profile": {
+    "title": "Profile",
+    "defaultName": "User",
+    "emailLabel": "Email",
+    "providerLabel": "Login method",
+    "languageLabel": "Language",
+    "logout": "Log out"
+  }
+}

@@ -1,10 +1,13 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function TripsScreen() {
+  const { t } = useTranslation();
+
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-2xl font-bold mb-2">Mes voyages</Text>
-      <Text className="text-base text-gray-500">Aucun voyage pour le moment</Text>
+      <Text className="text-2xl font-bold mb-2">{t("trips.title")}</Text>
+      <Text className="text-base text-gray-500">{t("trips.empty")}</Text>
     </View>
   );
 }
