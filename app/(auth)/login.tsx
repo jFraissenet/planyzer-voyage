@@ -17,7 +17,14 @@ export default function LoginScreen() {
     try {
       await signInWithEmail(email.trim(), password);
     } catch (e: any) {
-      setError(e.message ?? "Erreur de connexion");
+      const msg = e.message ?? "";
+      if (msg.includes("Invalid login credentials")) {
+        setError("Email ou mot de passe incorrect");
+      } else if (msg.includes("Email not confirmed")) {
+        setError("Veuillez confirmer votre email avant de vous connecter");
+      } else {
+        setError(msg || "Erreur de connexion");
+      }
     } finally {
       setLoading(false);
     }
@@ -54,7 +61,15 @@ export default function LoginScreen() {
           />
 
           {error ? (
-            <Text className="text-error text-sm text-center">{error}</Text>
+            <View className="bg-error/10 rounded-lg px-4 py-3">
+              <Text
+                variant="label"
+                className="text-center"
+                style={{ color: "#ef4444" }}
+              >
+                {error}
+              </Text>
+            </View>
           ) : null}
 
           <Button
