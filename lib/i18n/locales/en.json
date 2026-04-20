@@ -3,7 +3,9 @@
     "or": "or",
     "loading": "Loading...",
     "error": "Error",
-    "back": "Back"
+    "back": "Back",
+    "ok": "OK",
+    "cancel": "Cancel"
   },
   "auth": {
     "login": {
@@ -49,17 +51,88 @@
     }
   },
   "tabs": {
-    "trips": "Trips",
-    "explore": "Explore",
+    "events": "Events",
+    "about": "About",
     "profile": "Profile"
   },
-  "trips": {
-    "title": "My trips",
-    "empty": "No trips yet"
+  "events": {
+    "title": "Events",
+    "newButton": "New event",
+    "sections": {
+      "mine": "My events",
+      "shared": "Shared events"
+    },
+    "empty": {
+      "mine": "No events created yet",
+      "shared": "No shared events yet"
+    },
+    "card": {
+      "noDates": "No dates set",
+      "archive": "Archive",
+      "unarchive": "Unarchive",
+      "archiveConfirmTitle": "Archive this event?",
+      "archiveConfirmMessage": "It will be hidden from your dashboard. You can find it again via the \"Show archived\" switch."
+    },
+    "detail": {
+      "toolsTitle": "Tools",
+      "noTools": "No tools yet",
+      "addTool": "+ Add a tool",
+      "loading": "Loading..."
+    },
+    "showArchived": "Show archived",
+    "newTool": {
+      "title": "New tool",
+      "typeLabel": "Tool type",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Trip notes",
+      "visibilityLabel": "Visibility",
+      "visibilityAll": "All members",
+      "visibilityAllHint": "All event members can see this tool",
+      "visibilityRestricted": "Restricted",
+      "visibilityRestrictedHint": "Only people you add will see this tool",
+      "submit": "Create",
+      "submitting": "Creating...",
+      "cancel": "Cancel",
+      "errorTypeRequired": "Select a type",
+      "errorNameRequired": "Name is required",
+      "errorGeneric": "Error while creating"
+    },
+    "new": {
+      "title": "New event",
+      "subtitle": "Invite your friends and share a moment",
+      "infoSection": "Info",
+      "datesSection": "Dates",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Dinner, meeting, trip…",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Optional",
+      "startLabel": "Start",
+      "endLabel": "End",
+      "datePlaceholder": "YYYY-MM-DD HH:MM",
+      "submit": "Create",
+      "submitting": "Creating...",
+      "cancel": "Cancel",
+      "errorTitleRequired": "Title is required",
+      "errorInvalidDate": "Invalid date format",
+      "errorEndBeforeStart": "End must be after start",
+      "errorGeneric": "Error while creating"
+    }
   },
-  "explore": {
-    "title": "Explore",
-    "subtitle": "Destinations to discover"
+  "about": {
+    "title": "Planyzer",
+    "tagline": "Plan your events, together.",
+    "description": "One event, all the tools that go with it. Invite your friends to a trip, dinner or outing and share expenses, notes or carpooling — everyone only sees what you choose to share.",
+    "feature1Title": "Events",
+    "feature1Body": "One page per outing, with its dates and participants.",
+    "feature2Title": "Modular tools",
+    "feature2Body": "Add whatever you need along the way: money, notes, carpool.",
+    "feature3Title": "Controlled sharing",
+    "feature3Body": "Some tools visible to everyone, others reserved for a subgroup."
+  },
+  "tools": {
+    "money": { "name": "Money" },
+    "notes": { "name": "Notes" },
+    "car_sharing": { "name": "Carpool" }
   },
   "profile": {
     "title": "Profile",

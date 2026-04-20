@@ -1,0 +1,145 @@
+{
+  "common": {
+    "or": "o",
+    "loading": "Cargando...",
+    "error": "Error",
+    "back": "Volver",
+    "ok": "OK",
+    "cancel": "Cancelar"
+  },
+  "auth": {
+    "login": {
+      "title": "Planyzer",
+      "subtitle": "Organiza tus viajes fácilmente",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión...",
+      "noAccount": "¿Aún no tienes cuenta? ",
+      "signupLink": "Regístrate",
+      "errorInvalidCredentials": "Correo o contraseña incorrectos",
+      "errorEmailNotConfirmed": "Por favor confirma tu correo antes de iniciar sesión",
+      "errorGeneric": "Error al iniciar sesión"
+    },
+    "signup": {
+      "title": "Crear una cuenta",
+      "subtitle": "Únete a Planyzer",
+      "fullNameLabel": "Nombre completo",
+      "fullNamePlaceholder": "Juan Pérez",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Mínimo 6 caracteres",
+      "submit": "Crear mi cuenta",
+      "submitting": "Creando...",
+      "hasAccount": "¿Ya tienes una cuenta? ",
+      "loginLink": "Iniciar sesión",
+      "errorPasswordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "errorEmailExists": "Ya existe una cuenta con este correo. Intenta iniciar sesión con Google o con tu contraseña.",
+      "errorGeneric": "Error al registrarse",
+      "confirmationTitle": "Revisa tu correo",
+      "confirmationMessage": "Se ha enviado un correo de confirmación a <bold>{{email}}</bold>.\nHaz clic en el enlace para activar tu cuenta.",
+      "backToLogin": "Volver al inicio de sesión"
+    },
+    "social": {
+      "continueWithGoogle": "Continuar con Google",
+      "errorGeneric": "Error al iniciar sesión",
+      "errorGoogleCancelled": "Inicio de sesión con Google cancelado",
+      "errorGoogleNoToken": "No se pudo obtener el token de Google"
+    }
+  },
+  "tabs": {
+    "events": "Eventos",
+    "about": "Acerca de",
+    "profile": "Perfil"
+  },
+  "events": {
+    "title": "Eventos",
+    "newButton": "Nuevo evento",
+    "sections": {
+      "mine": "Mis eventos",
+      "shared": "Eventos compartidos"
+    },
+    "empty": {
+      "mine": "Aún no has creado eventos",
+      "shared": "Aún no hay eventos compartidos"
+    },
+    "card": {
+      "noDates": "Sin fechas definidas",
+      "archive": "Archivar",
+      "unarchive": "Desarchivar",
+      "archiveConfirmTitle": "¿Archivar este evento?",
+      "archiveConfirmMessage": "Se ocultará de tu panel. Puedes volver a encontrarlo con el interruptor «Mostrar archivados»."
+    },
+    "detail": {
+      "toolsTitle": "Herramientas",
+      "noTools": "Aún no hay herramientas",
+      "addTool": "+ Añadir una herramienta",
+      "loading": "Cargando..."
+    },
+    "showArchived": "Mostrar archivados",
+    "newTool": {
+      "title": "Nueva herramienta",
+      "typeLabel": "Tipo de herramienta",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "ej. Notas del viaje",
+      "visibilityLabel": "Visibilidad",
+      "visibilityAll": "Todos los miembros",
+      "visibilityAllHint": "Todos los miembros del evento ven esta herramienta",
+      "visibilityRestricted": "Restringida",
+      "visibilityRestrictedHint": "Solo las personas que añadas verán esta herramienta",
+      "submit": "Crear",
+      "submitting": "Creando...",
+      "cancel": "Cancelar",
+      "errorTypeRequired": "Selecciona un tipo",
+      "errorNameRequired": "El nombre es obligatorio",
+      "errorGeneric": "Error al crear"
+    },
+    "new": {
+      "title": "Nuevo evento",
+      "subtitle": "Invita a tus amigos y comparte un momento",
+      "infoSection": "Información",
+      "datesSection": "Fechas",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Cena, reunión, viaje…",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Opcional",
+      "startLabel": "Inicio",
+      "endLabel": "Fin",
+      "datePlaceholder": "AAAA-MM-DD HH:MM",
+      "submit": "Crear",
+      "submitting": "Creando...",
+      "cancel": "Cancelar",
+      "errorTitleRequired": "El título es obligatorio",
+      "errorInvalidDate": "Formato de fecha inválido",
+      "errorEndBeforeStart": "El fin debe ser posterior al inicio",
+      "errorGeneric": "Error al crear"
+    }
+  },
+  "about": {
+    "title": "Planyzer",
+    "tagline": "Organiza tus eventos, en equipo.",
+    "description": "Un evento, todas las herramientas que hacen falta. Invita a tus amigos a un viaje, una cena o una salida y compartid gastos, notas o coche — cada uno solo ve lo que eliges compartir.",
+    "feature1Title": "Eventos",
+    "feature1Body": "Una página por salida, con sus fechas y participantes.",
+    "feature2Title": "Herramientas modulares",
+    "feature2Body": "Añade sobre la marcha lo que necesitéis: dinero, notas, coche compartido.",
+    "feature3Title": "Compartir a medida",
+    "feature3Body": "Algunas herramientas para todos, otras reservadas a un subgrupo."
+  },
+  "tools": {
+    "money": { "name": "Dinero" },
+    "notes": { "name": "Notas" },
+    "car_sharing": { "name": "Compartir coche" }
+  },
+  "profile": {
+    "title": "Perfil",
+    "defaultName": "Usuario",
+    "emailLabel": "Correo electrónico",
+    "providerLabel": "Método de inicio de sesión",
+    "languageLabel": "Idioma",
+    "logout": "Cerrar sesión"
+  }
+}

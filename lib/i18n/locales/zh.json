@@ -1,0 +1,145 @@
+{
+  "common": {
+    "or": "或",
+    "loading": "加载中...",
+    "error": "错误",
+    "back": "返回",
+    "ok": "确定",
+    "cancel": "取消"
+  },
+  "auth": {
+    "login": {
+      "title": "Planyzer",
+      "subtitle": "轻松规划您的旅行",
+      "emailLabel": "电子邮箱",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "密码",
+      "passwordPlaceholder": "••••••••",
+      "submit": "登录",
+      "submitting": "正在登录...",
+      "noAccount": "还没有账户？",
+      "signupLink": "注册",
+      "errorInvalidCredentials": "邮箱或密码错误",
+      "errorEmailNotConfirmed": "请先确认您的邮箱再登录",
+      "errorGeneric": "登录出错"
+    },
+    "signup": {
+      "title": "创建账户",
+      "subtitle": "加入 Planyzer",
+      "fullNameLabel": "全名",
+      "fullNamePlaceholder": "张三",
+      "emailLabel": "电子邮箱",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "密码",
+      "passwordPlaceholder": "至少 6 个字符",
+      "submit": "创建我的账户",
+      "submitting": "正在创建...",
+      "hasAccount": "已有账户？",
+      "loginLink": "登录",
+      "errorPasswordTooShort": "密码长度至少为 6 个字符",
+      "errorEmailExists": "该邮箱已注册账户。请尝试使用 Google 或您的密码登录。",
+      "errorGeneric": "注册出错",
+      "confirmationTitle": "请查收邮件",
+      "confirmationMessage": "一封确认邮件已发送至 <bold>{{email}}</bold>。\n请点击链接激活您的账户。",
+      "backToLogin": "返回登录"
+    },
+    "social": {
+      "continueWithGoogle": "使用 Google 继续",
+      "errorGeneric": "登录出错",
+      "errorGoogleCancelled": "已取消 Google 登录",
+      "errorGoogleNoToken": "无法获取 Google 令牌"
+    }
+  },
+  "tabs": {
+    "events": "活动",
+    "about": "关于",
+    "profile": "个人资料"
+  },
+  "events": {
+    "title": "活动",
+    "newButton": "新建活动",
+    "sections": {
+      "mine": "我的活动",
+      "shared": "共享活动"
+    },
+    "empty": {
+      "mine": "尚未创建任何活动",
+      "shared": "暂无共享活动"
+    },
+    "card": {
+      "noDates": "未设置日期",
+      "archive": "归档",
+      "unarchive": "取消归档",
+      "archiveConfirmTitle": "归档此活动？",
+      "archiveConfirmMessage": "它将从你的仪表板中隐藏。你可以通过「显示已归档」开关再次找到它。"
+    },
+    "detail": {
+      "toolsTitle": "工具",
+      "noTools": "暂无工具",
+      "addTool": "+ 添加工具",
+      "loading": "加载中..."
+    },
+    "showArchived": "显示已归档",
+    "newTool": {
+      "title": "新建工具",
+      "typeLabel": "工具类型",
+      "nameLabel": "名称",
+      "namePlaceholder": "例如：旅行笔记",
+      "visibilityLabel": "可见性",
+      "visibilityAll": "所有成员",
+      "visibilityAllHint": "所有活动成员都能看到此工具",
+      "visibilityRestricted": "受限",
+      "visibilityRestrictedHint": "只有你添加的人才能看到此工具",
+      "submit": "创建",
+      "submitting": "正在创建...",
+      "cancel": "取消",
+      "errorTypeRequired": "请选择一个类型",
+      "errorNameRequired": "名称为必填项",
+      "errorGeneric": "创建失败"
+    },
+    "new": {
+      "title": "新建活动",
+      "subtitle": "邀请朋友，共度美好时光",
+      "infoSection": "信息",
+      "datesSection": "日期",
+      "titleLabel": "标题",
+      "titlePlaceholder": "晚餐、会议、旅行……",
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "可选",
+      "startLabel": "开始",
+      "endLabel": "结束",
+      "datePlaceholder": "YYYY-MM-DD HH:MM",
+      "submit": "创建",
+      "submitting": "正在创建...",
+      "cancel": "取消",
+      "errorTitleRequired": "标题为必填项",
+      "errorInvalidDate": "日期格式无效",
+      "errorEndBeforeStart": "结束时间必须晚于开始时间",
+      "errorGeneric": "创建失败"
+    }
+  },
+  "about": {
+    "title": "Planyzer",
+    "tagline": "团队合作，轻松组织活动。",
+    "description": "一个活动，所有你需要的工具。邀请朋友参加旅行、晚餐或聚会，共同管理账务、笔记或拼车——每个人只看到你选择分享的内容。",
+    "feature1Title": "活动",
+    "feature1Body": "每次出行一个页面，包含日期和参与者。",
+    "feature2Title": "模块化工具",
+    "feature2Body": "随时添加你需要的工具：账务、笔记、拼车。",
+    "feature3Title": "可控分享",
+    "feature3Body": "部分工具所有人可见，其他仅限指定小组。"
+  },
+  "tools": {
+    "money": { "name": "账务" },
+    "notes": { "name": "笔记" },
+    "car_sharing": { "name": "拼车" }
+  },
+  "profile": {
+    "title": "个人资料",
+    "defaultName": "用户",
+    "emailLabel": "电子邮箱",
+    "providerLabel": "登录方式",
+    "languageLabel": "语言",
+    "logout": "退出登录"
+  }
+}

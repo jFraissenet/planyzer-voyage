@@ -4,6 +4,8 @@ import { initReactI18next } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import fr from "./locales/fr.json";
 import en from "./locales/en.json";
+import es from "./locales/es.json";
+import zh from "./locales/zh.json";
 
 const LANGUAGE_KEY = "user-language";
 
@@ -38,6 +40,8 @@ i18n
     resources: {
       fr: { translation: fr },
       en: { translation: en },
+      es: { translation: es },
+      zh: { translation: zh },
     },
     fallbackLng: "en",
     interpolation: {

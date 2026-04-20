@@ -1,7 +1,8 @@
-import { Pressable, PressableProps } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Pressable, PressableProps, View } from "react-native";
 import { Text } from "./Text";
 
-type Variant = "primary" | "secondary" | "outline" | "ghost";
+type Variant = "primary" | "secondary" | "outline" | "ghost" | "cta";
 type Size = "sm" | "md" | "lg";
 
 interface Props extends PressableProps {
@@ -11,9 +12,12 @@ interface Props extends PressableProps {
   className?: string;
 }
 
-const variantClasses: Record<Variant, { container: string; text: string }> = {
+const variantClasses: Record<
+  Exclude<Variant, "cta">,
+  { container: string; text: string }
+> = {
   primary: {
-    container: "bg-primary active:opacity-80",
+    container: "bg-primary active:opacity-85",
     text: "text-primary-foreground",
   },
   secondary: {
@@ -21,19 +25,19 @@ const variantClasses: Record<Variant, { container: string; text: string }> = {
     text: "text-foreground",
   },
   outline: {
-    container: "border border-border active:opacity-80",
+    container: "border border-border active:opacity-80 bg-surface",
     text: "text-foreground",
   },
   ghost: {
-    container: "active:opacity-80",
+    container: "active:opacity-70",
     text: "text-foreground-secondary",
   },
 };
 
 const sizeClasses: Record<Size, { container: string; text: string }> = {
-  sm: { container: "px-3 py-1.5 rounded-md", text: "text-sm" },
-  md: { container: "px-4 py-2.5 rounded-lg", text: "text-base" },
-  lg: { container: "px-6 py-3.5 rounded-xl", text: "text-lg" },
+  sm: { container: "px-3 py-2 rounded-lg", text: "text-sm" },
+  md: { container: "px-4 py-3 rounded-xl", text: "text-base" },
+  lg: { container: "px-6 py-4 rounded-2xl", text: "text-lg" },
 };
 
 export function Button({
@@ -44,8 +48,42 @@ export function Button({
   disabled,
   ...props
 }: Props) {
-  const v = variantClasses[variant];
   const s = sizeClasses[size];
+
+  if (variant === "cta") {
+    return (
+      <Pressable
+        disabled={disabled}
+        className={disabled ? "opacity-50" : ""}
+        {...props}
+      >
+        {({ pressed }) => (
+          <LinearGradient
+            colors={["#4F3FD1", "#6050DC", "#8B7BEE"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: pressed ? 0.92 : 1,
+              shadowColor: "#6050DC",
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.35,
+              shadowRadius: 12,
+              elevation: 6,
+            }}
+            className={`${s.container} ${className}`}
+          >
+            <Text className={`font-bold ${s.text}`} style={{ color: "#fff" }}>
+              {label}
+            </Text>
+          </LinearGradient>
+        )}
+      </Pressable>
+    );
+  }
+
+  const v = variantClasses[variant];
 
   return (
     <Pressable

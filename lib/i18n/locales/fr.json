@@ -3,7 +3,9 @@
     "or": "ou",
     "loading": "Chargement...",
     "error": "Erreur",
-    "back": "Retour"
+    "back": "Retour",
+    "ok": "OK",
+    "cancel": "Annuler"
   },
   "auth": {
     "login": {
@@ -49,17 +51,88 @@
     }
   },
   "tabs": {
-    "trips": "Voyages",
-    "explore": "Explorer",
+    "events": "Événements",
+    "about": "À propos",
     "profile": "Profil"
   },
-  "trips": {
-    "title": "Mes voyages",
-    "empty": "Aucun voyage pour le moment"
+  "events": {
+    "title": "Événements",
+    "newButton": "Nouvel événement",
+    "sections": {
+      "mine": "Mes événements",
+      "shared": "Événements partagés"
+    },
+    "empty": {
+      "mine": "Aucun événement créé pour le moment",
+      "shared": "Aucun événement partagé pour le moment"
+    },
+    "card": {
+      "noDates": "Dates non définies",
+      "archive": "Archiver",
+      "unarchive": "Désarchiver",
+      "archiveConfirmTitle": "Archiver cet événement ?",
+      "archiveConfirmMessage": "Il sera masqué de ton tableau de bord. Tu peux le retrouver via le switch « Afficher archivés »."
+    },
+    "detail": {
+      "toolsTitle": "Outils",
+      "noTools": "Aucun outil pour le moment",
+      "addTool": "+ Ajouter un outil",
+      "loading": "Chargement..."
+    },
+    "showArchived": "Afficher archivés",
+    "newTool": {
+      "title": "Nouvel outil",
+      "typeLabel": "Type d'outil",
+      "nameLabel": "Nom",
+      "namePlaceholder": "ex. Notes de voyage",
+      "visibilityLabel": "Visibilité",
+      "visibilityAll": "Tous les membres",
+      "visibilityAllHint": "Tous les membres de l'événement voient cet outil",
+      "visibilityRestricted": "Restreint",
+      "visibilityRestrictedHint": "Seules les personnes que tu ajouteras verront cet outil",
+      "submit": "Créer",
+      "submitting": "Création...",
+      "cancel": "Annuler",
+      "errorTypeRequired": "Sélectionne un type",
+      "errorNameRequired": "Le nom est requis",
+      "errorGeneric": "Erreur lors de la création"
+    },
+    "new": {
+      "title": "Nouvel événement",
+      "subtitle": "Invite tes proches et partage un moment",
+      "infoSection": "Informations",
+      "datesSection": "Dates",
+      "titleLabel": "Titre",
+      "titlePlaceholder": "Dîner, réunion, voyage…",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Facultatif",
+      "startLabel": "Début",
+      "endLabel": "Fin",
+      "datePlaceholder": "AAAA-MM-JJ HH:MM",
+      "submit": "Créer",
+      "submitting": "Création...",
+      "cancel": "Annuler",
+      "errorTitleRequired": "Le titre est requis",
+      "errorInvalidDate": "Format de date invalide",
+      "errorEndBeforeStart": "La fin doit être après le début",
+      "errorGeneric": "Erreur lors de la création"
+    }
   },
-  "explore": {
-    "title": "Explorer",
-    "subtitle": "Destinations à découvrir"
+  "about": {
+    "title": "Planyzer",
+    "tagline": "Organise tes événements, en équipe.",
+    "description": "Un événement, tous les outils qui vont avec. Invite tes proches à un voyage, une soirée ou une sortie, et partagez dépenses, notes ou covoiturage — chacun n'accède qu'à ce que tu choisis.",
+    "feature1Title": "Événements",
+    "feature1Body": "Une page par sortie, avec ses dates et ses participants.",
+    "feature2Title": "Outils modulaires",
+    "feature2Body": "Ajoute au fil de l'eau ce dont vous avez besoin : comptes, notes, covoiturage.",
+    "feature3Title": "Partage choisi",
+    "feature3Body": "Certains outils visibles par tous, d'autres réservés à un sous-groupe."
+  },
+  "tools": {
+    "money": { "name": "Argent" },
+    "notes": { "name": "Notes" },
+    "car_sharing": { "name": "Covoiturage" }
   },
   "profile": {
     "title": "Profil",

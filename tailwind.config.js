@@ -14,10 +14,14 @@ module.exports = {
         border: "var(--color-border)",
         primary: {
           DEFAULT: "var(--color-primary)",
+          deep: "var(--color-primary-deep)",
+          soft: "var(--color-primary-soft)",
           foreground: "var(--color-primary-foreground)",
         },
         accent: {
           DEFAULT: "var(--color-accent)",
+          deep: "var(--color-accent-deep)",
+          soft: "var(--color-accent-soft)",
           foreground: "var(--color-accent-foreground)",
         },
         success: "var(--color-success)",

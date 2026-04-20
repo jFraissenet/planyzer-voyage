@@ -1,0 +1,456 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
+import { SvgUri } from "react-native-svg";
+import { Button, Card, FAB, Input, ScreenHeader, Text } from "@/components/ui";
+import {
+  Event,
+  EventTool,
+  ToolType,
+  createEventTool,
+  getEvent,
+  getMyEventRole,
+  listEventTools,
+  listToolTypes,
+} from "@/lib/events";
+
+function formatDateRange(
+  start: string | null,
+  end: string | null,
+  locale: string,
+): string | null {
+  if (!start && !end) return null;
+  const opts: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  const fmt = (iso: string) => new Date(iso).toLocaleString(locale, opts);
+  if (start && end) return `${fmt(start)} — ${fmt(end)}`;
+  return fmt((start ?? end) as string);
+}
+
+function ToolIcon({ uri, size = 32 }: { uri: string | null; size?: number }) {
+  if (!uri) {
+    return (
+      <View
+        style={{ width: size, height: size }}
+        className="items-center justify-center"
+      >
+        <Text variant="h3">🧩</Text>
+      </View>
+    );
+  }
+  if (Platform.OS === "web") {
+    return <img src={uri} width={size} height={size} alt="" />;
+  }
+  return <SvgUri width={size} height={size} uri={uri} />;
+}
+
+function ToolCard({
+  tool,
+  iconUri,
+}: {
+  tool: EventTool;
+  iconUri: string | null;
+}) {
+  const { t } = useTranslation();
+  const typeLabel = t(`tools.${tool.event_tool_type_code}.name`, {
+    defaultValue: tool.event_tool_type_code,
+  });
+  const isRestricted = tool.event_tool_visibility === "restricted";
+  return (
+    <Card className="mb-3">
+      <View className="flex-row items-center">
+        <View
+          className="mr-3 items-center justify-center rounded-2xl"
+          style={{ width: 48, height: 48, backgroundColor: "#EEECFC" }}
+        >
+          <ToolIcon uri={iconUri} size={28} />
+        </View>
+        <View className="flex-1">
+          <Text variant="h3">{tool.event_tool_name}</Text>
+          <Text variant="caption">{typeLabel}</Text>
+        </View>
+        {isRestricted ? (
+          <View
+            className="px-2 py-0.5 rounded-full"
+            style={{ backgroundColor: "#FEF3C7" }}
+          >
+            <Text
+              variant="caption"
+              style={{ color: "#92400E", fontWeight: "600", fontSize: 11 }}
+            >
+              🔒
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    </Card>
+  );
+}
+
+function NewToolModal({
+  visible,
+  eventId,
+  toolTypes,
+  onClose,
+  onCreated,
+}: {
+  visible: boolean;
+  eventId: string;
+  toolTypes: ToolType[];
+  onClose: () => void;
+  onCreated: (t: EventTool) => void;
+}) {
+  const { t } = useTranslation();
+  const [selectedType, setSelectedType] = useState<ToolType | null>(null);
+  const [name, setName] = useState("");
+  const [visibility, setVisibility] = useState<"all" | "restricted">("all");
+  const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{
+    type?: string;
+    name?: string;
+    form?: string;
+  }>({});
+
+  useEffect(() => {
+    if (!visible) {
+      setSelectedType(null);
+      setName("");
+      setVisibility("all");
+      setErrors({});
+      setSubmitting(false);
+    }
+  }, [visible]);
+
+  const selectType = (tt: ToolType) => {
+    setSelectedType(tt);
+    setVisibility(tt.tool_type_default_visibility);
+    if (!name.trim()) {
+      setName(
+        t(`tools.${tt.tool_type_code}.name`, {
+          defaultValue: tt.tool_type_code,
+        }),
+      );
+    }
+    setErrors((e) => ({ ...e, type: undefined }));
+  };
+
+  const handleSubmit = async () => {
+    const next: typeof errors = {};
+    if (!selectedType) next.type = t("events.newTool.errorTypeRequired");
+    if (!name.trim()) next.name = t("events.newTool.errorNameRequired");
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      return;
+    }
+    setErrors({});
+    setSubmitting(true);
+    try {
+      const created = await createEventTool({
+        event_tool_event_id: eventId,
+        event_tool_type_code: selectedType!.tool_type_code,
+        event_tool_name: name.trim(),
+        event_tool_visibility: visibility,
+      });
+      onCreated(created);
+      onClose();
+    } catch (err) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? String((err as { message: unknown }).message)
+          : t("events.newTool.errorGeneric");
+      // eslint-disable-next-line no-console
+      console.error("createEventTool failed:", err);
+      setErrors({ form: msg });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <Pressable
+        className="flex-1 bg-black/40 items-center justify-center px-4"
+        onPress={onClose}
+      >
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          className="w-full max-w-md bg-background rounded-2xl p-5"
+        >
+          <Text variant="h2" className="mb-4">
+            {t("events.newTool.title")}
+          </Text>
+
+          <Text variant="label" className="mb-2">
+            {t("events.newTool.typeLabel")}
+          </Text>
+          <View className="gap-2 mb-4">
+            {toolTypes.map((tt) => {
+              const selected =
+                selectedType?.tool_type_code === tt.tool_type_code;
+              return (
+                <Pressable
+                  key={tt.tool_type_code}
+                  onPress={() => selectType(tt)}
+                  className={`flex-row items-center p-3 rounded-lg border ${
+                    selected
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-surface"
+                  }`}
+                >
+                  <View className="mr-3">
+                    <ToolIcon uri={tt.tool_type_icon} size={28} />
+                  </View>
+                  <Text>
+                    {t(`tools.${tt.tool_type_code}.name`, {
+                      defaultValue: tt.tool_type_code,
+                    })}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          {errors.type ? (
+            <Text className="text-error text-sm mb-2">{errors.type}</Text>
+          ) : null}
+
+          <Input
+            label={t("events.newTool.nameLabel")}
+            placeholder={t("events.newTool.namePlaceholder")}
+            value={name}
+            onChangeText={setName}
+            error={errors.name}
+            className="mb-4"
+          />
+
+          <Text variant="label" className="mb-2">
+            {t("events.newTool.visibilityLabel")}
+          </Text>
+          <View className="gap-2 mb-4">
+            {(["all", "restricted"] as const).map((v) => {
+              const selected = visibility === v;
+              return (
+                <Pressable
+                  key={v}
+                  onPress={() => setVisibility(v)}
+                  className={`p-3 rounded-lg border ${
+                    selected
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-surface"
+                  }`}
+                >
+                  <Text variant="label">
+                    {t(
+                      v === "all"
+                        ? "events.newTool.visibilityAll"
+                        : "events.newTool.visibilityRestricted",
+                    )}
+                  </Text>
+                  <Text variant="caption" className="mt-1">
+                    {t(
+                      v === "all"
+                        ? "events.newTool.visibilityAllHint"
+                        : "events.newTool.visibilityRestrictedHint",
+                    )}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {errors.form ? (
+            <Text className="text-error text-sm mb-2">{errors.form}</Text>
+          ) : null}
+
+          <View className="gap-2">
+            <Button
+              variant="cta"
+              size="lg"
+              label={
+                submitting
+                  ? t("events.newTool.submitting")
+                  : t("events.newTool.submit")
+              }
+              onPress={handleSubmit}
+              disabled={submitting}
+            />
+            <Button
+              variant="ghost"
+              label={t("events.newTool.cancel")}
+              onPress={onClose}
+              disabled={submitting}
+            />
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
+export default function EventDetailScreen() {
+  const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const { event_id } = useLocalSearchParams<{ event_id: string }>();
+  const goBack = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/");
+  };
+  const [event, setEvent] = useState<Event | null>(null);
+  const [tools, setTools] = useState<EventTool[]>([]);
+  const [toolTypes, setToolTypes] = useState<ToolType[]>([]);
+  const [myRole, setMyRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [newToolOpen, setNewToolOpen] = useState(false);
+
+  const load = useCallback(async () => {
+    if (!event_id) return;
+    const [e, ts, tt, role] = await Promise.all([
+      getEvent(event_id),
+      listEventTools(event_id),
+      listToolTypes(),
+      getMyEventRole(event_id),
+    ]);
+    setEvent(e);
+    setTools(ts);
+    setToolTypes(tt);
+    setMyRole(role);
+  }, [event_id]);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    load()
+      .catch(() => {
+        if (active) {
+          setEvent(null);
+          setTools([]);
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [load]);
+
+  const toolIconByCode = useMemo(() => {
+    const map = new Map<string, string | null>();
+    for (const tt of toolTypes) map.set(tt.tool_type_code, tt.tool_type_icon);
+    return map;
+  }, [toolTypes]);
+
+  const range = event
+    ? formatDateRange(
+        event.event_start_date,
+        event.event_end_date,
+        i18n.language,
+      )
+    : null;
+
+  const isAdmin = myRole === "admin";
+
+  return (
+    <View className="flex-1 bg-background">
+      {loading ? (
+        <>
+          <ScreenHeader title={t("events.detail.loading")} onBack={goBack} />
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator />
+          </View>
+        </>
+      ) : !event ? (
+        <>
+          <ScreenHeader title={t("common.error")} onBack={goBack} />
+          <View className="flex-1 items-center justify-center">
+            <Text variant="caption">{t("common.error")}</Text>
+          </View>
+        </>
+      ) : (
+        <>
+          <ScreenHeader
+            title={event.event_title}
+            subtitle={range ?? undefined}
+            onBack={goBack}
+          />
+          <ScrollView contentContainerStyle={{ paddingBottom: 120, paddingTop: 20 }}>
+            {event.event_description ? (
+              <View className="px-6 mb-6">
+                <Text variant="body">{event.event_description}</Text>
+              </View>
+            ) : null}
+
+            <View className="px-6 mb-3 flex-row items-center">
+              <Text variant="h2" className="flex-1">
+                {t("events.detail.toolsTitle")}
+              </Text>
+              {tools.length > 0 ? (
+                <View
+                  className="px-2.5 py-0.5 rounded-full"
+                  style={{ backgroundColor: "#EEECFC" }}
+                >
+                  <Text
+                    variant="caption"
+                    style={{ color: "#6050DC", fontWeight: "700" }}
+                  >
+                    {tools.length}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+
+            <View className="px-6">
+              {tools.length === 0 ? (
+                <View className="py-4">
+                  <Text variant="caption">{t("events.detail.noTools")}</Text>
+                </View>
+              ) : (
+                tools.map((tl) => (
+                  <ToolCard
+                    key={tl.event_tool_id}
+                    tool={tl}
+                    iconUri={toolIconByCode.get(tl.event_tool_type_code) ?? null}
+                  />
+                ))
+              )}
+            </View>
+          </ScrollView>
+        </>
+      )}
+
+      {event && isAdmin ? (
+        <FAB
+          onPress={() => setNewToolOpen(true)}
+          accessibilityLabel={t("events.detail.addTool")}
+        />
+      ) : null}
+
+      {event ? (
+        <NewToolModal
+          visible={newToolOpen}
+          eventId={event.event_id}
+          toolTypes={toolTypes}
+          onClose={() => setNewToolOpen(false)}
+          onCreated={(tl) => setTools((prev) => [...prev, tl])}
+        />
+      ) : null}
+    </View>
+  );
+}
