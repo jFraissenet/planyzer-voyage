@@ -9,6 +9,7 @@ export type Event = {
   event_creator_id: string;
   event_created_at: string;
   event_updated_at: string;
+  my_role?: string;
 };
 
 export type CreateEventInput = {
@@ -26,20 +27,27 @@ async function requireUserId(): Promise<string> {
   return user.id;
 }
 
-async function participationEventIds(
+async function participationRoleMap(
   userId: string,
   archived: boolean,
-): Promise<string[]> {
+): Promise<Map<string, string>> {
   let q = supabase
     .from("event_participants")
-    .select("event_participant_event_id")
+    .select("event_participant_event_id, event_participant_role_code")
     .eq("event_participant_user_id", userId);
   q = archived
     ? q.not("event_participant_archived_at", "is", null)
     : q.is("event_participant_archived_at", null);
   const { data, error } = await q;
   if (error) throw error;
-  return (data ?? []).map((r) => r.event_participant_event_id as string);
+  const map = new Map<string, string>();
+  for (const r of data ?? []) {
+    map.set(
+      r.event_participant_event_id as string,
+      r.event_participant_role_code as string,
+    );
+  }
+  return map;
 }
 
 export async function createEvent(input: CreateEventInput): Promise<Event> {
@@ -59,36 +67,40 @@ export async function createEvent(input: CreateEventInput): Promise<Event> {
   return data as Event;
 }
 
+function attachRoles(events: Event[], roleMap: Map<string, string>): Event[] {
+  return events.map((e) => ({ ...e, my_role: roleMap.get(e.event_id) }));
+}
+
 export async function listMyEvents(opts?: {
   archived?: boolean;
 }): Promise<Event[]> {
   const userId = await requireUserId();
-  const ids = await participationEventIds(userId, opts?.archived ?? false);
-  if (ids.length === 0) return [];
+  const roleMap = await participationRoleMap(userId, opts?.archived ?? false);
+  if (roleMap.size === 0) return [];
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .in("event_id", ids)
+    .in("event_id", Array.from(roleMap.keys()))
     .eq("event_creator_id", userId)
     .order("event_start_date", { ascending: true, nullsFirst: false });
   if (error) throw error;
-  return (data ?? []) as Event[];
+  return attachRoles((data ?? []) as Event[], roleMap);
 }
 
 export async function listSharedEvents(opts?: {
   archived?: boolean;
 }): Promise<Event[]> {
   const userId = await requireUserId();
-  const ids = await participationEventIds(userId, opts?.archived ?? false);
-  if (ids.length === 0) return [];
+  const roleMap = await participationRoleMap(userId, opts?.archived ?? false);
+  if (roleMap.size === 0) return [];
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .in("event_id", ids)
+    .in("event_id", Array.from(roleMap.keys()))
     .neq("event_creator_id", userId)
     .order("event_start_date", { ascending: true, nullsFirst: false });
   if (error) throw error;
-  return (data ?? []) as Event[];
+  return attachRoles((data ?? []) as Event[], roleMap);
 }
 
 export async function archiveEvent(eventId: string): Promise<void> {
@@ -115,6 +127,24 @@ export async function deleteEvent(eventId: string): Promise<void> {
   const { error } = await supabase
     .from("events")
     .delete()
+    .eq("event_id", eventId);
+  if (error) throw error;
+}
+
+export type UpdateEventInput = {
+  event_title?: string;
+  event_description?: string | null;
+  event_start_date?: string | null;
+  event_end_date?: string | null;
+};
+
+export async function updateEvent(
+  eventId: string,
+  input: UpdateEventInput,
+): Promise<void> {
+  const { error } = await supabase
+    .from("events")
+    .update(input)
     .eq("event_id", eventId);
   if (error) throw error;
 }

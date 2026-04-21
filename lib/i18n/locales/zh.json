@@ -84,6 +84,14 @@
       "loading": "加载中..."
     },
     "showArchived": "显示已归档",
+    "edit": {
+      "title": "编辑活动",
+      "subtitle": "更新活动信息",
+      "submit": "保存",
+      "submitting": "保存中...",
+      "errorGeneric": "保存失败",
+      "action": "编辑"
+    },
     "newTool": {
       "title": "新建工具",
       "typeLabel": "工具类型",
@@ -161,6 +169,59 @@
     "restrictedWarningCTA": "立即邀请",
     "publicInfoTitle": "活动全体成员可见",
     "publicInfoBody": "活动的所有参与者都能看到并使用此工具。"
+  },
+  "money": {
+    "tabs": {
+      "expenses": "账目",
+      "breakdown": "分摊"
+    },
+    "empty": "暂无账目",
+    "add": "新建账目",
+    "edit": "编辑账目",
+    "paidBy": "{{name}} 付款",
+    "labelField": "名称",
+    "labelPlaceholder": "啤酒、酒店、采购……",
+    "amountField": "金额",
+    "amountPlaceholder": "0.00",
+    "paidByField": "付款人",
+    "selectPayer": "选择付款人",
+    "sharesSection": "分摊",
+    "mode": {
+      "equal": "平分",
+      "percent": "%",
+      "amount": "€"
+    },
+    "errorLabelRequired": "请输入名称",
+    "errorAmountRequired": "金额必须大于 0",
+    "errorPayerRequired": "请选择付款人",
+    "errorPercentOver": "百分比之和超过 100%",
+    "errorAmountOver": "分摊金额之和超过总额",
+    "errorNoEqualLeft": "至少要有一份保持平分或覆盖总额",
+    "errorGeneric": "保存失败",
+    "save": "保存",
+    "saving": "保存中...",
+    "create": "创建",
+    "creating": "创建中...",
+    "delete": "删除",
+    "deleteConfirm": "删除此账目？",
+    "cancel": "取消",
+    "totals": {
+      "pot": "总支出",
+      "paid": "我垫付",
+      "share": "我应付"
+    },
+    "breakdown": {
+      "filterLabel": "显示",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "paid": "垫付",
+      "owed": "应付",
+      "balance": "结余",
+      "settleTitle": "谁还给谁",
+      "settleRow": "{{from}} → {{to}}：{{amount}}",
+      "settleEmpty": "所有账目已结清 🎉",
+      "empty": "暂无可分摊的账目"
+    }
   },
   "notes": {
     "addPlaceholder": "添加笔记……",

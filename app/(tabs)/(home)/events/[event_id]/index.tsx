@@ -10,6 +10,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SvgUri } from "react-native-svg";
+import { EditEventModal } from "@/components/EditEventModal";
 import { InviteModal } from "@/components/InviteModal";
 import { Button, Card, FAB, Input, ScreenHeader, Text } from "@/components/ui";
 import {
@@ -327,6 +328,7 @@ export default function EventDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [newToolOpen, setNewToolOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const refreshParticipantCount = useCallback(async () => {
     if (!event_id) return;
@@ -410,6 +412,9 @@ export default function EventDetailScreen() {
             title={event.event_title}
             subtitle={range ?? undefined}
             onBack={goBack}
+            onAction={isAdmin ? () => setEditOpen(true) : undefined}
+            actionIcon={isAdmin ? "pencil" : undefined}
+            actionLabel={t("events.edit.action")}
           />
           <ScrollView contentContainerStyle={{ paddingBottom: 120, paddingTop: 20 }}>
             {event.event_description ? (
@@ -525,6 +530,16 @@ export default function EventDetailScreen() {
           onChanged={refreshParticipantCount}
         />
       ) : null}
+
+      <EditEventModal
+        visible={editOpen}
+        event={event}
+        onClose={() => setEditOpen(false)}
+        onSaved={() => {
+          setEditOpen(false);
+          load();
+        }}
+      />
     </View>
   );
 }

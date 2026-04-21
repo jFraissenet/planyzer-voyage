@@ -84,6 +84,14 @@
       "loading": "Loading..."
     },
     "showArchived": "Show archived",
+    "edit": {
+      "title": "Edit event",
+      "subtitle": "Update your event info",
+      "submit": "Save",
+      "submitting": "Saving...",
+      "errorGeneric": "Error while saving",
+      "action": "Edit"
+    },
     "newTool": {
       "title": "New tool",
       "typeLabel": "Tool type",
@@ -162,6 +170,59 @@
     "restrictedWarningCTA": "Invite now",
     "publicInfoTitle": "Open to everyone",
     "publicInfoBody": "All event participants can see and use this tool."
+  },
+  "money": {
+    "tabs": {
+      "expenses": "Expenses",
+      "breakdown": "Breakdown"
+    },
+    "empty": "No expenses yet",
+    "add": "New expense",
+    "edit": "Edit expense",
+    "paidBy": "Paid by {{name}}",
+    "labelField": "Label",
+    "labelPlaceholder": "Beers, Hotel, Groceries…",
+    "amountField": "Amount",
+    "amountPlaceholder": "0.00",
+    "paidByField": "Paid by",
+    "selectPayer": "Select a payer",
+    "sharesSection": "Split",
+    "mode": {
+      "equal": "Equal",
+      "percent": "%",
+      "amount": "€"
+    },
+    "errorLabelRequired": "Label is required",
+    "errorAmountRequired": "Amount must be greater than 0",
+    "errorPayerRequired": "Select who paid",
+    "errorPercentOver": "Percentages exceed 100%",
+    "errorAmountOver": "Shares sum exceeds total",
+    "errorNoEqualLeft": "At least one share must stay Equal or cover the total",
+    "errorGeneric": "Error while saving",
+    "save": "Save",
+    "saving": "Saving...",
+    "create": "Create",
+    "creating": "Creating...",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this expense?",
+    "cancel": "Cancel",
+    "totals": {
+      "pot": "Pot total",
+      "paid": "I paid",
+      "share": "My share"
+    },
+    "breakdown": {
+      "filterLabel": "Show",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "paid": "Paid",
+      "owed": "Share",
+      "balance": "Balance",
+      "settleTitle": "Who pays whom",
+      "settleRow": "{{from}} → {{to}}: {{amount}}",
+      "settleEmpty": "Everything is settled 🎉",
+      "empty": "No expenses to split yet"
+    }
   },
   "notes": {
     "addPlaceholder": "Add a note…",

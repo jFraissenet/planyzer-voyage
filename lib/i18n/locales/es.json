@@ -84,6 +84,14 @@
       "loading": "Cargando..."
     },
     "showArchived": "Mostrar archivados",
+    "edit": {
+      "title": "Editar evento",
+      "subtitle": "Actualiza la información de tu evento",
+      "submit": "Guardar",
+      "submitting": "Guardando...",
+      "errorGeneric": "Error al guardar",
+      "action": "Editar"
+    },
     "newTool": {
       "title": "Nueva herramienta",
       "typeLabel": "Tipo de herramienta",
@@ -162,6 +170,59 @@
     "restrictedWarningCTA": "Invitar ahora",
     "publicInfoTitle": "Abierta a todo el evento",
     "publicInfoBody": "Todos los participantes del evento pueden ver y usar esta herramienta."
+  },
+  "money": {
+    "tabs": {
+      "expenses": "Gastos",
+      "breakdown": "Reparto"
+    },
+    "empty": "Aún no hay gastos",
+    "add": "Nuevo gasto",
+    "edit": "Editar gasto",
+    "paidBy": "Pagado por {{name}}",
+    "labelField": "Concepto",
+    "labelPlaceholder": "Cervezas, Hotel, Compra…",
+    "amountField": "Importe",
+    "amountPlaceholder": "0,00",
+    "paidByField": "Pagado por",
+    "selectPayer": "Selecciona quién pagó",
+    "sharesSection": "Reparto",
+    "mode": {
+      "equal": "Igual",
+      "percent": "%",
+      "amount": "€"
+    },
+    "errorLabelRequired": "El concepto es obligatorio",
+    "errorAmountRequired": "El importe debe ser mayor que 0",
+    "errorPayerRequired": "Elige quién pagó",
+    "errorPercentOver": "Los porcentajes superan el 100%",
+    "errorAmountOver": "La suma de partes supera el total",
+    "errorNoEqualLeft": "Al menos una parte debe quedar Igual o cubrir el total",
+    "errorGeneric": "Error al guardar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "create": "Crear",
+    "creating": "Creando...",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este gasto?",
+    "cancel": "Cancelar",
+    "totals": {
+      "pot": "Total común",
+      "paid": "He adelantado",
+      "share": "Mi parte"
+    },
+    "breakdown": {
+      "filterLabel": "Mostrar",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "paid": "Adelantado",
+      "owed": "Parte",
+      "balance": "Saldo",
+      "settleTitle": "Quién paga a quién",
+      "settleRow": "{{from}} → {{to}}: {{amount}}",
+      "settleEmpty": "Todo está saldado 🎉",
+      "empty": "Aún no hay gastos que repartir"
+    }
   },
   "notes": {
     "addPlaceholder": "Añadir una nota…",

@@ -84,6 +84,14 @@
       "loading": "Chargement..."
     },
     "showArchived": "Afficher archivés",
+    "edit": {
+      "title": "Modifier l'événement",
+      "subtitle": "Mets à jour les infos de ton événement",
+      "submit": "Enregistrer",
+      "submitting": "Enregistrement...",
+      "errorGeneric": "Erreur lors de la modification",
+      "action": "Modifier"
+    },
     "newTool": {
       "title": "Nouvel outil",
       "typeLabel": "Type d'outil",
@@ -162,6 +170,59 @@
     "restrictedWarningCTA": "Inviter maintenant",
     "publicInfoTitle": "Ouvert à tout l'événement",
     "publicInfoBody": "Tous les participants de l'événement peuvent voir et utiliser cet outil."
+  },
+  "money": {
+    "tabs": {
+      "expenses": "Dépenses",
+      "breakdown": "Répartition"
+    },
+    "empty": "Aucune dépense pour l'instant",
+    "add": "Nouvelle dépense",
+    "edit": "Modifier la dépense",
+    "paidBy": "Payé par {{name}}",
+    "labelField": "Intitulé",
+    "labelPlaceholder": "Bières, Hôtel, Courses…",
+    "amountField": "Montant",
+    "amountPlaceholder": "0,00",
+    "paidByField": "Payé par",
+    "selectPayer": "Sélectionne un payeur",
+    "sharesSection": "Répartition",
+    "mode": {
+      "equal": "Égal",
+      "percent": "%",
+      "amount": "€"
+    },
+    "errorLabelRequired": "L'intitulé est requis",
+    "errorAmountRequired": "Le montant doit être supérieur à 0",
+    "errorPayerRequired": "Choisis qui a payé",
+    "errorPercentOver": "Les pourcentages dépassent 100%",
+    "errorAmountOver": "La somme des parts dépasse le total",
+    "errorNoEqualLeft": "Une part au moins doit rester en Égal ou combler le total",
+    "errorGeneric": "Erreur lors de l'enregistrement",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "create": "Créer",
+    "creating": "Création...",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette dépense ?",
+    "cancel": "Annuler",
+    "totals": {
+      "pot": "Total du pot",
+      "paid": "J'ai avancé",
+      "share": "Ma part"
+    },
+    "breakdown": {
+      "filterLabel": "Afficher",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "paid": "Avancé",
+      "owed": "Part",
+      "balance": "Solde",
+      "settleTitle": "Qui rembourse qui",
+      "settleRow": "{{from}} → {{to}} : {{amount}}",
+      "settleEmpty": "Tout est équilibré 🎉",
+      "empty": "Aucune dépense à répartir pour l'instant"
+    }
   },
   "notes": {
     "addPlaceholder": "Ajouter une note…",

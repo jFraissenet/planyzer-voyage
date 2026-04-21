@@ -3,13 +3,25 @@ import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "./Text";
 
+type IconName = React.ComponentProps<typeof Ionicons>["name"];
+
 interface Props {
   title: string;
   subtitle?: string;
   onBack?: () => void;
+  onAction?: () => void;
+  actionIcon?: IconName;
+  actionLabel?: string;
 }
 
-export function ScreenHeader({ title, subtitle, onBack }: Props) {
+export function ScreenHeader({
+  title,
+  subtitle,
+  onBack,
+  onAction,
+  actionIcon,
+  actionLabel,
+}: Props) {
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -56,7 +68,25 @@ export function ScreenHeader({ title, subtitle, onBack }: Props) {
         >
           {title}
         </Text>
-        <View style={{ width: 36 }} />
+        {onAction && actionIcon ? (
+          <Pressable
+            onPress={onAction}
+            hitSlop={10}
+            accessibilityLabel={actionLabel ?? "Action"}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: "rgba(26,26,26,0.08)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name={actionIcon} size={20} color="#1A1A1A" />
+          </Pressable>
+        ) : (
+          <View style={{ width: 36 }} />
+        )}
       </View>
       {subtitle ? (
         <Text

@@ -9,9 +9,11 @@ import {
   Switch,
   View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
+import { EditEventModal } from "@/components/EditEventModal";
 import { NewEventModal } from "@/components/NewEventModal";
 import { Card, FAB, ScreenHeader, Text } from "@/components/ui";
 import {
@@ -45,12 +47,14 @@ function EventRow({
   archivedMode,
   onArchive,
   onUnarchive,
+  onEdit,
 }: {
   event: Event;
   locale: string;
   archivedMode: boolean;
   onArchive: (eventId: string) => void;
   onUnarchive: (eventId: string) => void;
+  onEdit: (event: Event) => void;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -84,6 +88,7 @@ function EventRow({
   const handleAction = archivedMode
     ? () => onUnarchive(event.event_id)
     : requestArchive;
+  const isAdmin = event.my_role === "admin";
 
   return (
     <Card
@@ -110,14 +115,31 @@ function EventRow({
               </Text>
             ) : null}
           </View>
-          <Pressable
-            onPress={handleAction}
-            accessibilityLabel={actionLabel}
-            className="px-2 py-1 -mr-1"
-            hitSlop={8}
-          >
-            <Text variant="caption">{actionLabel}</Text>
-          </Pressable>
+          <View className="flex-row items-center" style={{ gap: 6 }}>
+            {isAdmin ? (
+              <Pressable
+                onPress={() => onEdit(event)}
+                accessibilityLabel={t("events.edit.action")}
+                hitSlop={8}
+                className="items-center justify-center rounded-full"
+                style={{
+                  width: 36,
+                  height: 36,
+                  backgroundColor: "#EEECFC",
+                }}
+              >
+                <Ionicons name="pencil" size={18} color="#6050DC" />
+              </Pressable>
+            ) : null}
+            <Pressable
+              onPress={handleAction}
+              accessibilityLabel={actionLabel}
+              className="px-2 py-1"
+              hitSlop={8}
+            >
+              <Text variant="caption">{actionLabel}</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Card>
@@ -132,6 +154,7 @@ function Section({
   archivedMode,
   onArchive,
   onUnarchive,
+  onEdit,
 }: {
   title: string;
   events: Event[];
@@ -140,6 +163,7 @@ function Section({
   archivedMode: boolean;
   onArchive: (eventId: string) => void;
   onUnarchive: (eventId: string) => void;
+  onEdit: (event: Event) => void;
 }) {
   const [open, setOpen] = useState(true);
   return (
@@ -182,6 +206,7 @@ function Section({
               archivedMode={archivedMode}
               onArchive={onArchive}
               onUnarchive={onUnarchive}
+              onEdit={onEdit}
             />
           ))
         )
@@ -194,6 +219,7 @@ export default function EventsScreen() {
   const { t, i18n } = useTranslation();
   const [showArchived, setShowArchived] = useState(false);
   const [newEventOpen, setNewEventOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [mine, setMine] = useState<Event[]>([]);
   const [shared, setShared] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -303,6 +329,7 @@ export default function EventsScreen() {
             archivedMode={showArchived}
             onArchive={handleArchive}
             onUnarchive={handleUnarchive}
+            onEdit={setEditingEvent}
           />
           <Section
             title={t("events.sections.shared")}
@@ -312,6 +339,7 @@ export default function EventsScreen() {
             archivedMode={showArchived}
             onArchive={handleArchive}
             onUnarchive={handleUnarchive}
+            onEdit={setEditingEvent}
           />
         </ScrollView>
       )}
@@ -324,6 +352,15 @@ export default function EventsScreen() {
         onClose={() => setNewEventOpen(false)}
         onCreated={() => {
           setNewEventOpen(false);
+          load();
+        }}
+      />
+      <EditEventModal
+        visible={!!editingEvent}
+        event={editingEvent}
+        onClose={() => setEditingEvent(null)}
+        onSaved={() => {
+          setEditingEvent(null);
           load();
         }}
       />
