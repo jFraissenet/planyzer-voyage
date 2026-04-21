@@ -8,7 +8,7 @@ import {
   type EffectiveMember,
   type Expense,
 } from "@/lib/expenses";
-import { firstName, initialsOf } from "./shared";
+import { firstName, initialsOf, useIsMobile } from "./shared";
 
 function ExpenseRow({
   expense,
@@ -18,6 +18,7 @@ function ExpenseRow({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   return (
     <Card
       pressable
@@ -41,7 +42,15 @@ function ExpenseRow({
           </Text>
         </View>
         <View className="flex-1 pr-2">
-          <Text variant="h3" numberOfLines={1}>
+          <Text
+            numberOfLines={isMobile ? 2 : 1}
+            style={{
+              color: "#1A1A1A",
+              fontSize: isMobile ? 15 : 18,
+              fontWeight: "700",
+              lineHeight: isMobile ? 19 : 24,
+            }}
+          >
             {expense.label}
           </Text>
           <Text variant="caption" className="mt-0.5">
@@ -51,10 +60,9 @@ function ExpenseRow({
           </Text>
         </View>
         <Text
-          variant="label"
           style={{
             color: "#1A1A1A",
-            fontSize: 16,
+            fontSize: isMobile ? 15 : 17,
             fontWeight: "800",
           }}
         >

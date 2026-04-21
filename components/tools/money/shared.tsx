@@ -1,5 +1,13 @@
-import { View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useWindowDimensions, View } from "react-native";
 import { Avatar, Text } from "@/components/ui";
+
+const MOBILE_BREAKPOINT = 640;
+
+export function useIsMobile(): boolean {
+  const { width } = useWindowDimensions();
+  return width < MOBILE_BREAKPOINT;
+}
 
 export function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -31,6 +39,26 @@ export function SectionLabel({ children }: { children: string }) {
     >
       {children}
     </Text>
+  );
+}
+
+export function TransferArrow({ size = 22 }: { size?: number }) {
+  return (
+    <View
+      className="items-center justify-center"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: "#EEECFC",
+      }}
+    >
+      <Ionicons
+        name="arrow-forward"
+        size={Math.round(size * 0.55)}
+        color="#6050DC"
+      />
+    </View>
   );
 }
 

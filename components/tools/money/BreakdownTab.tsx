@@ -12,7 +12,7 @@ import {
   type Expense,
   type Settlement,
 } from "@/lib/expenses";
-import { firstName, initialsOf } from "./shared";
+import { firstName, initialsOf, TransferArrow, useIsMobile } from "./shared";
 
 export function BreakdownTab({
   expenses,
@@ -30,6 +30,7 @@ export function BreakdownTab({
   onChanged: () => void;
 }) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(members.map((m) => m.user_id)),
   );
@@ -77,12 +78,16 @@ export function BreakdownTab({
     };
     if (Platform.OS === "web") {
       // eslint-disable-next-line no-alert
-      if (window.confirm(t("money.breakdown.recordedDelete"))) void doDelete();
+      if (window.confirm(msg)) void doDelete();
       return;
     }
     Alert.alert(msg, undefined, [
       { text: t("settle.cancel"), style: "cancel" },
-      { text: t("money.delete"), style: "destructive", onPress: () => void doDelete() },
+      {
+        text: t("money.delete"),
+        style: "destructive",
+        onPress: () => void doDelete(),
+      },
     ]);
   };
 
@@ -126,9 +131,7 @@ export function BreakdownTab({
         <Pressable
           onPress={bulkToggle}
           className="px-3 py-1.5 rounded-full"
-          style={{
-            backgroundColor: allSelected ? "#6050DC" : "#EEECFC",
-          }}
+          style={{ backgroundColor: allSelected ? "#6050DC" : "#EEECFC" }}
         >
           <Text
             variant="label"
@@ -186,6 +189,9 @@ export function BreakdownTab({
             : negative
               ? "#EF4444"
               : "#525252";
+          const displayName = isMobile
+            ? firstName(m?.full_name ?? null)
+            : (m?.full_name ?? "?");
           return (
             <Card key={b.user_id} className="mb-3">
               <View className="flex-row items-center">
@@ -195,27 +201,47 @@ export function BreakdownTab({
                   size="md"
                   className="mr-3"
                 />
-                <View className="flex-1">
-                  <Text variant="h3">{m?.full_name ?? "?"}</Text>
-                  <View className="flex-row mt-1" style={{ gap: 12 }}>
-                    <Text variant="caption">
+                <View className="flex-1 pr-2">
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      color: "#1A1A1A",
+                      fontSize: isMobile ? 15 : 18,
+                      fontWeight: "700",
+                    }}
+                  >
+                    {displayName}
+                  </Text>
+                  <View
+                    className="flex-row mt-1"
+                    style={{ gap: isMobile ? 10 : 14 }}
+                  >
+                    <Text
+                      variant="caption"
+                      style={{ fontSize: isMobile ? 11 : 13 }}
+                    >
                       {t("money.breakdown.paid")} · {formatAmount(b.paid)}
                     </Text>
-                    <Text variant="caption">
+                    <Text
+                      variant="caption"
+                      style={{ fontSize: isMobile ? 11 : 13 }}
+                    >
                       {t("money.breakdown.owed")} · {formatAmount(b.owed)}
                     </Text>
                   </View>
                 </View>
                 <View className="items-end">
-                  <Text variant="caption" style={{ fontSize: 11 }}>
+                  <Text
+                    variant="caption"
+                    style={{ fontSize: isMobile ? 10 : 11 }}
+                  >
                     {t("money.breakdown.balance")}
                   </Text>
                   <Text
-                    variant="label"
                     style={{
                       color: balanceColor,
                       fontWeight: "800",
-                      fontSize: 16,
+                      fontSize: isMobile ? 15 : 17,
                     }}
                   >
                     {balance > 0 ? "+" : ""}
@@ -255,54 +281,159 @@ export function BreakdownTab({
           {visibleSuggestions.map((s, idx) => {
             const from = memberById.get(s.from);
             const to = memberById.get(s.to);
-            return (
-              <View
-                key={`${s.from}-${s.to}-${idx}`}
-                className="flex-row items-center px-4 py-3"
-                style={{
-                  borderBottomWidth:
-                    idx < visibleSuggestions.length - 1 ? 1 : 0,
-                  borderBottomColor: "#F2EDE4",
-                }}
-              >
-                <Avatar
-                  src={from?.avatar_url ?? undefined}
-                  initials={initialsOf(from?.full_name ?? null)}
-                  size="sm"
-                  className="mr-2"
-                />
-                <Text className="mx-1">→</Text>
-                <Avatar
-                  src={to?.avatar_url ?? undefined}
-                  initials={initialsOf(to?.full_name ?? null)}
-                  size="sm"
-                  className="mr-3"
-                />
-                <View className="flex-1">
-                  <Text numberOfLines={1}>
-                    {firstName(from?.full_name ?? null)}{" "}
-                    <Text variant="caption">→</Text>{" "}
-                    {firstName(to?.full_name ?? null)}
-                  </Text>
+            const fromName = firstName(from?.full_name ?? null);
+            const toName = firstName(to?.full_name ?? null);
+            const isLast = idx === visibleSuggestions.length - 1;
+
+            if (!isMobile) {
+              return (
+                <View
+                  key={`${s.from}-${s.to}-${idx}`}
+                  className="flex-row items-center px-5 py-4"
+                  style={{
+                    borderBottomWidth: isLast ? 0 : 1,
+                    borderBottomColor: "#F2EDE4",
+                    gap: 16,
+                  }}
+                >
+                  <View
+                    className="flex-row items-center"
+                    style={{ flex: 1, gap: 12 }}
+                  >
+                    <Avatar
+                      src={from?.avatar_url ?? undefined}
+                      initials={initialsOf(from?.full_name ?? null)}
+                      size="sm"
+                    />
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "600",
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      {fromName}
+                    </Text>
+                  </View>
+                  <TransferArrow size={26} />
+                  <View
+                    className="flex-row items-center"
+                    style={{ flex: 1, gap: 12 }}
+                  >
+                    <Avatar
+                      src={to?.avatar_url ?? undefined}
+                      initials={initialsOf(to?.full_name ?? null)}
+                      size="sm"
+                    />
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "600",
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      {toName}
+                    </Text>
+                  </View>
                   <Text
-                    variant="label"
-                    style={{ color: "#1A1A1A", fontWeight: "800" }}
+                    style={{
+                      minWidth: 96,
+                      textAlign: "right",
+                      color: "#1A1A1A",
+                      fontSize: 16,
+                      fontWeight: "800",
+                    }}
                   >
                     {formatAmount(s.amount)}
                   </Text>
-                </View>
-                <Pressable
-                  onPress={() => onSettle(s.from, s.to, s.amount)}
-                  className="px-3 py-1.5 rounded-full"
-                  style={{ backgroundColor: "#EEECFC" }}
-                >
-                  <Text
-                    variant="label"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
+                  <Pressable
+                    onPress={() => onSettle(s.from, s.to, s.amount)}
+                    className="px-3 py-1.5 rounded-full"
+                    style={{ backgroundColor: "#EEECFC" }}
                   >
-                    {t("money.breakdown.settleAction")}
+                    <Text
+                      variant="label"
+                      style={{ color: "#6050DC", fontWeight: "700" }}
+                    >
+                      {t("money.breakdown.settleAction")}
+                    </Text>
+                  </Pressable>
+                </View>
+              );
+            }
+
+            return (
+              <View
+                key={`${s.from}-${s.to}-${idx}`}
+                className="px-4 py-3"
+                style={{
+                  borderBottomWidth: isLast ? 0 : 1,
+                  borderBottomColor: "#F2EDE4",
+                  gap: 8,
+                }}
+              >
+                <View className="flex-row items-center" style={{ gap: 8 }}>
+                  <Avatar
+                    src={from?.avatar_url ?? undefined}
+                    initials={initialsOf(from?.full_name ?? null)}
+                    size="sm"
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      flex: 1,
+                      color: "#1A1A1A",
+                      fontSize: 14,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {fromName}
                   </Text>
-                </Pressable>
+                  <TransferArrow />
+                  <Avatar
+                    src={to?.avatar_url ?? undefined}
+                    initials={initialsOf(to?.full_name ?? null)}
+                    size="sm"
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      flex: 1,
+                      color: "#1A1A1A",
+                      fontSize: 14,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {toName}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <Text
+                    style={{
+                      color: "#1A1A1A",
+                      fontSize: 15,
+                      fontWeight: "800",
+                    }}
+                  >
+                    {formatAmount(s.amount)}
+                  </Text>
+                  <Pressable
+                    onPress={() => onSettle(s.from, s.to, s.amount)}
+                    className="px-3 py-1.5 rounded-full"
+                    style={{ backgroundColor: "#EEECFC" }}
+                  >
+                    <Text
+                      variant="label"
+                      style={{ color: "#6050DC", fontWeight: "700" }}
+                    >
+                      {t("money.breakdown.settleAction")}
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             );
           })}
@@ -327,60 +458,177 @@ export function BreakdownTab({
           className="rounded-2xl p-4"
           style={{ backgroundColor: "#F2EDE4" }}
         >
-          <Text variant="caption">
-            {t("money.breakdown.recordedEmpty")}
-          </Text>
+          <Text variant="caption">{t("money.breakdown.recordedEmpty")}</Text>
         </View>
       ) : (
         <Card className="p-0 overflow-hidden">
           {visibleSettlements.map((s, idx) => {
             const from = memberById.get(s.from_user_id);
             const to = memberById.get(s.to_user_id);
+            const fromName = firstName(
+              from?.full_name ?? s.from_full_name ?? null,
+            );
+            const toName = firstName(
+              to?.full_name ?? s.to_full_name ?? null,
+            );
             const canDelete = s.created_by === currentUserId;
+            const isLast = idx === visibleSettlements.length - 1;
+
+            if (!isMobile) {
+              return (
+                <View
+                  key={s.settlement_id ?? idx}
+                  className="flex-row items-center px-5 py-4"
+                  style={{
+                    borderBottomWidth: isLast ? 0 : 1,
+                    borderBottomColor: "#F2EDE4",
+                    gap: 16,
+                  }}
+                >
+                  <View
+                    className="flex-row items-center"
+                    style={{ flex: 1, gap: 12 }}
+                  >
+                    <Avatar
+                      src={from?.avatar_url ?? s.from_avatar_url ?? undefined}
+                      initials={initialsOf(
+                        from?.full_name ?? s.from_full_name ?? null,
+                      )}
+                      size="sm"
+                    />
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "600",
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      {fromName}
+                    </Text>
+                  </View>
+                  <TransferArrow size={26} />
+                  <View
+                    className="flex-row items-center"
+                    style={{ flex: 1, gap: 12 }}
+                  >
+                    <Avatar
+                      src={to?.avatar_url ?? s.to_avatar_url ?? undefined}
+                      initials={initialsOf(
+                        to?.full_name ?? s.to_full_name ?? null,
+                      )}
+                      size="sm"
+                    />
+                    <Text
+                      numberOfLines={1}
+                      style={{
+                        flex: 1,
+                        fontSize: 15,
+                        fontWeight: "600",
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      {toName}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      minWidth: 96,
+                      textAlign: "right",
+                      color: "#1A1A1A",
+                      fontSize: 16,
+                      fontWeight: "800",
+                    }}
+                  >
+                    {formatAmount(s.amount)}
+                  </Text>
+                  {canDelete ? (
+                    <Pressable
+                      onPress={() => confirmDeleteSettlement(s)}
+                      hitSlop={8}
+                      className="items-center justify-center"
+                      style={{ width: 32, height: 32 }}
+                    >
+                      <Ionicons name="close" size={18} color="#A3A3A3" />
+                    </Pressable>
+                  ) : (
+                    <View style={{ width: 32 }} />
+                  )}
+                </View>
+              );
+            }
+
             return (
               <View
                 key={s.settlement_id ?? idx}
-                className="flex-row items-center px-4 py-3"
+                className="px-4 py-3"
                 style={{
-                  borderBottomWidth:
-                    idx < visibleSettlements.length - 1 ? 1 : 0,
+                  borderBottomWidth: isLast ? 0 : 1,
                   borderBottomColor: "#F2EDE4",
+                  gap: 8,
                 }}
               >
-                <Avatar
-                  src={from?.avatar_url ?? s.from_avatar_url ?? undefined}
-                  initials={initialsOf(
-                    from?.full_name ?? s.from_full_name ?? null,
-                  )}
-                  size="sm"
-                  className="mr-2"
-                />
-                <Text className="mx-1">→</Text>
-                <Avatar
-                  src={to?.avatar_url ?? s.to_avatar_url ?? undefined}
-                  initials={initialsOf(
-                    to?.full_name ?? s.to_full_name ?? null,
-                  )}
-                  size="sm"
-                  className="mr-3"
-                />
-                <Text
-                  variant="label"
-                  className="flex-1"
-                  style={{ color: "#1A1A1A", fontWeight: "700" }}
-                >
-                  {formatAmount(s.amount)}
-                </Text>
-                {canDelete ? (
-                  <Pressable
-                    onPress={() => confirmDeleteSettlement(s)}
-                    hitSlop={8}
-                    className="items-center justify-center"
-                    style={{ width: 32, height: 32 }}
+                <View className="flex-row items-center" style={{ gap: 8 }}>
+                  <Avatar
+                    src={from?.avatar_url ?? s.from_avatar_url ?? undefined}
+                    initials={initialsOf(
+                      from?.full_name ?? s.from_full_name ?? null,
+                    )}
+                    size="sm"
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      flex: 1,
+                      color: "#1A1A1A",
+                      fontSize: 14,
+                      fontWeight: "600",
+                    }}
                   >
-                    <Ionicons name="close" size={18} color="#A3A3A3" />
-                  </Pressable>
-                ) : null}
+                    {fromName}
+                  </Text>
+                  <TransferArrow />
+                  <Avatar
+                    src={to?.avatar_url ?? s.to_avatar_url ?? undefined}
+                    initials={initialsOf(
+                      to?.full_name ?? s.to_full_name ?? null,
+                    )}
+                    size="sm"
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      flex: 1,
+                      color: "#1A1A1A",
+                      fontSize: 14,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {toName}
+                  </Text>
+                </View>
+                <View className="flex-row items-center justify-between">
+                  <Text
+                    style={{
+                      color: "#1A1A1A",
+                      fontSize: 15,
+                      fontWeight: "800",
+                    }}
+                  >
+                    {formatAmount(s.amount)}
+                  </Text>
+                  {canDelete ? (
+                    <Pressable
+                      onPress={() => confirmDeleteSettlement(s)}
+                      hitSlop={8}
+                      className="items-center justify-center"
+                      style={{ width: 32, height: 32 }}
+                    >
+                      <Ionicons name="close" size={18} color="#A3A3A3" />
+                    </Pressable>
+                  ) : null}
+                </View>
               </View>
             );
           })}
