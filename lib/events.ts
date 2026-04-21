@@ -140,6 +140,35 @@ export type EventTool = {
   event_tool_updated_at: string;
 };
 
+export async function getEventTool(toolId: string): Promise<EventTool | null> {
+  const { data, error } = await supabase
+    .from("event_tools")
+    .select("*")
+    .eq("event_tool_id", toolId)
+    .maybeSingle();
+  if (error) throw error;
+  return data as EventTool | null;
+}
+
+export async function getToolParticipantCount(
+  tool: EventTool,
+): Promise<number> {
+  if (tool.event_tool_visibility === "all") {
+    const { count, error } = await supabase
+      .from("event_participants")
+      .select("*", { count: "exact", head: true })
+      .eq("event_participant_event_id", tool.event_tool_event_id);
+    if (error) throw error;
+    return count ?? 0;
+  }
+  const { count, error } = await supabase
+    .from("event_tool_members")
+    .select("*", { count: "exact", head: true })
+    .eq("event_tool_member_event_tool_id", tool.event_tool_id);
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function listEventTools(eventId: string): Promise<EventTool[]> {
   const { data, error } = await supabase
     .from("event_tools")
@@ -176,6 +205,120 @@ export async function getMyEventRole(eventId: string): Promise<string | null> {
     .maybeSingle();
   if (error) throw error;
   return (data?.event_participant_role_code as string) ?? null;
+}
+
+export type UserSearchResult = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+};
+
+export async function searchUsers(query: string): Promise<UserSearchResult[]> {
+  if (query.trim().length < 2) return [];
+  const { data, error } = await supabase.rpc("search_users", {
+    p_query: query,
+  });
+  if (error) throw error;
+  return (data ?? []) as UserSearchResult[];
+}
+
+export type ParticipantEntry = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role_code: string;
+  joined_at: string;
+};
+
+export async function listParticipants(
+  eventId: string,
+): Promise<ParticipantEntry[]> {
+  const { data, error } = await supabase.rpc("get_event_participants", {
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+  return (data ?? []) as ParticipantEntry[];
+}
+
+export async function addParticipant(
+  eventId: string,
+  userId: string,
+  roleCode: string = "member",
+): Promise<void> {
+  const inviterId = await requireUserId();
+  const { error } = await supabase.from("event_participants").insert({
+    event_participant_event_id: eventId,
+    event_participant_user_id: userId,
+    event_participant_role_code: roleCode,
+    event_participant_invited_by: inviterId,
+  });
+  // 23505 = unique_violation (already participant)
+  if (error && error.code !== "23505") throw error;
+}
+
+export async function removeParticipant(
+  eventId: string,
+  userId: string,
+): Promise<void> {
+  const { error } = await supabase
+    .from("event_participants")
+    .delete()
+    .eq("event_participant_event_id", eventId)
+    .eq("event_participant_user_id", userId);
+  if (error) throw error;
+}
+
+export type ToolMemberEntry = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role_code: string;
+  added_at: string;
+};
+
+export async function listToolMembers(
+  toolId: string,
+): Promise<ToolMemberEntry[]> {
+  const { data, error } = await supabase.rpc("get_event_tool_members", {
+    p_tool_id: toolId,
+  });
+  if (error) throw error;
+  return (data ?? []) as ToolMemberEntry[];
+}
+
+export async function addToolMember(
+  toolId: string,
+  userId: string,
+  roleCode: string = "member",
+): Promise<void> {
+  const { error } = await supabase.from("event_tool_members").insert({
+    event_tool_member_event_tool_id: toolId,
+    event_tool_member_user_id: userId,
+    event_tool_member_role_code: roleCode,
+  });
+  if (error && error.code !== "23505") throw error;
+}
+
+export async function removeToolMember(
+  toolId: string,
+  userId: string,
+): Promise<void> {
+  const { error } = await supabase
+    .from("event_tool_members")
+    .delete()
+    .eq("event_tool_member_event_tool_id", toolId)
+    .eq("event_tool_member_user_id", userId);
+  if (error) throw error;
+}
+
+export async function isToolAdmin(toolId: string): Promise<boolean> {
+  const userId = await requireUserId();
+  const { data, error } = await supabase.rpc("is_event_tool_admin", {
+    p_tool_id: toolId,
+    p_user_id: userId,
+  });
+  if (error) throw error;
+  return data === true;
 }
 
 export async function createEventTool(input: {

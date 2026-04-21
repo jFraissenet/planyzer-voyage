@@ -10,6 +10,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SvgUri } from "react-native-svg";
+import { InviteModal } from "@/components/InviteModal";
 import { Button, Card, FAB, Input, ScreenHeader, Text } from "@/components/ui";
 import {
   Event,
@@ -19,8 +20,10 @@ import {
   getEvent,
   getMyEventRole,
   listEventTools,
+  listParticipants,
   listToolTypes,
 } from "@/lib/events";
+import { useSession } from "@/lib/useSession";
 
 function formatDateRange(
   start: string | null,
@@ -60,9 +63,11 @@ function ToolIcon({ uri, size = 32 }: { uri: string | null; size?: number }) {
 function ToolCard({
   tool,
   iconUri,
+  onPress,
 }: {
   tool: EventTool;
   iconUri: string | null;
+  onPress: () => void;
 }) {
   const { t } = useTranslation();
   const typeLabel = t(`tools.${tool.event_tool_type_code}.name`, {
@@ -70,7 +75,7 @@ function ToolCard({
   });
   const isRestricted = tool.event_tool_visibility === "restricted";
   return (
-    <Card className="mb-3">
+    <Card pressable onPress={onPress} className="mb-3">
       <View className="flex-row items-center">
         <View
           className="mr-3 items-center justify-center rounded-2xl"
@@ -307,6 +312,8 @@ function NewToolModal({
 export default function EventDetailScreen() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const { session } = useSession();
+  const currentUserId = session?.user?.id ?? "";
   const { event_id } = useLocalSearchParams<{ event_id: string }>();
   const goBack = () => {
     if (router.canGoBack()) router.back();
@@ -316,21 +323,35 @@ export default function EventDetailScreen() {
   const [tools, setTools] = useState<EventTool[]>([]);
   const [toolTypes, setToolTypes] = useState<ToolType[]>([]);
   const [myRole, setMyRole] = useState<string | null>(null);
+  const [participantCount, setParticipantCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newToolOpen, setNewToolOpen] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
+
+  const refreshParticipantCount = useCallback(async () => {
+    if (!event_id) return;
+    try {
+      const list = await listParticipants(event_id);
+      setParticipantCount(list.length);
+    } catch {
+      setParticipantCount(0);
+    }
+  }, [event_id]);
 
   const load = useCallback(async () => {
     if (!event_id) return;
-    const [e, ts, tt, role] = await Promise.all([
+    const [e, ts, tt, role, participants] = await Promise.all([
       getEvent(event_id),
       listEventTools(event_id),
       listToolTypes(),
       getMyEventRole(event_id),
+      listParticipants(event_id).catch(() => []),
     ]);
     setEvent(e);
     setTools(ts);
     setToolTypes(tt);
     setMyRole(role);
+    setParticipantCount(participants.length);
   }, [event_id]);
 
   useEffect(() => {
@@ -397,6 +418,37 @@ export default function EventDetailScreen() {
               </View>
             ) : null}
 
+            <View className="px-6 mb-6 flex-row items-center">
+              <Text variant="h2" className="flex-1">
+                {t("invite.participantsSection")}
+              </Text>
+              {participantCount > 0 ? (
+                <View
+                  className="px-2.5 py-0.5 rounded-full mr-2"
+                  style={{ backgroundColor: "#EEECFC" }}
+                >
+                  <Text
+                    variant="caption"
+                    style={{ color: "#6050DC", fontWeight: "700" }}
+                  >
+                    {participantCount}
+                  </Text>
+                </View>
+              ) : null}
+              <Pressable
+                onPress={() => setInviteOpen(true)}
+                className="px-3 py-1.5 rounded-full"
+                style={{ backgroundColor: "#EEECFC" }}
+              >
+                <Text
+                  variant="label"
+                  style={{ color: "#6050DC", fontWeight: "700" }}
+                >
+                  {t("invite.button")}
+                </Text>
+              </Pressable>
+            </View>
+
             <View className="px-6 mb-3 flex-row items-center">
               <Text variant="h2" className="flex-1">
                 {t("events.detail.toolsTitle")}
@@ -427,6 +479,11 @@ export default function EventDetailScreen() {
                     key={tl.event_tool_id}
                     tool={tl}
                     iconUri={toolIconByCode.get(tl.event_tool_type_code) ?? null}
+                    onPress={() =>
+                      router.push(
+                        `/events/${tl.event_tool_event_id}/tools/${tl.event_tool_id}`,
+                      )
+                    }
                   />
                 ))
               )}
@@ -448,7 +505,24 @@ export default function EventDetailScreen() {
           eventId={event.event_id}
           toolTypes={toolTypes}
           onClose={() => setNewToolOpen(false)}
-          onCreated={(tl) => setTools((prev) => [...prev, tl])}
+          onCreated={(tl) => {
+            setTools((prev) => [...prev, tl]);
+            router.push(
+              `/events/${tl.event_tool_event_id}/tools/${tl.event_tool_id}`,
+            );
+          }}
+        />
+      ) : null}
+
+      {event ? (
+        <InviteModal
+          visible={inviteOpen}
+          eventId={event.event_id}
+          isAdmin={isAdmin}
+          currentUserId={currentUserId}
+          eventCreatorId={event.event_creator_id}
+          onClose={() => setInviteOpen(false)}
+          onChanged={refreshParticipantCount}
         />
       ) : null}
     </View>

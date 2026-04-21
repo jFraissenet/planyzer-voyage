@@ -1,7 +1,7 @@
 import { Image, View } from "react-native";
 import { Text } from "./Text";
 
-type Size = "sm" | "md" | "lg";
+type Size = "xs" | "sm" | "md" | "lg";
 
 interface Props {
   src?: string;
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const sizeClasses: Record<Size, { container: string; text: string; image: number }> = {
+  xs: { container: "w-6 h-6", text: "text-[10px]", image: 24 },
   sm: { container: "w-8 h-8", text: "text-xs", image: 32 },
   md: { container: "w-10 h-10", text: "text-sm", image: 40 },
   lg: { container: "w-14 h-14", text: "text-lg", image: 56 },

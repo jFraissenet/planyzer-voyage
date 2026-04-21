@@ -1,8 +1,14 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Button, Input, Text } from "@/components/ui";
+import { Button, Input, ScreenHeader, Text } from "@/components/ui";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signInWithEmail } from "@/lib/auth";
 
@@ -37,14 +43,14 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-background"
     >
-      <View className="flex-1 justify-center px-6">
-        <Text variant="h1" className="text-center mb-2">
-          {t("auth.login.title")}
-        </Text>
-        <Text variant="caption" className="text-center mb-10">
-          {t("auth.login.subtitle")}
-        </Text>
-
+      <ScreenHeader
+        title={t("auth.login.title")}
+        subtitle={t("auth.login.subtitle")}
+      />
+      <ScrollView
+        contentContainerStyle={{ padding: 24, paddingBottom: 32 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <View className="gap-4">
           <Input
             label={t("auth.login.emailLabel")}
@@ -75,7 +81,11 @@ export default function LoginScreen() {
           ) : null}
 
           <Button
-            label={loading ? t("auth.login.submitting") : t("auth.login.submit")}
+            variant="cta"
+            size="lg"
+            label={
+              loading ? t("auth.login.submitting") : t("auth.login.submit")
+            }
             onPress={handleLogin}
             disabled={loading || !email || !password}
           />
@@ -87,13 +97,16 @@ export default function LoginScreen() {
           <Text variant="caption">{t("auth.login.noAccount")}</Text>
           <Link href="/(auth)/signup" asChild>
             <Pressable>
-              <Text className="text-sm text-primary font-semibold">
+              <Text
+                className="text-sm font-semibold"
+                style={{ color: "#6050DC" }}
+              >
                 {t("auth.login.signupLink")}
               </Text>
             </Pressable>
           </Link>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AboutContent } from "@/components/AboutContent";
 import { ScreenHeader } from "@/components/ui";
 
-export default function AboutScreen() {
+export default function AuthAboutScreen() {
   const { t } = useTranslation();
   return (
     <View className="flex-1 bg-background">

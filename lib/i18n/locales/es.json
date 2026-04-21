@@ -8,6 +8,10 @@
     "cancel": "Cancelar"
   },
   "auth": {
+    "switcher": {
+      "about": "Acerca de",
+      "login": "Iniciar sesión"
+    },
     "login": {
       "title": "Planyzer",
       "subtitle": "Organiza tus viajes fácilmente",
@@ -121,18 +125,93 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Organiza tus eventos, en equipo.",
-    "description": "Un evento, todas las herramientas que hacen falta. Invita a tus amigos a un viaje, una cena o una salida y compartid gastos, notas o coche — cada uno solo ve lo que eliges compartir.",
+    "description": "Una cena, un finde, un viaje entre amigos… y acabas saltando entre Splitwise, un grupo de WhatsApp, dos Google Docs y tres apps de coche compartido. Planyzer lo reúne todo en un mismo sitio: creas el evento, invitas a los tuyos, añades las herramientas que de verdad necesitas. Una sola app, cero jaleo.",
     "feature1Title": "Eventos",
     "feature1Body": "Una página por salida, con sus fechas y participantes.",
     "feature2Title": "Herramientas modulares",
     "feature2Body": "Añade sobre la marcha lo que necesitéis: dinero, notas, coche compartido.",
     "feature3Title": "Compartir a medida",
-    "feature3Body": "Algunas herramientas para todos, otras reservadas a un subgrupo."
+    "feature3Body": "Algunas herramientas para todos, otras reservadas a un subgrupo.",
+    "toolsSection": "Las herramientas",
+    "tools": {
+      "money": {
+        "title": "Dinero",
+        "body": "Reparte los gastos con tu grupo y mira quién le debe qué a quién, sin sacar la calculadora."
+      },
+      "notes": {
+        "title": "Notas",
+        "body": "Apunta todo lo que te preocupa y marca lo que ya has hecho, para llegar tranquilo al día señalado."
+      },
+      "car_sharing": {
+        "title": "Compartir coche",
+        "body": "Organizad los trayectos juntos: quién va con quién, a qué hora y cuántas plazas quedan libres."
+      }
+    }
   },
   "tools": {
     "money": { "name": "Dinero" },
     "notes": { "name": "Notas" },
     "car_sharing": { "name": "Compartir coche" }
+  },
+  "toolDetail": {
+    "participants_one": "{{count}} participante",
+    "participants_other": "{{count}} participantes",
+    "manageMembers": "Gestionar acceso",
+    "restrictedWarningTitle": "Estás solo aquí",
+    "restrictedWarningBody": "Esta herramienta está restringida. Invita a participantes del evento para que puedan verla.",
+    "restrictedWarningCTA": "Invitar ahora",
+    "publicInfoTitle": "Abierta a todo el evento",
+    "publicInfoBody": "Todos los participantes del evento pueden ver y usar esta herramienta."
+  },
+  "notes": {
+    "addPlaceholder": "Añadir una nota…",
+    "add": "Añadir",
+    "empty": "Aún no hay notas — ¡añade la primera!",
+    "activeSection": "Por hacer",
+    "doneSection": "Hecho",
+    "editTitle": "Editar nota",
+    "textLabel": "Nota",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar esta nota?",
+    "cancel": "Cancelar",
+    "time": {
+      "now": "ahora mismo",
+      "minutes_one": "hace {{count}} min",
+      "minutes_other": "hace {{count}} min",
+      "hours_one": "hace {{count}} h",
+      "hours_other": "hace {{count}} h",
+      "days_one": "hace {{count}} d",
+      "days_other": "hace {{count}} d"
+    }
+  },
+  "toolMembers": {
+    "title": "Gestionar acceso",
+    "subtitle": "Elige quién puede ver esta herramienta",
+    "selectAll": "Seleccionar todo",
+    "deselectAll": "Deseleccionar todo",
+    "empty": "Aún no hay participantes en el evento",
+    "close": "Cerrar"
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Miembro",
+    "visitor": "Visitante"
+  },
+  "invite": {
+    "button": "+ Invitar",
+    "title": "Invitar amigos",
+    "subtitle": "Busca por nombre",
+    "searchPlaceholder": "Nombre…",
+    "minChars": "Escribe al menos 2 caracteres",
+    "noResults": "No se encontró ningún usuario",
+    "add": "Añadir",
+    "alreadyMember": "Ya es miembro",
+    "currentParticipants": "En el evento ({{count}})",
+    "remove": "Quitar",
+    "removeConfirm": "¿Quitar a {{name}} del evento?",
+    "close": "Cerrar",
+    "participantsSection": "Participantes"
   },
   "profile": {
     "title": "Perfil",

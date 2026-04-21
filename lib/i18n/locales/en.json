@@ -8,6 +8,10 @@
     "cancel": "Cancel"
   },
   "auth": {
+    "switcher": {
+      "about": "About",
+      "login": "Log in"
+    },
     "login": {
       "title": "Planyzer",
       "subtitle": "Plan your trips with ease",
@@ -121,18 +125,93 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Plan your events, together.",
-    "description": "One event, all the tools that go with it. Invite your friends to a trip, dinner or outing and share expenses, notes or carpooling — everyone only sees what you choose to share.",
+    "description": "A dinner, a weekend away, a trip with friends… and suddenly you're juggling Splitwise, a WhatsApp group, two Google Docs and three carpool apps. Planyzer brings it all under one roof: create the event, invite your people, add the tools you actually need. One app, zero chaos.",
     "feature1Title": "Events",
     "feature1Body": "One page per outing, with its dates and participants.",
     "feature2Title": "Modular tools",
     "feature2Body": "Add whatever you need along the way: money, notes, carpool.",
     "feature3Title": "Controlled sharing",
-    "feature3Body": "Some tools visible to everyone, others reserved for a subgroup."
+    "feature3Body": "Some tools visible to everyone, others reserved for a subgroup.",
+    "toolsSection": "The tools",
+    "tools": {
+      "money": {
+        "title": "Money",
+        "body": "Split expenses with your group and see who owes what to whom — no calculator needed."
+      },
+      "notes": {
+        "title": "Notes",
+        "body": "Jot down everything on your mind and check off what's done, to stay on top of things before the big day."
+      },
+      "car_sharing": {
+        "title": "Carpool",
+        "body": "Plan rides together: who goes with whom, at what time, and how many seats are left."
+      }
+    }
   },
   "tools": {
     "money": { "name": "Money" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Carpool" }
+  },
+  "toolDetail": {
+    "participants_one": "{{count}} participant",
+    "participants_other": "{{count}} participants",
+    "manageMembers": "Manage access",
+    "restrictedWarningTitle": "You're alone here",
+    "restrictedWarningBody": "This tool is restricted. Invite event participants so they can see it.",
+    "restrictedWarningCTA": "Invite now",
+    "publicInfoTitle": "Open to everyone",
+    "publicInfoBody": "All event participants can see and use this tool."
+  },
+  "notes": {
+    "addPlaceholder": "Add a note…",
+    "add": "Add",
+    "empty": "No notes yet — add the first one!",
+    "activeSection": "To do",
+    "doneSection": "Done",
+    "editTitle": "Edit note",
+    "textLabel": "Note",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this note?",
+    "cancel": "Cancel",
+    "time": {
+      "now": "just now",
+      "minutes_one": "{{count}} min ago",
+      "minutes_other": "{{count}} min ago",
+      "hours_one": "{{count}}h ago",
+      "hours_other": "{{count}}h ago",
+      "days_one": "{{count}}d ago",
+      "days_other": "{{count}}d ago"
+    }
+  },
+  "toolMembers": {
+    "title": "Manage access",
+    "subtitle": "Choose who can see this tool",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "empty": "No participants in the event",
+    "close": "Close"
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Member",
+    "visitor": "Visitor"
+  },
+  "invite": {
+    "button": "+ Invite",
+    "title": "Invite friends",
+    "subtitle": "Search by name",
+    "searchPlaceholder": "Name…",
+    "minChars": "Type at least 2 characters",
+    "noResults": "No user found",
+    "add": "Add",
+    "alreadyMember": "Already member",
+    "currentParticipants": "In the event ({{count}})",
+    "remove": "Remove",
+    "removeConfirm": "Remove {{name}} from the event?",
+    "close": "Close",
+    "participantsSection": "Participants"
   },
   "profile": {
     "title": "Profile",

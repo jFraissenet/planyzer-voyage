@@ -8,6 +8,10 @@
     "cancel": "Annuler"
   },
   "auth": {
+    "switcher": {
+      "about": "À propos",
+      "login": "Se connecter"
+    },
     "login": {
       "title": "Planyzer",
       "subtitle": "Organisez vos voyages simplement",
@@ -121,18 +125,93 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Organise tes événements, en équipe.",
-    "description": "Un événement, tous les outils qui vont avec. Invite tes proches à un voyage, une soirée ou une sortie, et partagez dépenses, notes ou covoiturage — chacun n'accède qu'à ce que tu choisis.",
+    "description": "Une soirée, un weekend, un voyage entre amis… et te voilà à jongler entre Tricount, un groupe WhatsApp, deux Google Docs et trois apps de covoiturage. Planyzer regroupe tout au même endroit : tu crées l'événement, tu invites tes proches, tu ajoutes les outils dont vous avez besoin. Une seule app, zéro éparpillement.",
     "feature1Title": "Événements",
     "feature1Body": "Une page par sortie, avec ses dates et ses participants.",
     "feature2Title": "Outils modulaires",
     "feature2Body": "Ajoute au fil de l'eau ce dont vous avez besoin : comptes, notes, covoiturage.",
     "feature3Title": "Partage choisi",
-    "feature3Body": "Certains outils visibles par tous, d'autres réservés à un sous-groupe."
+    "feature3Body": "Certains outils visibles par tous, d'autres réservés à un sous-groupe.",
+    "toolsSection": "Les outils",
+    "tools": {
+      "money": {
+        "title": "Argent",
+        "body": "Partage les dépenses avec tes proches et vois qui doit quoi à qui, sans sortir la calculatrice."
+      },
+      "notes": {
+        "title": "Notes",
+        "body": "Note tout ce qui te préoccupe et coche ce que tu as déjà fait, pour garder l'esprit clair avant le jour J."
+      },
+      "car_sharing": {
+        "title": "Covoiturage",
+        "body": "Organise les trajets ensemble : qui part avec qui, à quelle heure, et combien de places libres il reste."
+      }
+    }
   },
   "tools": {
     "money": { "name": "Argent" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Covoiturage" }
+  },
+  "toolDetail": {
+    "participants_one": "{{count}} participant",
+    "participants_other": "{{count}} participants",
+    "manageMembers": "Gérer les accès",
+    "restrictedWarningTitle": "Tu es seul·e ici",
+    "restrictedWarningBody": "Cet outil est restreint. Invite les personnes du projet pour qu'elles puissent le voir.",
+    "restrictedWarningCTA": "Inviter maintenant",
+    "publicInfoTitle": "Ouvert à tout l'événement",
+    "publicInfoBody": "Tous les participants de l'événement peuvent voir et utiliser cet outil."
+  },
+  "notes": {
+    "addPlaceholder": "Ajouter une note…",
+    "add": "Ajouter",
+    "empty": "Aucune note pour l'instant — ajoute la première !",
+    "activeSection": "À faire",
+    "doneSection": "Terminé",
+    "editTitle": "Modifier la note",
+    "textLabel": "Note",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette note ?",
+    "cancel": "Annuler",
+    "time": {
+      "now": "à l'instant",
+      "minutes_one": "il y a {{count}} min",
+      "minutes_other": "il y a {{count}} min",
+      "hours_one": "il y a {{count}} h",
+      "hours_other": "il y a {{count}} h",
+      "days_one": "il y a {{count}} j",
+      "days_other": "il y a {{count}} j"
+    }
+  },
+  "toolMembers": {
+    "title": "Gérer les accès",
+    "subtitle": "Choisis qui peut voir cet outil",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "empty": "Aucun participant dans l'événement",
+    "close": "Fermer"
+  },
+  "roles": {
+    "admin": "Admin",
+    "member": "Membre",
+    "visitor": "Visiteur"
+  },
+  "invite": {
+    "button": "+ Inviter",
+    "title": "Inviter des amis",
+    "subtitle": "Cherche par nom ou prénom",
+    "searchPlaceholder": "Nom, prénom…",
+    "minChars": "Tape au moins 2 caractères",
+    "noResults": "Aucun utilisateur trouvé",
+    "add": "Ajouter",
+    "alreadyMember": "Déjà membre",
+    "currentParticipants": "Dans l'événement ({{count}})",
+    "remove": "Retirer",
+    "removeConfirm": "Retirer {{name}} de l'événement ?",
+    "close": "Fermer",
+    "participantsSection": "Participants"
   },
   "profile": {
     "title": "Profil",

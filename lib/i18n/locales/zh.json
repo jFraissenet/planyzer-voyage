@@ -8,6 +8,10 @@
     "cancel": "取消"
   },
   "auth": {
+    "switcher": {
+      "about": "关于",
+      "login": "登录"
+    },
     "login": {
       "title": "Planyzer",
       "subtitle": "轻松规划您的旅行",
@@ -121,18 +125,89 @@
   "about": {
     "title": "Planyzer",
     "tagline": "团队合作，轻松组织活动。",
-    "description": "一个活动，所有你需要的工具。邀请朋友参加旅行、晚餐或聚会，共同管理账务、笔记或拼车——每个人只看到你选择分享的内容。",
+    "description": "一次聚餐、一场周末出游、一趟好友旅行……你却要在记账 App、微信群、两份 Google 文档和三个拼车应用之间来回切换。Planyzer 把这些都集中到一个地方：创建活动、邀请朋友、按需添加你真正需要的工具。一个应用，告别混乱。",
     "feature1Title": "活动",
     "feature1Body": "每次出行一个页面，包含日期和参与者。",
     "feature2Title": "模块化工具",
     "feature2Body": "随时添加你需要的工具：账务、笔记、拼车。",
     "feature3Title": "可控分享",
-    "feature3Body": "部分工具所有人可见，其他仅限指定小组。"
+    "feature3Body": "部分工具所有人可见，其他仅限指定小组。",
+    "toolsSection": "可用工具",
+    "tools": {
+      "money": {
+        "title": "账务",
+        "body": "和朋友一起分摊开销，清楚谁该付多少，无需拿出计算器。"
+      },
+      "notes": {
+        "title": "笔记",
+        "body": "把所有要做的事情记下来，完成后打勾，轻松迎接大日子。"
+      },
+      "car_sharing": {
+        "title": "拼车",
+        "body": "一起安排行程：谁和谁同车、几点出发、还剩几个座位。"
+      }
+    }
   },
   "tools": {
     "money": { "name": "账务" },
     "notes": { "name": "笔记" },
     "car_sharing": { "name": "拼车" }
+  },
+  "toolDetail": {
+    "participants_other": "{{count}} 名参与者",
+    "manageMembers": "管理访问",
+    "restrictedWarningTitle": "只有你一个人",
+    "restrictedWarningBody": "这是受限工具。邀请活动成员，他们才能看到。",
+    "restrictedWarningCTA": "立即邀请",
+    "publicInfoTitle": "活动全体成员可见",
+    "publicInfoBody": "活动的所有参与者都能看到并使用此工具。"
+  },
+  "notes": {
+    "addPlaceholder": "添加笔记……",
+    "add": "添加",
+    "empty": "还没有笔记——添加第一条吧！",
+    "activeSection": "待办",
+    "doneSection": "已完成",
+    "editTitle": "编辑笔记",
+    "textLabel": "笔记",
+    "save": "保存",
+    "delete": "删除",
+    "deleteConfirm": "删除此笔记？",
+    "cancel": "取消",
+    "time": {
+      "now": "刚刚",
+      "minutes_other": "{{count}} 分钟前",
+      "hours_other": "{{count}} 小时前",
+      "days_other": "{{count}} 天前"
+    }
+  },
+  "toolMembers": {
+    "title": "管理访问",
+    "subtitle": "选择谁可以看到此工具",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "empty": "活动暂无参与者",
+    "close": "关闭"
+  },
+  "roles": {
+    "admin": "管理员",
+    "member": "成员",
+    "visitor": "访客"
+  },
+  "invite": {
+    "button": "+ 邀请",
+    "title": "邀请朋友",
+    "subtitle": "按姓名搜索",
+    "searchPlaceholder": "姓名……",
+    "minChars": "请输入至少 2 个字符",
+    "noResults": "未找到用户",
+    "add": "添加",
+    "alreadyMember": "已是成员",
+    "currentParticipants": "活动成员（{{count}}）",
+    "remove": "移除",
+    "removeConfirm": "将 {{name}} 从活动中移除？",
+    "close": "关闭",
+    "participantsSection": "参与者"
   },
   "profile": {
     "title": "个人资料",
