@@ -221,8 +221,23 @@
       "settleTitle": "Quién paga a quién",
       "settleRow": "{{from}} → {{to}}: {{amount}}",
       "settleEmpty": "Todo está saldado 🎉",
+      "settleAction": "He pagado",
+      "recordedTitle": "Pagos registrados",
+      "recordedEmpty": "Ningún pago registrado",
+      "recordedDelete": "¿Eliminar este pago?",
       "empty": "Aún no hay gastos que repartir"
     }
+  },
+  "settle": {
+    "title": "Registrar un pago",
+    "subtitle": "{{from}} paga a {{to}}",
+    "amountLabel": "Importe pagado",
+    "fullAmountHint": "Sugerido: {{amount}}",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "errorAmount": "Indica un importe mayor que 0",
+    "errorGeneric": "Error al guardar"
   },
   "notes": {
     "addPlaceholder": "Añadir una nota…",

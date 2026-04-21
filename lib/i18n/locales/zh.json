@@ -220,8 +220,23 @@
       "settleTitle": "谁还给谁",
       "settleRow": "{{from}} → {{to}}：{{amount}}",
       "settleEmpty": "所有账目已结清 🎉",
+      "settleAction": "我已支付",
+      "recordedTitle": "已记录的还款",
+      "recordedEmpty": "未记录任何还款",
+      "recordedDelete": "删除此还款记录？",
       "empty": "暂无可分摊的账目"
     }
+  },
+  "settle": {
+    "title": "记录还款",
+    "subtitle": "{{from}} 还款给 {{to}}",
+    "amountLabel": "还款金额",
+    "fullAmountHint": "建议：{{amount}}",
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "取消",
+    "errorAmount": "请输入大于 0 的金额",
+    "errorGeneric": "保存失败"
   },
   "notes": {
     "addPlaceholder": "添加笔记……",

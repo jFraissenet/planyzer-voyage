@@ -221,8 +221,23 @@
       "settleTitle": "Qui rembourse qui",
       "settleRow": "{{from}} → {{to}} : {{amount}}",
       "settleEmpty": "Tout est équilibré 🎉",
+      "settleAction": "J'ai réglé",
+      "recordedTitle": "Remboursements effectués",
+      "recordedEmpty": "Aucun remboursement enregistré",
+      "recordedDelete": "Supprimer ce remboursement ?",
       "empty": "Aucune dépense à répartir pour l'instant"
     }
+  },
+  "settle": {
+    "title": "Enregistrer un remboursement",
+    "subtitle": "{{from}} rembourse {{to}}",
+    "amountLabel": "Montant réglé",
+    "fullAmountHint": "Suggéré : {{amount}}",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "cancel": "Annuler",
+    "errorAmount": "Saisis un montant supérieur à 0",
+    "errorGeneric": "Erreur lors de l'enregistrement"
   },
   "notes": {
     "addPlaceholder": "Ajouter une note…",

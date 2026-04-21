@@ -35,7 +35,10 @@ export function ToolShell({
         onBack={onBack}
       />
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 120 }}>
-        <View className="flex-row items-center flex-wrap mb-6" style={{ gap: 8 }}>
+        <View
+          className="flex-row items-center flex-wrap mb-6"
+          style={{ gap: 8 }}
+        >
           <View
             className="px-3 py-1.5 rounded-full"
             style={{ backgroundColor: "#EEECFC" }}
@@ -47,6 +50,19 @@ export function ToolShell({
               {t("toolDetail.participants", { count: participantCount })}
             </Text>
           </View>
+          {!isRestricted ? (
+            <View
+              className="px-3 py-1.5 rounded-full"
+              style={{ backgroundColor: "#EEECFC" }}
+            >
+              <Text
+                variant="label"
+                style={{ color: "#6050DC", fontWeight: "700" }}
+              >
+                🌍 {t("toolDetail.publicInfoTitle")}
+              </Text>
+            </View>
+          ) : null}
           {canManage ? (
             <Pressable
               onPress={onManageMembers}
@@ -98,26 +114,6 @@ export function ToolShell({
                 {t("toolDetail.restrictedWarningCTA")}
               </Text>
             </Pressable>
-          </View>
-        ) : !isRestricted ? (
-          <View
-            className="rounded-2xl p-4 mb-6"
-            style={{
-              backgroundColor: "#EEECFC",
-              borderWidth: 1,
-              borderColor: "#DDD6FE",
-            }}
-          >
-            <Text
-              variant="label"
-              className="mb-1"
-              style={{ color: "#4F3FD1", fontSize: 14 }}
-            >
-              🌍 {t("toolDetail.publicInfoTitle")}
-            </Text>
-            <Text variant="caption" style={{ color: "#4F3FD1" }}>
-              {t("toolDetail.publicInfoBody")}
-            </Text>
           </View>
         ) : null}
 

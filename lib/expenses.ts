@@ -198,6 +198,50 @@ export async function deleteExpense(expenseId: string): Promise<void> {
   if (error) throw error;
 }
 
+export async function listSettlements(toolId: string): Promise<Settlement[]> {
+  const { data, error } = await supabase.rpc("get_event_tool_settlements", {
+    p_tool_id: toolId,
+  });
+  if (error) throw error;
+  return ((data ?? []) as Array<Record<string, unknown>>).map((r) => ({
+    settlement_id: r.settlement_id as string,
+    from_user_id: r.from_user_id as string,
+    from_full_name: (r.from_full_name as string | null) ?? null,
+    from_avatar_url: (r.from_avatar_url as string | null) ?? null,
+    to_user_id: r.to_user_id as string,
+    to_full_name: (r.to_full_name as string | null) ?? null,
+    to_avatar_url: (r.to_avatar_url as string | null) ?? null,
+    amount: Number(r.amount),
+    created_by: (r.created_by as string | null) ?? null,
+    created_at: r.created_at as string,
+  }));
+}
+
+export async function createSettlement(input: {
+  tool_id: string;
+  from_user_id: string;
+  to_user_id: string;
+  amount: number;
+}): Promise<void> {
+  const userId = await requireUserId();
+  const { error } = await supabase.from("event_tool_settlements").insert({
+    event_tool_settlement_event_tool_id: input.tool_id,
+    event_tool_settlement_from_user_id: input.from_user_id,
+    event_tool_settlement_to_user_id: input.to_user_id,
+    event_tool_settlement_amount: input.amount,
+    event_tool_settlement_created_by: userId,
+  });
+  if (error) throw error;
+}
+
+export async function deleteSettlement(settlementId: string): Promise<void> {
+  const { error } = await supabase
+    .from("event_tool_settlements")
+    .delete()
+    .eq("event_tool_settlement_id", settlementId);
+  if (error) throw error;
+}
+
 // === Pure computations ===
 
 export function computeExpenseShares(
@@ -234,9 +278,23 @@ export type MemberBalance = {
   balance: number;
 };
 
+export type Settlement = {
+  settlement_id?: string;
+  from_user_id: string;
+  from_full_name?: string | null;
+  from_avatar_url?: string | null;
+  to_user_id: string;
+  to_full_name?: string | null;
+  to_avatar_url?: string | null;
+  amount: number;
+  created_by?: string | null;
+  created_at?: string;
+};
+
 export function computeBalances(
   expenses: Expense[],
   memberIds: string[],
+  settlements: Settlement[] = [],
 ): MemberBalance[] {
   const paid: Record<string, number> = {};
   const owed: Record<string, number> = {};
@@ -251,21 +309,29 @@ export function computeBalances(
       owed[uid] = (owed[uid] ?? 0) + share;
     }
   }
+  // Apply recorded settlements: from paid -> to received
+  // Debtor paying back reduces their net debt, creditor receiving reduces what's owed to them.
+  const adjust: Record<string, number> = {};
+  for (const uid of memberIds) adjust[uid] = 0;
+  for (const s of settlements) {
+    adjust[s.from_user_id] = (adjust[s.from_user_id] ?? 0) + s.amount;
+    adjust[s.to_user_id] = (adjust[s.to_user_id] ?? 0) - s.amount;
+  }
   return memberIds.map((uid) => ({
     user_id: uid,
     paid: paid[uid] ?? 0,
     owed: owed[uid] ?? 0,
-    balance: (paid[uid] ?? 0) - (owed[uid] ?? 0),
+    balance: (paid[uid] ?? 0) - (owed[uid] ?? 0) + (adjust[uid] ?? 0),
   }));
 }
 
-export type Settlement = {
+export type SuggestedTransfer = {
   from: string;
   to: string;
   amount: number;
 };
 
-export function settleBalances(balances: MemberBalance[]): Settlement[] {
+export function settleBalances(balances: MemberBalance[]): SuggestedTransfer[] {
   const eps = 0.01;
   const debtors = balances
     .filter((b) => b.balance < -eps)
@@ -273,7 +339,7 @@ export function settleBalances(balances: MemberBalance[]): Settlement[] {
   const creditors = balances
     .filter((b) => b.balance > eps)
     .map((b) => ({ user_id: b.user_id, balance: b.balance }));
-  const transfers: Settlement[] = [];
+  const transfers: SuggestedTransfer[] = [];
   while (debtors.length > 0 && creditors.length > 0) {
     debtors.sort((a, b) => a.balance - b.balance);
     creditors.sort((a, b) => b.balance - a.balance);

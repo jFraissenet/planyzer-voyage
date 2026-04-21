@@ -221,8 +221,23 @@
       "settleTitle": "Who pays whom",
       "settleRow": "{{from}} → {{to}}: {{amount}}",
       "settleEmpty": "Everything is settled 🎉",
+      "settleAction": "I paid",
+      "recordedTitle": "Recorded payments",
+      "recordedEmpty": "No payment recorded",
+      "recordedDelete": "Delete this payment?",
       "empty": "No expenses to split yet"
     }
+  },
+  "settle": {
+    "title": "Record a payment",
+    "subtitle": "{{from}} pays back {{to}}",
+    "amountLabel": "Amount paid",
+    "fullAmountHint": "Suggested: {{amount}}",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "errorAmount": "Enter an amount greater than 0",
+    "errorGeneric": "Error while saving"
   },
   "notes": {
     "addPlaceholder": "Add a note…",

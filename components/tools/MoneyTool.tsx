@@ -5,13 +5,16 @@ import { FAB, Text } from "@/components/ui";
 import {
   getEffectiveMembers,
   listExpenses,
+  listSettlements,
   type EffectiveMember,
   type Expense,
+  type Settlement,
 } from "@/lib/expenses";
 import { useSession } from "@/lib/useSession";
 import { BreakdownTab } from "./money/BreakdownTab";
 import { ExpenseEditModal } from "./money/ExpenseEditModal";
 import { ExpensesTab } from "./money/ExpensesTab";
+import { SettleModal } from "./money/SettleModal";
 import { ToolShell, type ToolProps } from "./ToolShell";
 
 type Tab = "expenses" | "breakdown";
@@ -68,27 +71,38 @@ export function MoneyTool(props: ToolProps) {
   const currentUserId = session?.user?.id ?? "";
   const [tab, setTab] = useState<Tab>("expenses");
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [members, setMembers] = useState<EffectiveMember[]>([]);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
+  const [settle, setSettle] = useState<{
+    fromId: string;
+    toId: string;
+    amount: number;
+  } | null>(null);
 
   const load = useCallback(async () => {
     try {
-      const [m, e] = await Promise.all([
+      const [m, e, s] = await Promise.all([
         getEffectiveMembers(props.tool.event_tool_id),
         listExpenses(props.tool.event_tool_id),
+        listSettlements(props.tool.event_tool_id),
       ]);
       setMembers(m);
       setExpenses(e);
+      setSettlements(s);
     } catch {
       setMembers([]);
       setExpenses([]);
+      setSettlements([]);
     }
   }, [props.tool.event_tool_id]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  const memberById = new Map(members.map((m) => [m.user_id, m]));
 
   return (
     <>
@@ -102,7 +116,16 @@ export function MoneyTool(props: ToolProps) {
             onOpenExpense={setEditing}
           />
         ) : (
-          <BreakdownTab expenses={expenses} members={members} />
+          <BreakdownTab
+            expenses={expenses}
+            members={members}
+            settlements={settlements}
+            currentUserId={currentUserId}
+            onSettle={(fromId, toId, amount) =>
+              setSettle({ fromId, toId, amount })
+            }
+            onChanged={load}
+          />
         )}
       </ToolShell>
 
@@ -127,6 +150,19 @@ export function MoneyTool(props: ToolProps) {
         onSaved={() => {
           setCreating(false);
           setEditing(null);
+          load();
+        }}
+      />
+
+      <SettleModal
+        visible={!!settle}
+        toolId={props.tool.event_tool_id}
+        from={settle ? memberById.get(settle.fromId) ?? null : null}
+        to={settle ? memberById.get(settle.toId) ?? null : null}
+        suggestedAmount={settle?.amount ?? 0}
+        onClose={() => setSettle(null)}
+        onSaved={() => {
+          setSettle(null);
           load();
         }}
       />
