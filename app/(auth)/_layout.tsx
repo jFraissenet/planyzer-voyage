@@ -20,7 +20,21 @@ export default function AuthLayout() {
         tabBarStyle: {
           borderTopColor: "#E8E3DB",
           backgroundColor: "#FFFFFF",
+          paddingTop: 2,
+          paddingBottom: 10,
+          height: 68,
         },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
+          lineHeight: 14,
+          paddingTop: 2,
+        },
+        tabBarIconStyle: {
+          marginTop: 0,
+          marginBottom: 0,
+        },
+        tabBarLabelPosition: "below-icon",
         headerShown: false,
       }}
     >

@@ -73,38 +73,16 @@ function VehicleCard({
             className="mr-3"
           />
           <View className="flex-1 pr-2">
-            <View className="flex-row items-center" style={{ gap: 6 }}>
-              <Text
-                numberOfLines={1}
-                style={{
-                  flexShrink: 1,
-                  fontSize: 16,
-                  fontWeight: "700",
-                  color: "#1A1A1A",
-                }}
-              >
-                {vehicle.description ?? vehicle.driver_full_name ?? "—"}
-              </Text>
-              <View
-                className="flex-row items-center px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: "#FEF3C7", gap: 3 }}
-              >
-                <Text
-                  style={{
-                    color: "#78350F",
-                    fontWeight: "700",
-                    fontSize: 10,
-                  }}
-                >
-                  {vehicle.journey_type === "outbound"
-                    ? `→ ${t("carpool.journeyOutbound")}`
-                    : `← ${t("carpool.journeyReturn")}`}
-                </Text>
-                {vehicle.linked_vehicle_id ? (
-                  <Ionicons name="link" size={10} color="#78350F" />
-                ) : null}
-              </View>
-            </View>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: "#1A1A1A",
+              }}
+            >
+              {vehicle.description ?? vehicle.driver_full_name ?? "—"}
+            </Text>
             <Text variant="caption" numberOfLines={1}>
               {t("carpool.drivenBy", {
                 name: vehicle.driver_full_name ?? "?",
@@ -124,7 +102,7 @@ function VehicleCard({
               </Text>
             ) : null}
           </View>
-          <View className="items-end ml-2">
+          <View className="items-end ml-2" style={{ gap: 6 }}>
             <SeatLayoutPreview
               layout={vehicle.seat_layout}
               seatSize={10}
@@ -132,7 +110,6 @@ function VehicleCard({
             />
             <Text
               variant="caption"
-              className="mt-1"
               style={{
                 color: isFull ? "#A3A3A3" : "#6050DC",
                 fontWeight: "700",
@@ -143,6 +120,26 @@ function VehicleCard({
                 ? t("carpool.fullVehicle")
                 : t("carpool.seatSummary", { free, total })}
             </Text>
+            <View
+              className="flex-row items-center justify-center self-center px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: "#FEF3C7", gap: 3 }}
+            >
+              <Text
+                style={{
+                  color: "#78350F",
+                  fontWeight: "700",
+                  fontSize: 10,
+                  textAlign: "center",
+                }}
+              >
+                {vehicle.journey_type === "outbound"
+                  ? `→ ${t("carpool.journeyOutbound")}`
+                  : `← ${t("carpool.journeyReturn")}`}
+              </Text>
+              {vehicle.linked_vehicle_id ? (
+                <Ionicons name="link" size={10} color="#78350F" />
+              ) : null}
+            </View>
           </View>
         </Pressable>
         {onEdit ? (
