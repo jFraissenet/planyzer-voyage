@@ -5,7 +5,8 @@
     "error": "Error",
     "back": "Back",
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   },
   "auth": {
     "switcher": {
@@ -91,6 +92,28 @@
       "submitting": "Saving...",
       "errorGeneric": "Error while saving",
       "action": "Edit"
+    },
+    "share": {
+      "action": "Share",
+      "button": "Share",
+      "message": "Join \"{{title}}\" on Planyzer:",
+      "copied": "Link copied to clipboard",
+      "copyManual": "Copy this link and share it",
+      "sectionLabel": "Share link",
+      "activeHint": "The share link is active. Anyone with the link can join this event.",
+      "disabledHint": "No active link. A link will be generated on first share.",
+      "rotateAction": "Regenerate link",
+      "rotateConfirm": "Regenerate the link? Previously shared links will stop working.",
+      "disableAction": "Disable",
+      "disableConfirm": "Disable the link? Nobody will be able to join via an existing link."
+    },
+    "editTool": {
+      "title": "Edit tool",
+      "subtitle": "Change the name or visibility",
+      "action": "Edit",
+      "save": "Save",
+      "saving": "Saving...",
+      "errorGeneric": "Error while saving"
     },
     "newTool": {
       "title": "New tool",
@@ -346,6 +369,18 @@
     "removeConfirm": "Remove {{name}} from the event?",
     "close": "Close",
     "participantsSection": "Participants"
+  },
+  "invitePage": {
+    "title": "Invitation",
+    "organizedBy": "Organized by {{name}}",
+    "participantCount_one": "{{count}} participant",
+    "participantCount_other": "{{count}} participants",
+    "join": "Join the event",
+    "joining": "Joining…",
+    "connectToJoin": "Log in to join",
+    "invalidToken": "This link is no longer valid",
+    "joinError": "Could not join, try again",
+    "backHome": "Back to home"
   },
   "profile": {
     "title": "Profile",

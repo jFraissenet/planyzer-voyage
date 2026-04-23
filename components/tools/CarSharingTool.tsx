@@ -13,6 +13,7 @@ import {
   type VehicleStop,
 } from "@/lib/carpool";
 import { getEffectiveMembers, type EffectiveMember } from "@/lib/expenses";
+import { useIsMobile } from "@/lib/responsive";
 import { supabase } from "@/lib/supabase";
 import { useSession } from "@/lib/useSession";
 import { SeatLayoutPreview } from "./carpool/SeatLayout";
@@ -54,6 +55,9 @@ function VehicleCard({
   onEdit: (() => void) | null;
 }) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
+  const editBtnSize = isMobile ? 28 : 36;
+  const editIconSize = isMobile ? 13 : 17;
   const total = layoutTotal(vehicle.seat_layout);
   const free = Math.max(0, total - vehicle.occupied_count);
   const departureDate = formatDate(vehicle.departure_date, locale);
@@ -61,112 +65,105 @@ function VehicleCard({
 
   return (
     <Card className="mb-3 overflow-hidden p-0">
-      <View className="flex-row items-stretch">
-        <Pressable
-          onPress={onPress}
-          className="flex-1 flex-row items-center p-4 active:opacity-90"
-        >
-          <Avatar
-            src={vehicle.driver_avatar_url ?? undefined}
-            initials={initialsOf(vehicle.driver_full_name)}
-            size="md"
-            className="mr-3"
-          />
-          <View className="flex-1 pr-2">
-            <Text
-              numberOfLines={1}
-              style={{
-                fontSize: 16,
-                fontWeight: "700",
-                color: "#1A1A1A",
-              }}
-            >
-              {vehicle.description ?? vehicle.driver_full_name ?? "—"}
-            </Text>
-            <Text variant="caption" numberOfLines={1}>
-              {t("carpool.drivenBy", {
-                name: vehicle.driver_full_name ?? "?",
-              })}
-            </Text>
-            {vehicle.departure_location || vehicle.arrival_location ? (
-              <Text variant="caption" numberOfLines={1} className="mt-0.5">
-                {vehicle.departure_location ?? "?"}
-                {vehicle.arrival_location
-                  ? ` → ${vehicle.arrival_location}`
-                  : ""}
-              </Text>
-            ) : null}
-            {departureDate ? (
-              <Text variant="caption" numberOfLines={1}>
-                {departureDate}
-              </Text>
-            ) : null}
-          </View>
-          <View className="items-end ml-2" style={{ gap: 6 }}>
-            <SeatLayoutPreview
-              layout={vehicle.seat_layout}
-              seatSize={10}
-              gap={3}
-            />
-            <Text
-              variant="caption"
-              style={{
-                color: isFull ? "#A3A3A3" : "#6050DC",
-                fontWeight: "700",
-                fontSize: 11,
-              }}
-            >
-              {isFull
-                ? t("carpool.fullVehicle")
-                : t("carpool.seatSummary", { free, total })}
-            </Text>
-            <View
-              className="flex-row items-center justify-center self-center px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: "#FEF3C7", gap: 3 }}
-            >
-              <Text
-                style={{
-                  color: "#78350F",
-                  fontWeight: "700",
-                  fontSize: 10,
-                  textAlign: "center",
-                }}
-              >
-                {vehicle.journey_type === "outbound"
-                  ? `→ ${t("carpool.journeyOutbound")}`
-                  : `← ${t("carpool.journeyReturn")}`}
-              </Text>
-              {vehicle.linked_vehicle_id ? (
-                <Ionicons name="link" size={10} color="#78350F" />
-              ) : null}
-            </View>
-          </View>
-        </Pressable>
-        {onEdit ? (
-          <Pressable
-            onPress={onEdit}
-            hitSlop={6}
-            accessibilityLabel={t("carpool.editAction")}
-            className="items-center justify-center active:opacity-70"
+      <Pressable
+        onPress={onPress}
+        className="flex-row items-center active:opacity-90"
+        style={{ paddingLeft: 10, paddingRight: 16, paddingVertical: 16 }}
+      >
+        <Avatar
+          src={vehicle.driver_avatar_url ?? undefined}
+          initials={initialsOf(vehicle.driver_full_name)}
+          size="md"
+          className="mr-2"
+        />
+        <View className="flex-1 pr-2" style={{ paddingRight: onEdit ? 36 : 8 }}>
+          <Text
+            numberOfLines={1}
             style={{
-              width: 52,
-              borderLeftWidth: 1,
-              borderLeftColor: "#E8E3DB",
+              fontSize: 16,
+              fontWeight: "700",
+              color: "#1A1A1A",
             }}
           >
-            <View
-              className="items-center justify-center rounded-full"
+            {vehicle.description ?? vehicle.driver_full_name ?? "—"}
+          </Text>
+          <Text variant="caption" numberOfLines={1}>
+            {t("carpool.drivenBy", {
+              name: vehicle.driver_full_name ?? "?",
+            })}
+          </Text>
+          {vehicle.departure_location || vehicle.arrival_location ? (
+            <Text variant="caption" numberOfLines={1} className="mt-0.5">
+              {vehicle.departure_location ?? "?"}
+              {vehicle.arrival_location
+                ? ` → ${vehicle.arrival_location}`
+                : ""}
+            </Text>
+          ) : null}
+          {departureDate ? (
+            <Text variant="caption" numberOfLines={1}>
+              {departureDate}
+            </Text>
+          ) : null}
+        </View>
+        <View className="items-end ml-2" style={{ gap: 6 }}>
+          <SeatLayoutPreview
+            layout={vehicle.seat_layout}
+            seatSize={10}
+            gap={3}
+          />
+          <Text
+            variant="caption"
+            style={{
+              color: isFull ? "#A3A3A3" : "#6050DC",
+              fontWeight: "700",
+              fontSize: 11,
+            }}
+          >
+            {isFull
+              ? t("carpool.fullVehicle")
+              : t("carpool.seatSummary", { free, total })}
+          </Text>
+          <View
+            className="flex-row items-center justify-center self-center px-2 py-0.5 rounded-full"
+            style={{ backgroundColor: "#FEF3C7", gap: 3 }}
+          >
+            <Text
               style={{
-                width: 32,
-                height: 32,
-                backgroundColor: "#EEECFC",
+                color: "#78350F",
+                fontWeight: "700",
+                fontSize: 10,
+                textAlign: "center",
               }}
             >
-              <Ionicons name="pencil" size={14} color="#6050DC" />
-            </View>
-          </Pressable>
-        ) : null}
-      </View>
+              {vehicle.journey_type === "outbound"
+                ? `→ ${t("carpool.journeyOutbound")}`
+                : `← ${t("carpool.journeyReturn")}`}
+            </Text>
+            {vehicle.linked_vehicle_id ? (
+              <Ionicons name="link" size={10} color="#78350F" />
+            ) : null}
+          </View>
+        </View>
+      </Pressable>
+      {onEdit ? (
+        <Pressable
+          onPress={onEdit}
+          hitSlop={10}
+          accessibilityLabel={t("carpool.editAction")}
+          className="items-center justify-center rounded-full active:opacity-70"
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            width: editBtnSize,
+            height: editBtnSize,
+            backgroundColor: "#EEECFC",
+          }}
+        >
+          <Ionicons name="pencil" size={editIconSize} color="#6050DC" />
+        </Pressable>
+      ) : null}
     </Card>
   );
 }

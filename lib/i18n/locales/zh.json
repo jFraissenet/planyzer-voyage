@@ -5,7 +5,8 @@
     "error": "错误",
     "back": "返回",
     "ok": "确定",
-    "cancel": "取消"
+    "cancel": "取消",
+    "confirm": "确认"
   },
   "auth": {
     "switcher": {
@@ -92,6 +93,28 @@
       "errorGeneric": "保存失败",
       "action": "编辑"
     },
+    "share": {
+      "action": "分享",
+      "button": "分享",
+      "message": "加入 Planyzer 上的 \"{{title}}\":",
+      "copied": "链接已复制到剪贴板",
+      "copyManual": "复制此链接并分享",
+      "sectionLabel": "分享链接",
+      "activeHint": "分享链接已启用。任何拥有该链接的人都可以加入此活动。",
+      "disabledHint": "当前没有启用的链接。首次分享时将自动生成。",
+      "rotateAction": "重新生成链接",
+      "rotateConfirm": "重新生成链接?已分享的链接将失效。",
+      "disableAction": "停用",
+      "disableConfirm": "停用该链接?他人将无法通过现有链接加入。"
+    },
+    "editTool": {
+      "title": "编辑工具",
+      "subtitle": "修改名称或可见性",
+      "action": "编辑",
+      "save": "保存",
+      "saving": "保存中...",
+      "errorGeneric": "保存失败"
+    },
     "newTool": {
       "title": "新建工具",
       "typeLabel": "工具类型",
@@ -167,7 +190,7 @@
     "restrictedWarningTitle": "只有你一个人",
     "restrictedWarningBody": "这是受限工具。邀请活动成员，他们才能看到。",
     "restrictedWarningCTA": "立即邀请",
-    "publicInfoTitle": "活动全体成员可见",
+    "publicInfoTitle": "所有人可见",
     "publicInfoBody": "活动的所有参与者都能看到并使用此工具。"
   },
   "carpool": {
@@ -342,6 +365,17 @@
     "removeConfirm": "将 {{name}} 从活动中移除？",
     "close": "关闭",
     "participantsSection": "参与者"
+  },
+  "invitePage": {
+    "title": "邀请",
+    "organizedBy": "由 {{name}} 发起",
+    "participantCount_other": "{{count}} 名参与者",
+    "join": "加入活动",
+    "joining": "加入中…",
+    "connectToJoin": "登录以加入",
+    "invalidToken": "该链接已失效",
+    "joinError": "加入失败,请重试",
+    "backHome": "返回首页"
   },
   "profile": {
     "title": "个人资料",

@@ -351,6 +351,91 @@ export async function isToolAdmin(toolId: string): Promise<boolean> {
   return data === true;
 }
 
+export async function updateEventTool(
+  toolId: string,
+  input: {
+    event_tool_name?: string;
+    event_tool_visibility?: "all" | "restricted";
+  },
+): Promise<void> {
+  const patch: Record<string, unknown> = {};
+  if (input.event_tool_name !== undefined)
+    patch.event_tool_name = input.event_tool_name;
+  if (input.event_tool_visibility !== undefined)
+    patch.event_tool_visibility = input.event_tool_visibility;
+  if (Object.keys(patch).length === 0) return;
+  const { error } = await supabase
+    .from("event_tools")
+    .update(patch)
+    .eq("event_tool_id", toolId);
+  if (error) throw error;
+}
+
+export type EventPreview = {
+  event_id: string;
+  event_title: string;
+  event_description: string | null;
+  event_start_date: string | null;
+  event_end_date: string | null;
+  organizer_name: string | null;
+  organizer_avatar_url: string | null;
+  participant_count: number;
+};
+
+export async function ensureEventShareToken(eventId: string): Promise<string> {
+  const { data, error } = await supabase.rpc("ensure_event_share_token", {
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
+export async function rotateEventShareToken(eventId: string): Promise<string> {
+  const { data, error } = await supabase.rpc("rotate_event_share_token", {
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
+export async function disableEventShareToken(eventId: string): Promise<void> {
+  const { error } = await supabase.rpc("disable_event_share_token", {
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+}
+
+export async function getEventShareToken(
+  eventId: string,
+): Promise<string | null> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("event_share_token")
+    .eq("event_id", eventId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data?.event_share_token as string | null) ?? null;
+}
+
+export async function getEventByShareToken(
+  token: string,
+): Promise<EventPreview | null> {
+  const { data, error } = await supabase.rpc("get_event_by_share_token", {
+    p_token: token,
+  });
+  if (error) throw error;
+  const rows = (data ?? []) as EventPreview[];
+  return rows[0] ?? null;
+}
+
+export async function joinEventViaToken(token: string): Promise<string> {
+  const { data, error } = await supabase.rpc("join_event_via_token", {
+    p_token: token,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
 export async function createEventTool(input: {
   event_tool_event_id: string;
   event_tool_type_code: string;

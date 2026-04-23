@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Button, DateTimeInput, Input, Text } from "@/components/ui";
-import { updateEvent, type Event } from "@/lib/events";
+import {
+  disableEventShareToken,
+  getEventShareToken,
+  rotateEventShareToken,
+  updateEvent,
+  type Event,
+} from "@/lib/events";
 
 function isoToLocalInput(iso: string | null): string {
   if (!iso) return "";
@@ -65,6 +71,10 @@ export function EditEventModal({
     form?: string;
   }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [shareTokenStatus, setShareTokenStatus] = useState<
+    "unknown" | "active" | "disabled"
+  >("unknown");
+  const [tokenBusy, setTokenBusy] = useState(false);
 
   useEffect(() => {
     if (visible && event) {
@@ -74,8 +84,53 @@ export function EditEventModal({
       setEnd(isoToLocalInput(event.event_end_date));
       setErrors({});
       setSubmitting(false);
+      setShareTokenStatus("unknown");
+      void getEventShareToken(event.event_id)
+        .then((tok) => setShareTokenStatus(tok ? "active" : "disabled"))
+        .catch(() => setShareTokenStatus("disabled"));
     }
   }, [visible, event]);
+
+  const confirm = useCallback(
+    (msg: string, run: () => void) => {
+      if (Platform.OS === "web") {
+        // eslint-disable-next-line no-alert
+        if (window.confirm(msg)) run();
+        return;
+      }
+      Alert.alert(msg, undefined, [
+        { text: t("common.cancel"), style: "cancel" },
+        { text: t("common.confirm"), onPress: run },
+      ]);
+    },
+    [t],
+  );
+
+  const handleRotate = useCallback(() => {
+    if (!event) return;
+    confirm(t("events.share.rotateConfirm"), async () => {
+      setTokenBusy(true);
+      try {
+        await rotateEventShareToken(event.event_id);
+        setShareTokenStatus("active");
+      } finally {
+        setTokenBusy(false);
+      }
+    });
+  }, [confirm, event, t]);
+
+  const handleDisable = useCallback(() => {
+    if (!event) return;
+    confirm(t("events.share.disableConfirm"), async () => {
+      setTokenBusy(true);
+      try {
+        await disableEventShareToken(event.event_id);
+        setShareTokenStatus("disabled");
+      } finally {
+        setTokenBusy(false);
+      }
+    });
+  }, [confirm, event, t]);
 
   const handleSubmit = async () => {
     if (!event) return;
@@ -186,6 +241,54 @@ export function EditEventModal({
                 onChange={setEnd}
                 error={errors.end}
               />
+            </View>
+
+            <SectionLabel>{t("events.share.sectionLabel")}</SectionLabel>
+            <View
+              className="rounded-xl p-3 mb-5"
+              style={{ backgroundColor: "#F5F2EA" }}
+            >
+              <Text variant="caption" className="mb-3">
+                {shareTokenStatus === "active"
+                  ? t("events.share.activeHint")
+                  : t("events.share.disabledHint")}
+              </Text>
+              <View className="flex-row flex-wrap" style={{ gap: 8 }}>
+                <Pressable
+                  onPress={handleRotate}
+                  disabled={tokenBusy}
+                  className="px-3 py-1.5 rounded-full active:opacity-70"
+                  style={{
+                    backgroundColor: "#EEECFC",
+                    opacity: tokenBusy ? 0.6 : 1,
+                  }}
+                >
+                  <Text
+                    variant="label"
+                    style={{ color: "#6050DC", fontWeight: "700" }}
+                  >
+                    {t("events.share.rotateAction")}
+                  </Text>
+                </Pressable>
+                {shareTokenStatus === "active" ? (
+                  <Pressable
+                    onPress={handleDisable}
+                    disabled={tokenBusy}
+                    className="px-3 py-1.5 rounded-full active:opacity-70"
+                    style={{
+                      backgroundColor: "#FEE2E2",
+                      opacity: tokenBusy ? 0.6 : 1,
+                    }}
+                  >
+                    <Text
+                      variant="label"
+                      style={{ color: "#991B1B", fontWeight: "700" }}
+                    >
+                      {t("events.share.disableAction")}
+                    </Text>
+                  </Pressable>
+                ) : null}
+              </View>
             </View>
 
             {errors.form ? (

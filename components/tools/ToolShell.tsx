@@ -9,6 +9,7 @@ export type ToolProps = {
   onBack: () => void;
   isToolAdmin: boolean;
   onManageMembers: () => void;
+  onEdit?: () => void;
 };
 
 export function ToolShell({
@@ -17,6 +18,7 @@ export function ToolShell({
   onBack,
   isToolAdmin,
   onManageMembers,
+  onEdit,
   children,
 }: ToolProps & { children?: React.ReactNode }) {
   const { t } = useTranslation();
@@ -33,31 +35,39 @@ export function ToolShell({
         title={tool.event_tool_name}
         subtitle={typeLabel}
         onBack={onBack}
+        onTitlePress={isToolAdmin && onEdit ? onEdit : undefined}
+        actionLabel={t("events.editTool.action")}
       />
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 120 }}>
         <View
           className="flex-row items-center flex-wrap mb-6"
-          style={{ gap: 8 }}
+          style={{ gap: 6 }}
         >
           <View
-            className="px-3 py-1.5 rounded-full"
+            className="px-2.5 py-1 rounded-full"
             style={{ backgroundColor: "#EEECFC" }}
           >
             <Text
-              variant="label"
-              style={{ color: "#6050DC", fontWeight: "700" }}
+              style={{
+                color: "#6050DC",
+                fontWeight: "700",
+                fontSize: 12,
+              }}
             >
               {t("toolDetail.participants", { count: participantCount })}
             </Text>
           </View>
           {!isRestricted ? (
             <View
-              className="px-3 py-1.5 rounded-full"
+              className="px-2.5 py-1 rounded-full"
               style={{ backgroundColor: "#EEECFC" }}
             >
               <Text
-                variant="label"
-                style={{ color: "#6050DC", fontWeight: "700" }}
+                style={{
+                  color: "#6050DC",
+                  fontWeight: "700",
+                  fontSize: 12,
+                }}
               >
                 🌍 {t("toolDetail.publicInfoTitle")}
               </Text>
@@ -66,12 +76,15 @@ export function ToolShell({
           {canManage ? (
             <Pressable
               onPress={onManageMembers}
-              className="px-3 py-1.5 rounded-full"
+              className="px-2.5 py-1 rounded-full"
               style={{ backgroundColor: "#FEF3C7" }}
             >
               <Text
-                variant="label"
-                style={{ color: "#78350F", fontWeight: "700" }}
+                style={{
+                  color: "#78350F",
+                  fontWeight: "700",
+                  fontSize: 12,
+                }}
               >
                 {t("toolDetail.manageMembers")}
               </Text>

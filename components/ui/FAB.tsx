@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
+import { useIsMobile } from "@/lib/responsive";
 import { Text } from "./Text";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -18,7 +19,9 @@ export function FAB({
   label,
   accessibilityLabel,
 }: Props) {
-  const size = 64;
+  const isMobile = useIsMobile();
+  const size = isMobile ? 64 : 76;
+  const iconSize = isMobile ? 30 : 36;
   const radius = size / 2;
   return (
     <View pointerEvents="box-none" className="absolute right-6 bottom-6">
@@ -49,7 +52,7 @@ export function FAB({
               elevation: 12,
             }}
           >
-            <Ionicons name={icon} size={30} color="#fff" />
+            <Ionicons name={icon} size={iconSize} color="#fff" />
             {label ? (
               <Text
                 className="ml-2 font-bold"

@@ -5,12 +5,15 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  Share,
   View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SvgUri } from "react-native-svg";
 import { EditEventModal } from "@/components/EditEventModal";
+import { EditToolModal } from "@/components/EditToolModal";
 import { InviteModal } from "@/components/InviteModal";
 import { Button, Card, FAB, Input, ScreenHeader, Text } from "@/components/ui";
 import {
@@ -18,12 +21,14 @@ import {
   EventTool,
   ToolType,
   createEventTool,
+  ensureEventShareToken,
   getEvent,
   getMyEventRole,
   listEventTools,
   listParticipants,
   listToolTypes,
 } from "@/lib/events";
+import { useIsMobile } from "@/lib/responsive";
 import { useSession } from "@/lib/useSession";
 
 function formatDateRange(
@@ -65,19 +70,28 @@ function ToolCard({
   tool,
   iconUri,
   onPress,
+  onEdit,
 }: {
   tool: EventTool;
   iconUri: string | null;
   onPress: () => void;
+  onEdit: (() => void) | null;
 }) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
+  const badgeSize = isMobile ? 20 : 26;
+  const badgeIconSize = isMobile ? 11 : 14;
+  const lockFontSize = isMobile ? 11 : 14;
   const typeLabel = t(`tools.${tool.event_tool_type_code}.name`, {
     defaultValue: tool.event_tool_type_code,
   });
   const isRestricted = tool.event_tool_visibility === "restricted";
   return (
-    <Card pressable onPress={onPress} className="mb-3">
-      <View className="flex-row items-center">
+    <Card className="mb-3 overflow-hidden p-0">
+      <Pressable
+        onPress={onPress}
+        className="flex-row items-center p-4 active:opacity-90"
+      >
         <View
           className="mr-3 items-center justify-center rounded-2xl"
           style={{ width: 48, height: 48, backgroundColor: "#EEECFC" }}
@@ -85,23 +99,57 @@ function ToolCard({
           <ToolIcon uri={iconUri} size={28} />
         </View>
         <View className="flex-1">
-          <Text variant="h3">{tool.event_tool_name}</Text>
-          <Text variant="caption">{typeLabel}</Text>
-        </View>
-        {isRestricted ? (
-          <View
-            className="px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: "#FEF3C7" }}
+          <Text
+            numberOfLines={2}
+            style={{
+              color: "#1A1A1A",
+              fontSize: 15,
+              fontWeight: "700",
+            }}
           >
-            <Text
-              variant="caption"
-              style={{ color: "#92400E", fontWeight: "600", fontSize: 11 }}
-            >
-              🔒
+            {tool.event_tool_name}
+          </Text>
+          <View
+            className="flex-row items-center mt-0.5"
+            style={{ gap: 6 }}
+          >
+            <Text variant="caption" className="flex-1" numberOfLines={1}>
+              {typeLabel}
             </Text>
+            {isRestricted ? (
+              <View
+                className="items-center justify-center px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "#FEF3C7", height: badgeSize }}
+              >
+                <Text
+                  style={{
+                    color: "#92400E",
+                    fontWeight: "600",
+                    fontSize: lockFontSize,
+                  }}
+                >
+                  🔒
+                </Text>
+              </View>
+            ) : null}
+            {onEdit ? (
+              <Pressable
+                onPress={onEdit}
+                hitSlop={10}
+                accessibilityLabel={t("events.editTool.action")}
+                className="items-center justify-center rounded-full active:opacity-70"
+                style={{
+                  width: badgeSize,
+                  height: badgeSize,
+                  backgroundColor: "#EEECFC",
+                }}
+              >
+                <Ionicons name="pencil" size={badgeIconSize} color="#6050DC" />
+              </Pressable>
+            ) : null}
           </View>
-        ) : null}
-      </View>
+        </View>
+      </Pressable>
     </Card>
   );
 }
@@ -329,6 +377,57 @@ export default function EventDetailScreen() {
   const [newToolOpen, setNewToolOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [editingTool, setEditingTool] = useState<EventTool | null>(null);
+  const [sharing, setSharing] = useState(false);
+
+  const handleShare = useCallback(async () => {
+    if (!event || sharing) return;
+    setSharing(true);
+    try {
+      const token = await ensureEventShareToken(event.event_id);
+      const base =
+        typeof window !== "undefined" && window.location
+          ? window.location.origin
+          : (process.env.EXPO_PUBLIC_APP_URL ?? "https://planyzer.app");
+      const url = `${base}/e/${token}`;
+      const invitation = t("events.share.message", {
+        title: event.event_title,
+      });
+      const fullMessage = `${invitation}\n${url}`;
+      if (
+        Platform.OS === "web" &&
+        typeof navigator !== "undefined" &&
+        typeof (navigator as Navigator & { share?: unknown }).share ===
+          "function"
+      ) {
+        try {
+          await (
+            navigator as Navigator & {
+              share: (d: { title: string; text: string; url: string }) => Promise<void>;
+            }
+          ).share({ title: event.event_title, text: invitation, url });
+        } catch {
+          // user dismissed
+        }
+      } else if (Platform.OS === "web") {
+        try {
+          await navigator.clipboard.writeText(fullMessage);
+          // eslint-disable-next-line no-alert
+          window.alert(t("events.share.copied"));
+        } catch {
+          // eslint-disable-next-line no-alert
+          window.prompt(t("events.share.copyManual"), fullMessage);
+        }
+      } else {
+        await Share.share({ message: fullMessage, title: event.event_title });
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("share failed", err);
+    } finally {
+      setSharing(false);
+    }
+  }, [event, sharing, t]);
 
   const refreshParticipantCount = useCallback(async () => {
     if (!event_id) return;
@@ -423,26 +522,21 @@ export default function EventDetailScreen() {
               </View>
             ) : null}
 
-            <View className="px-6 mb-6 flex-row items-center">
-              <Text variant="h2" className="flex-1">
+            <View className="px-6 mb-4 flex-row items-center">
+              <Text
+                className="flex-1 uppercase"
+                style={{
+                  color: "#6050DC",
+                  fontSize: 12,
+                  fontWeight: "700",
+                  letterSpacing: 1.5,
+                }}
+              >
                 {t("invite.participantsSection")}
               </Text>
-              {participantCount > 0 ? (
-                <View
-                  className="px-2.5 py-0.5 rounded-full mr-2"
-                  style={{ backgroundColor: "#EEECFC" }}
-                >
-                  <Text
-                    variant="caption"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
-                  >
-                    {participantCount}
-                  </Text>
-                </View>
-              ) : null}
               <Pressable
                 onPress={() => setInviteOpen(true)}
-                className="px-3 py-1.5 rounded-full"
+                className="px-3 py-1.5 rounded-full mr-2"
                 style={{ backgroundColor: "#EEECFC" }}
               >
                 <Text
@@ -452,25 +546,61 @@ export default function EventDetailScreen() {
                   {t("invite.button")}
                 </Text>
               </Pressable>
+              <Pressable
+                onPress={handleShare}
+                disabled={sharing}
+                accessibilityLabel={t("events.share.action")}
+                className="flex-row items-center px-3 py-1.5 rounded-full mr-2 active:opacity-70"
+                style={{
+                  backgroundColor: "#EEECFC",
+                  opacity: sharing ? 0.6 : 1,
+                  gap: 4,
+                }}
+              >
+                <Ionicons name="share-outline" size={14} color="#6050DC" />
+                <Text
+                  variant="label"
+                  style={{ color: "#6050DC", fontWeight: "700" }}
+                >
+                  {t("events.share.button")}
+                </Text>
+              </Pressable>
+              <View
+                className="px-2.5 py-0.5 rounded-full"
+                style={{ backgroundColor: "#EEECFC" }}
+              >
+                <Text
+                  variant="caption"
+                  style={{ color: "#6050DC", fontWeight: "700" }}
+                >
+                  {participantCount}
+                </Text>
+              </View>
             </View>
 
             <View className="px-6 mb-3 flex-row items-center">
-              <Text variant="h2" className="flex-1">
+              <Text
+                className="flex-1 uppercase"
+                style={{
+                  color: "#6050DC",
+                  fontSize: 12,
+                  fontWeight: "700",
+                  letterSpacing: 1.5,
+                }}
+              >
                 {t("events.detail.toolsTitle")}
               </Text>
-              {tools.length > 0 ? (
-                <View
-                  className="px-2.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: "#EEECFC" }}
+              <View
+                className="px-2.5 py-0.5 rounded-full"
+                style={{ backgroundColor: "#EEECFC" }}
+              >
+                <Text
+                  variant="caption"
+                  style={{ color: "#6050DC", fontWeight: "700" }}
                 >
-                  <Text
-                    variant="caption"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
-                  >
-                    {tools.length}
-                  </Text>
-                </View>
-              ) : null}
+                  {tools.length}
+                </Text>
+              </View>
             </View>
 
             <View className="px-6">
@@ -489,6 +619,7 @@ export default function EventDetailScreen() {
                         `/events/${tl.event_tool_event_id}/tools/${tl.event_tool_id}`,
                       )
                     }
+                    onEdit={isAdmin ? () => setEditingTool(tl) : null}
                   />
                 ))
               )}
@@ -537,6 +668,16 @@ export default function EventDetailScreen() {
         onClose={() => setEditOpen(false)}
         onSaved={() => {
           setEditOpen(false);
+          load();
+        }}
+      />
+
+      <EditToolModal
+        visible={!!editingTool}
+        tool={editingTool}
+        onClose={() => setEditingTool(null)}
+        onSaved={() => {
+          setEditingTool(null);
           load();
         }}
       />

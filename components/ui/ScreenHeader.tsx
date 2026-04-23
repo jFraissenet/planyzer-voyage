@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useIsMobile } from "@/lib/responsive";
 import { Text } from "./Text";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
@@ -12,6 +13,10 @@ interface Props {
   onAction?: () => void;
   actionIcon?: IconName;
   actionLabel?: string;
+  onSecondaryAction?: () => void;
+  secondaryActionIcon?: IconName;
+  secondaryActionLabel?: string;
+  onTitlePress?: () => void;
 }
 
 export function ScreenHeader({
@@ -21,8 +26,52 @@ export function ScreenHeader({
   onAction,
   actionIcon,
   actionLabel,
+  onSecondaryAction,
+  secondaryActionIcon,
+  secondaryActionLabel,
+  onTitlePress,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const isMobile = useIsMobile();
+  const btnSize = isMobile ? 36 : 44;
+  const backIconSize = isMobile ? 22 : 26;
+  const actionIconSize = isMobile ? 20 : 24;
+
+  const titleStyle = {
+    color: "#1A1A1A",
+    fontSize: 22,
+    fontWeight: "800" as const,
+    letterSpacing: -0.3,
+  };
+
+  const titleNode = onTitlePress ? (
+    <Pressable
+      onPress={onTitlePress}
+      accessibilityLabel={actionLabel ?? title}
+      className="active:opacity-70"
+      style={{ flex: 1, paddingHorizontal: 8 }}
+    >
+      <Text
+        numberOfLines={2}
+        style={{ ...titleStyle, textAlign: "center" }}
+      >
+        {title}
+      </Text>
+    </Pressable>
+  ) : (
+    <Text
+      numberOfLines={2}
+      style={{
+        ...titleStyle,
+        flex: 1,
+        textAlign: "center",
+        paddingHorizontal: 8,
+      }}
+    >
+      {title}
+    </Text>
+  );
+
   return (
     <View
       style={{
@@ -41,52 +90,66 @@ export function ScreenHeader({
             hitSlop={10}
             accessibilityLabel="Back"
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
+              width: btnSize,
+              height: btnSize,
+              borderRadius: btnSize / 2,
               backgroundColor: "rgba(26,26,26,0.08)",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Ionicons name="chevron-back" size={22} color="#1A1A1A" />
+            <Ionicons name="chevron-back" size={backIconSize} color="#1A1A1A" />
           </Pressable>
         ) : (
-          <View style={{ width: 36 }} />
+          <View style={{ width: btnSize }} />
         )}
-        <Text
-          numberOfLines={1}
-          style={{
-            flex: 1,
-            color: "#1A1A1A",
-            fontSize: 22,
-            fontWeight: "800",
-            letterSpacing: -0.3,
-            textAlign: "center",
-            paddingHorizontal: 8,
-          }}
-        >
-          {title}
-        </Text>
-        {onAction && actionIcon ? (
-          <Pressable
-            onPress={onAction}
-            hitSlop={10}
-            accessibilityLabel={actionLabel ?? "Action"}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              backgroundColor: "rgba(26,26,26,0.08)",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name={actionIcon} size={20} color="#1A1A1A" />
-          </Pressable>
-        ) : (
-          <View style={{ width: 36 }} />
-        )}
+        {titleNode}
+        <View className="flex-row items-center" style={{ gap: 6 }}>
+          {onSecondaryAction && secondaryActionIcon ? (
+            <Pressable
+              onPress={onSecondaryAction}
+              hitSlop={10}
+              accessibilityLabel={secondaryActionLabel ?? "Action"}
+              style={{
+                width: btnSize,
+                height: btnSize,
+                borderRadius: btnSize / 2,
+                backgroundColor: "rgba(26,26,26,0.08)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons
+                name={secondaryActionIcon}
+                size={actionIconSize}
+                color="#1A1A1A"
+              />
+            </Pressable>
+          ) : null}
+          {onAction && actionIcon ? (
+            <Pressable
+              onPress={onAction}
+              hitSlop={10}
+              accessibilityLabel={actionLabel ?? "Action"}
+              style={{
+                width: btnSize,
+                height: btnSize,
+                borderRadius: btnSize / 2,
+                backgroundColor: "rgba(26,26,26,0.08)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons
+                name={actionIcon}
+                size={actionIconSize}
+                color="#1A1A1A"
+              />
+            </Pressable>
+          ) : !onSecondaryAction ? (
+            <View style={{ width: btnSize }} />
+          ) : null}
+        </View>
       </View>
       {subtitle ? (
         <Text

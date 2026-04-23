@@ -22,6 +22,7 @@ import {
   type VehicleStop,
 } from "@/lib/carpool";
 import type { EffectiveMember } from "@/lib/expenses";
+import { useIsMobile } from "@/lib/responsive";
 import { SeatLayoutInteractive, type SeatState } from "./SeatLayout";
 import { VehicleEditModal } from "./VehicleEditModal";
 
@@ -71,6 +72,9 @@ export function VehicleDetailModal({
   onDeleted,
 }: Props) {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
+  const titlePencilSize = isMobile ? 14 : 18;
+  const journeyIconSize = isMobile ? 11 : 14;
   const [seats, setSeats] = useState<VehicleSeat[]>([]);
   const [stops, setStops] = useState<VehicleStop[]>([]);
   const [activeSeatIndex, setActiveSeatIndex] = useState<number | null>(null);
@@ -270,29 +274,27 @@ export function VehicleDetailModal({
                   : `← ${t("carpool.journeyReturn")}`}
               </Text>
               {vehicle.linked_vehicle_id ? (
-                <Ionicons name="link" size={11} color="#78350F" />
+                <Ionicons name="link" size={journeyIconSize} color="#78350F" />
               ) : null}
             </View>
-            <View className="flex-row items-start mb-1" style={{ gap: 8 }}>
-              <Text variant="h2" className="flex-1">
+            {canEditVehicle ? (
+              <Pressable
+                onPress={() => setEditOpen(true)}
+                hitSlop={8}
+                accessibilityLabel={t("carpool.editAction")}
+                className="flex-row items-center mb-1 active:opacity-70"
+                style={{ gap: 6 }}
+              >
+                <Text variant="h2" className="flex-1">
+                  {vehicle.description ?? t("carpool.editTitle")}
+                </Text>
+                <Ionicons name="pencil" size={titlePencilSize} color="#78350F" />
+              </Pressable>
+            ) : (
+              <Text variant="h2" className="mb-1">
                 {vehicle.description ?? t("carpool.editTitle")}
               </Text>
-              {canEditVehicle ? (
-                <Pressable
-                  onPress={() => setEditOpen(true)}
-                  hitSlop={8}
-                  accessibilityLabel={t("carpool.editAction")}
-                  className="items-center justify-center rounded-full"
-                  style={{
-                    width: 36,
-                    height: 36,
-                    backgroundColor: "#EEECFC",
-                  }}
-                >
-                  <Ionicons name="pencil" size={18} color="#6050DC" />
-                </Pressable>
-              ) : null}
-            </View>
+            )}
             <Text variant="caption" className="mb-4">
               {t("carpool.drivenBy", {
                 name: vehicle.driver_full_name ?? "?",

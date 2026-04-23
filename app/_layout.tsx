@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { consumePendingInvite } from "@/lib/pendingInvite";
 import { SessionProvider, useSession } from "@/lib/useSession";
 
 const TABLET_BREAKPOINT = 1024;
@@ -51,11 +52,15 @@ function RootLayoutNav() {
   useEffect(() => {
     if (isLoading) return;
     const inAuthGroup = segments[0] === "(auth)";
+    const inInviteGroup = segments[0] === "invite";
 
-    if (!session && !inAuthGroup) {
+    if (!session && !inAuthGroup && !inInviteGroup) {
       router.replace("/(auth)/login");
     } else if (session && inAuthGroup) {
-      router.replace("/(tabs)");
+      void consumePendingInvite().then((token) => {
+        if (token) router.replace(`/invite/${token}`);
+        else router.replace("/(tabs)");
+      });
     }
   }, [session, isLoading, segments]);
 
@@ -74,6 +79,7 @@ function RootLayoutNav() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="invite/[token]" />
       </Stack>
     </WebFrame>
   );

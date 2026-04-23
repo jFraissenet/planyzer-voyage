@@ -1,13 +1,8 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 import { Avatar, Text } from "@/components/ui";
 
-const MOBILE_BREAKPOINT = 640;
-
-export function useIsMobile(): boolean {
-  const { width } = useWindowDimensions();
-  return width < MOBILE_BREAKPOINT;
-}
+export { useIsMobile } from "@/lib/responsive";
 
 export function initialsOf(name: string | null): string {
   if (!name) return "?";

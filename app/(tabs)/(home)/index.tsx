@@ -23,6 +23,7 @@ import {
   listSharedEvents,
   unarchiveEvent,
 } from "@/lib/events";
+import { useIsMobile } from "@/lib/responsive";
 
 function formatDateRange(
   start: string | null,
@@ -58,6 +59,10 @@ function EventRow({
 }) {
   const { t } = useTranslation();
   const router = useRouter();
+  const isMobile = useIsMobile();
+  const iconBtnSize = isMobile ? 24 : 32;
+  const pencilSize = isMobile ? 12 : 16;
+  const archiveSize = isMobile ? 13 : 17;
   const range = formatDateRange(
     event.event_start_date,
     event.event_end_date,
@@ -90,6 +95,10 @@ function EventRow({
     : requestArchive;
   const isAdmin = event.my_role === "admin";
 
+  const archiveIcon: React.ComponentProps<typeof Ionicons>["name"] = archivedMode
+    ? "arrow-undo-outline"
+    : "archive-outline";
+
   return (
     <Card
       pressable
@@ -103,43 +112,51 @@ function EventRow({
           end={{ x: 0, y: 1 }}
           style={{ width: 6 }}
         />
-        <View className="flex-1 flex-row items-start justify-between p-4">
-          <View className="flex-1 pr-3">
-            <Text variant="h3" className="mb-1">
-              {event.event_title}
+        <View className="flex-1 p-4">
+          <Text variant="h3" className="mb-1" numberOfLines={2}>
+            {event.event_title}
+          </Text>
+          <View
+            className="flex-row items-center"
+            style={{ gap: 6 }}
+          >
+            <Text variant="caption" className="flex-1" numberOfLines={1}>
+              {range ?? t("events.card.noDates")}
             </Text>
-            <Text variant="caption">{range ?? t("events.card.noDates")}</Text>
-            {event.event_description ? (
-              <Text variant="body" className="mt-2" numberOfLines={2}>
-                {event.event_description}
-              </Text>
-            ) : null}
-          </View>
-          <View className="flex-row items-center" style={{ gap: 6 }}>
             {isAdmin ? (
               <Pressable
                 onPress={() => onEdit(event)}
                 accessibilityLabel={t("events.edit.action")}
-                hitSlop={8}
-                className="items-center justify-center rounded-full"
+                hitSlop={10}
+                className="items-center justify-center rounded-full active:opacity-70"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: iconBtnSize,
+                  height: iconBtnSize,
                   backgroundColor: "#EEECFC",
                 }}
               >
-                <Ionicons name="pencil" size={18} color="#6050DC" />
+                <Ionicons name="pencil" size={pencilSize} color="#6050DC" />
               </Pressable>
             ) : null}
             <Pressable
               onPress={handleAction}
               accessibilityLabel={actionLabel}
-              className="px-2 py-1"
-              hitSlop={8}
+              hitSlop={10}
+              className="items-center justify-center rounded-full active:opacity-70"
+              style={{
+                width: iconBtnSize,
+                height: iconBtnSize,
+                backgroundColor: "#FEF3C7",
+              }}
             >
-              <Text variant="caption">{actionLabel}</Text>
+              <Ionicons name={archiveIcon} size={archiveSize} color="#92400E" />
             </Pressable>
           </View>
+          {event.event_description ? (
+            <Text variant="body" className="mt-2" numberOfLines={2}>
+              {event.event_description}
+            </Text>
+          ) : null}
         </View>
       </View>
     </Card>
@@ -172,25 +189,35 @@ function Section({
         onPress={() => setOpen((v) => !v)}
         className="flex-row items-center py-2 mb-4"
       >
-        <Text variant="h2" className="flex-1">
+        <Text
+          className="flex-1 uppercase"
+          style={{
+            color: "#6050DC",
+            fontSize: 12,
+            fontWeight: "700",
+            letterSpacing: 1.5,
+          }}
+        >
           {title}
         </Text>
-        {events.length > 0 ? (
-          <View
-            className="mr-3 px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: "#EEECFC" }}
-          >
-            <Text
-              variant="caption"
-              style={{ color: "#6050DC", fontWeight: "700" }}
-            >
-              {events.length}
-            </Text>
-          </View>
-        ) : null}
-        <Text variant="caption" style={{ color: "#6050DC" }}>
+        <Text
+          variant="caption"
+          className="mr-2"
+          style={{ color: "#6050DC" }}
+        >
           {open ? "▾" : "▸"}
         </Text>
+        <View
+          className="px-2.5 py-0.5 rounded-full"
+          style={{ backgroundColor: "#EEECFC" }}
+        >
+          <Text
+            variant="caption"
+            style={{ color: "#6050DC", fontWeight: "700" }}
+          >
+            {events.length}
+          </Text>
+        </View>
       </Pressable>
       {open ? (
         events.length === 0 ? (

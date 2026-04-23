@@ -5,7 +5,8 @@
     "error": "Error",
     "back": "Volver",
     "ok": "OK",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
   },
   "auth": {
     "switcher": {
@@ -92,6 +93,28 @@
       "errorGeneric": "Error al guardar",
       "action": "Editar"
     },
+    "share": {
+      "action": "Compartir",
+      "button": "Compartir",
+      "message": "Únete a \"{{title}}\" en Planyzer:",
+      "copied": "Enlace copiado al portapapeles",
+      "copyManual": "Copia este enlace y compártelo",
+      "sectionLabel": "Enlace para compartir",
+      "activeHint": "El enlace para compartir está activo. Cualquiera con el enlace puede unirse a este evento.",
+      "disabledHint": "No hay enlace activo. Se generará uno al compartir por primera vez.",
+      "rotateAction": "Regenerar enlace",
+      "rotateConfirm": "¿Regenerar el enlace? Los enlaces ya compartidos dejarán de funcionar.",
+      "disableAction": "Desactivar",
+      "disableConfirm": "¿Desactivar el enlace? Nadie podrá unirse mediante un enlace existente."
+    },
+    "editTool": {
+      "title": "Editar herramienta",
+      "subtitle": "Cambia el nombre o la visibilidad",
+      "action": "Editar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "errorGeneric": "Error al guardar"
+    },
     "newTool": {
       "title": "Nueva herramienta",
       "typeLabel": "Tipo de herramienta",
@@ -168,7 +191,7 @@
     "restrictedWarningTitle": "Estás solo aquí",
     "restrictedWarningBody": "Esta herramienta está restringida. Invita a participantes del evento para que puedan verla.",
     "restrictedWarningCTA": "Invitar ahora",
-    "publicInfoTitle": "Abierta a todo el evento",
+    "publicInfoTitle": "Abierta a todos",
     "publicInfoBody": "Todos los participantes del evento pueden ver y usar esta herramienta."
   },
   "carpool": {
@@ -346,6 +369,18 @@
     "removeConfirm": "¿Quitar a {{name}} del evento?",
     "close": "Cerrar",
     "participantsSection": "Participantes"
+  },
+  "invitePage": {
+    "title": "Invitación",
+    "organizedBy": "Organizado por {{name}}",
+    "participantCount_one": "{{count}} participante",
+    "participantCount_other": "{{count}} participantes",
+    "join": "Unirse al evento",
+    "joining": "Añadiendo…",
+    "connectToJoin": "Iniciar sesión para unirse",
+    "invalidToken": "Este enlace ya no es válido",
+    "joinError": "No se pudo unir, inténtalo de nuevo",
+    "backHome": "Volver al inicio"
   },
   "profile": {
     "title": "Perfil",

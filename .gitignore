@@ -43,3 +43,6 @@ yarn-error.*
 
 # Claude Code local state
 .claude/
+
+# Supabase CLI local state
+supabase/.temp/

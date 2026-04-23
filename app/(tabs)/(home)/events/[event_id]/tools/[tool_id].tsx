@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { EditToolModal } from "@/components/EditToolModal";
 import { ToolMembersModal } from "@/components/ToolMembersModal";
 import { getToolComponent } from "@/components/tools";
 import { ScreenHeader, Text } from "@/components/ui";
@@ -32,6 +33,7 @@ export default function ToolDetailScreen() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [membersOpen, setMembersOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const refreshCount = useCallback(async () => {
     if (!tool) return;
@@ -115,6 +117,7 @@ export default function ToolDetailScreen() {
         onBack={goBack}
         isToolAdmin={isAdmin}
         onManageMembers={() => setMembersOpen(true)}
+        onEdit={() => setEditOpen(true)}
       />
       <ToolMembersModal
         visible={membersOpen}
@@ -123,6 +126,19 @@ export default function ToolDetailScreen() {
         currentUserId={currentUserId}
         onClose={() => setMembersOpen(false)}
         onChanged={refreshCount}
+      />
+      <EditToolModal
+        visible={editOpen}
+        tool={tool}
+        onClose={() => setEditOpen(false)}
+        onSaved={() => {
+          setEditOpen(false);
+          // Refetch tool to get updated name/visibility
+          void (async () => {
+            const updated = await getEventTool(tool.event_tool_id);
+            if (updated) setTool(updated);
+          })();
+        }}
       />
     </>
   );
