@@ -11,9 +11,12 @@ import { useTranslation } from "react-i18next";
 import { Avatar, Button, Input, Text } from "@/components/ui";
 import {
   addParticipant,
+  listFormerParticipants,
   listParticipants,
+  rejoinParticipant,
   removeParticipant,
   searchUsers,
+  type FormerParticipantEntry,
   type ParticipantEntry,
   type UserSearchResult,
 } from "@/lib/events";
@@ -69,8 +72,12 @@ export function InviteModal({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<UserSearchResult[]>([]);
   const [participants, setParticipants] = useState<ParticipantEntry[]>([]);
+  const [formerMembers, setFormerMembers] = useState<FormerParticipantEntry[]>(
+    [],
+  );
   const [searching, setSearching] = useState(false);
   const [busyUserId, setBusyUserId] = useState<string | null>(null);
+  const [formerOpen, setFormerOpen] = useState(false);
 
   const loadParticipants = useCallback(async () => {
     try {
@@ -79,7 +86,17 @@ export function InviteModal({
     } catch {
       setParticipants([]);
     }
-  }, [eventId]);
+    if (isAdmin) {
+      try {
+        const f = await listFormerParticipants(eventId);
+        setFormerMembers(f);
+      } catch {
+        setFormerMembers([]);
+      }
+    } else {
+      setFormerMembers([]);
+    }
+  }, [eventId, isAdmin]);
 
   useEffect(() => {
     if (visible) {
@@ -114,6 +131,10 @@ export function InviteModal({
     () => new Set(participants.map((p) => p.user_id)),
     [participants],
   );
+  const formerIds = useMemo(
+    () => new Set(formerMembers.map((f) => f.user_id)),
+    [formerMembers],
+  );
 
   const handleAdd = async (user: UserSearchResult) => {
     setBusyUserId(user.user_id);
@@ -127,13 +148,14 @@ export function InviteModal({
   };
 
   const confirmRemove = (p: ParticipantEntry) => {
-    const msg = t("invite.removeConfirm", { name: p.full_name ?? "?" });
+    const title = t("invite.removeConfirm", { name: p.full_name ?? "?" });
+    const body = t("invite.removeConfirmBody");
     if (Platform.OS === "web") {
       // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void doRemove(p.user_id);
+      if (window.confirm(`${title}\n\n${body}`)) void doRemove(p.user_id);
       return;
     }
-    Alert.alert(msg, undefined, [
+    Alert.alert(title, body, [
       { text: t("common.cancel"), style: "cancel" },
       {
         text: t("invite.remove"),
@@ -147,6 +169,17 @@ export function InviteModal({
     setBusyUserId(userId);
     try {
       await removeParticipant(eventId, userId);
+      await loadParticipants();
+      onChanged?.();
+    } finally {
+      setBusyUserId(null);
+    }
+  };
+
+  const handleRejoin = async (userId: string) => {
+    setBusyUserId(userId);
+    try {
+      await rejoinParticipant(eventId, userId);
       await loadParticipants();
       onChanged?.();
     } finally {
@@ -201,6 +234,7 @@ export function InviteModal({
                     ) : (
                       results.map((u) => {
                         const already = participantIds.has(u.user_id);
+                        const isFormer = formerIds.has(u.user_id);
                         const busy = busyUserId === u.user_id;
                         return (
                           <View
@@ -217,6 +251,11 @@ export function InviteModal({
                               <Text numberOfLines={1}>
                                 {u.full_name ?? "?"}
                               </Text>
+                              {isFormer ? (
+                                <Text variant="caption">
+                                  {t("invite.leftMember")}
+                                </Text>
+                              ) : null}
                             </View>
                             {already ? (
                               <Text
@@ -225,6 +264,26 @@ export function InviteModal({
                               >
                                 {t("invite.alreadyMember")}
                               </Text>
+                            ) : isFormer ? (
+                              <Pressable
+                                onPress={() => handleRejoin(u.user_id)}
+                                disabled={busy}
+                                className="px-3 py-1.5 rounded-full"
+                                style={{
+                                  backgroundColor: "#EEECFC",
+                                  opacity: busy ? 0.5 : 1,
+                                }}
+                              >
+                                <Text
+                                  variant="label"
+                                  style={{
+                                    color: "#6050DC",
+                                    fontWeight: "700",
+                                  }}
+                                >
+                                  {t("invite.rejoin")}
+                                </Text>
+                              </Pressable>
                             ) : (
                               <Pressable
                                 onPress={() => handleAdd(u)}
@@ -303,6 +362,81 @@ export function InviteModal({
                 );
               })}
             </View>
+
+            {isAdmin && formerMembers.length > 0 ? (
+              <View className="mb-5">
+                <Pressable
+                  onPress={() => setFormerOpen((v) => !v)}
+                  className="flex-row items-center py-2"
+                >
+                  <Text
+                    className="flex-1 uppercase"
+                    style={{
+                      color: "#6050DC",
+                      fontSize: 11,
+                      fontWeight: "700",
+                      letterSpacing: 1.2,
+                    }}
+                  >
+                    {t("invite.formerMembers", {
+                      count: formerMembers.length,
+                    })}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    style={{ color: "#6050DC" }}
+                  >
+                    {formerOpen ? "▾" : "▸"}
+                  </Text>
+                </Pressable>
+                {formerOpen
+                  ? formerMembers.map((f) => {
+                      const busy = busyUserId === f.user_id;
+                      return (
+                        <View
+                          key={f.user_id}
+                          className="flex-row items-center py-2"
+                          style={{ opacity: 0.6 }}
+                        >
+                          <Avatar
+                            src={f.avatar_url ?? undefined}
+                            initials={initialsOf(f.full_name)}
+                            size="sm"
+                            className="mr-3"
+                          />
+                          <View className="flex-1 pr-2">
+                            <Text numberOfLines={1}>
+                              {f.full_name ?? "?"}
+                            </Text>
+                            <Text variant="caption">
+                              {t("invite.leftMember")}
+                            </Text>
+                          </View>
+                          <Pressable
+                            onPress={() => handleRejoin(f.user_id)}
+                            disabled={busy}
+                            className="px-3 py-1.5 rounded-full"
+                            style={{
+                              backgroundColor: "#EEECFC",
+                              opacity: busy ? 0.5 : 1,
+                            }}
+                          >
+                            <Text
+                              variant="label"
+                              style={{
+                                color: "#6050DC",
+                                fontWeight: "700",
+                              }}
+                            >
+                              {t("invite.rejoin")}
+                            </Text>
+                          </Pressable>
+                        </View>
+                      );
+                    })
+                  : null}
+              </View>
+            ) : null}
 
             <Button
               variant="ghost"

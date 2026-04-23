@@ -290,11 +290,39 @@ export async function removeParticipant(
   eventId: string,
   userId: string,
 ): Promise<void> {
-  const { error } = await supabase
-    .from("event_participants")
-    .delete()
-    .eq("event_participant_event_id", eventId)
-    .eq("event_participant_user_id", userId);
+  const { error } = await supabase.rpc("soft_remove_participant", {
+    p_event_id: eventId,
+    p_user_id: userId,
+  });
+  if (error) throw error;
+}
+
+export type FormerParticipantEntry = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role_code: string;
+  left_at: string;
+};
+
+export async function listFormerParticipants(
+  eventId: string,
+): Promise<FormerParticipantEntry[]> {
+  const { data, error } = await supabase.rpc("get_event_former_participants", {
+    p_event_id: eventId,
+  });
+  if (error) throw error;
+  return (data ?? []) as FormerParticipantEntry[];
+}
+
+export async function rejoinParticipant(
+  eventId: string,
+  userId: string,
+): Promise<void> {
+  const { error } = await supabase.rpc("rejoin_participant", {
+    p_event_id: eventId,
+    p_user_id: userId,
+  });
   if (error) throw error;
 }
 

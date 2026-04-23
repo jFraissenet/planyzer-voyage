@@ -367,8 +367,13 @@
     "currentParticipants": "In the event ({{count}})",
     "remove": "Remove",
     "removeConfirm": "Remove {{name}} from the event?",
+    "removeConfirmBody": "They will lose access. Their contributions (expenses, vehicles, notes) stay visible. You can re-add them later.",
     "close": "Close",
-    "participantsSection": "Participants"
+    "participantsSection": "Participants",
+    "formerMembers_one": "Former member ({{count}})",
+    "formerMembers_other": "Former members ({{count}})",
+    "leftMember": "Left the event",
+    "rejoin": "Re-add"
   },
   "invitePage": {
     "title": "Invitation",

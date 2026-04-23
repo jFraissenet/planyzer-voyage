@@ -362,9 +362,13 @@
     "alreadyMember": "已是成员",
     "currentParticipants": "活动成员（{{count}}）",
     "remove": "移除",
-    "removeConfirm": "将 {{name}} 从活动中移除？",
+    "removeConfirm": "将 {{name}} 从活动中移除?",
+    "removeConfirmBody": "该成员将失去访问权限。其贡献(支出、车辆、备注)仍可见。稍后可重新添加。",
     "close": "关闭",
-    "participantsSection": "参与者"
+    "participantsSection": "参与者",
+    "formerMembers_other": "曾经成员({{count}})",
+    "leftMember": "已离开活动",
+    "rejoin": "重新添加"
   },
   "invitePage": {
     "title": "邀请",
