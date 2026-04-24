@@ -176,13 +176,18 @@
       "car_sharing": {
         "title": "拼车",
         "body": "一起安排行程：谁和谁同车、几点出发、还剩几个座位。"
+      },
+      "proposals": {
+        "title": "提议",
+        "body": "发起投票或点子板：提出选项、收集投票、一起拍板。"
       }
     }
   },
   "tools": {
     "money": { "name": "账务" },
     "notes": { "name": "笔记" },
-    "car_sharing": { "name": "拼车" }
+    "car_sharing": { "name": "拼车" },
+    "proposals": { "name": "提议" }
   },
   "toolDetail": {
     "participants_other": "{{count}} 名参与者",
@@ -336,6 +341,85 @@
       "minutes_other": "{{count}} 分钟前",
       "hours_other": "{{count}} 小时前",
       "days_other": "{{count}} 天前"
+    }
+  },
+  "proposals": {
+    "add": "新增提议",
+    "empty": "还没有提议——快来添加第一个吧！",
+    "createTitle": "新增提议",
+    "editTitle": "编辑提议",
+    "settings": "设置",
+    "settingsTitle": "设置",
+    "noSettingsHint": "未设置截止日期。所有人都可以提议。",
+    "sectionEssential": "基础信息",
+    "sectionDetails": "详情",
+    "sectionMedia": "图片与链接",
+    "showCommentsCount_other": "{{count}} 条评论",
+    "hideComments": "隐藏评论",
+    "addComment": "评论",
+    "proposedBy": "由 {{name}} 提议",
+    "capacityShort_other": "{{count}} 人",
+    "capacityFull_other": "{{count}} 人",
+    "deadlineAt": "截至 {{date}}",
+    "deadlineLabel": "投票截止日期",
+    "deadlineHint": "留空则不设截止日期",
+    "locked": "提议已锁定",
+    "lockedLabel": "锁定提议",
+    "lockedHint": "只有组织者可以继续添加",
+    "titleLabel": "标题",
+    "titlePlaceholder": "公园酒店、某某餐厅……",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "可选",
+    "priceMinLabel": "最低价格 (€)",
+    "priceMaxLabel": "最高价格 (€)",
+    "capacityMinLabel": "最少人数",
+    "capacityMaxLabel": "最多人数",
+    "capacityUpTo_other": "最多 {{count}} 人",
+    "capacityFullUpTo_other": "最多 {{count}} 人",
+    "errorInvalidPriceRange": "最低价格必须 ≤ 最高价格",
+    "errorInvalidCapacityRange": "最少人数必须 ≤ 最多人数",
+    "locationLabel": "地点",
+    "locationPlaceholder": "地址或场所名称",
+    "locationUrlLabel": "地图链接",
+    "dateStartLabel": "开始",
+    "dateEndLabel": "结束",
+    "datePlaceholder": "YYYY-MM-DD HH:MM",
+    "imagesLabel": "图片",
+    "addImage": "添加",
+    "imagesEmpty": "尚未添加图片。",
+    "imageUrlPlaceholder": "https://…",
+    "linksLabel": "链接",
+    "addLink": "添加",
+    "linksEmpty": "尚未添加链接。",
+    "linkLabelPlaceholder": "标签（可选）",
+    "linkUrlPlaceholder": "https://…",
+    "linksSection": "链接",
+    "yourVote": "你的投票",
+    "changeStatus": "修改状态",
+    "commentsSection_other": "{{count}} 条评论",
+    "commentsEmpty": "暂无评论。",
+    "commentPlaceholder": "添加评论……",
+    "edit": "编辑",
+    "save": "保存",
+    "saving": "保存中……",
+    "cancel": "取消",
+    "delete": "删除",
+    "deleteConfirm": "要删除此提议吗？",
+    "errorTitleRequired": "请填写标题",
+    "errorInvalidDate": "日期格式无效 (YYYY-MM-DD)",
+    "errorEndBeforeStart": "结束日期必须晚于开始日期",
+    "errorInvalidPrice": "价格无效",
+    "errorInvalidCapacity": "容量无效",
+    "errorGeneric": "保存时出错",
+    "status": {
+      "proposed": "提议中",
+      "validated": "已通过",
+      "rejected": "已否决"
+    },
+    "vote": {
+      "for": "赞成",
+      "neutral": "中立",
+      "against": "反对"
     }
   },
   "toolMembers": {

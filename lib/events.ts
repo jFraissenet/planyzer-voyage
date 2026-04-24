@@ -166,6 +166,7 @@ export type EventTool = {
   event_tool_name: string;
   event_tool_visibility: "all" | "restricted";
   event_tool_settings: Record<string, unknown>;
+  event_tool_created_by: string | null;
   event_tool_created_at: string;
   event_tool_updated_at: string;
 };

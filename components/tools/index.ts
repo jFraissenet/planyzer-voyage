@@ -2,16 +2,18 @@ import type { ComponentType } from "react";
 import { CarSharingTool } from "./CarSharingTool";
 import { MoneyTool } from "./MoneyTool";
 import { NotesTool } from "./NotesTool";
+import { ProposalsTool } from "./proposals/ProposalsTool";
 import type { ToolProps } from "./ToolShell";
 
 export { ToolShell } from "./ToolShell";
 export type { ToolProps } from "./ToolShell";
-export { MoneyTool, NotesTool, CarSharingTool };
+export { MoneyTool, NotesTool, CarSharingTool, ProposalsTool };
 
 const TOOL_COMPONENTS: Record<string, ComponentType<ToolProps>> = {
   money: MoneyTool,
   notes: NotesTool,
   car_sharing: CarSharingTool,
+  proposals: ProposalsTool,
 };
 
 export function getToolComponent(
