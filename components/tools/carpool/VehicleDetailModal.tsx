@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -9,7 +10,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Avatar, Button, Input, Text } from "@/components/ui";
+import { Avatar, Button, Input, Text, useToast } from "@/components/ui";
 import {
   addSeatLabel,
   addSeatUser,
@@ -22,6 +23,11 @@ import {
   type VehicleStop,
 } from "@/lib/carpool";
 import type { EffectiveMember } from "@/lib/expenses";
+import {
+  buildMapsUrlFromText,
+  buildTripMapsUrl,
+  shortenAddress,
+} from "@/lib/geocoding";
 import { useIsMobile } from "@/lib/responsive";
 import { SeatLayoutInteractive, type SeatState } from "./SeatLayout";
 import { VehicleEditModal } from "./VehicleEditModal";
@@ -72,6 +78,7 @@ export function VehicleDetailModal({
   onDeleted,
 }: Props) {
   const { t } = useTranslation();
+  const { show: showToast } = useToast();
   const isMobile = useIsMobile();
   const titlePencilSize = isMobile ? 14 : 18;
   const journeyIconSize = isMobile ? 11 : 14;
@@ -166,6 +173,15 @@ export function VehicleDetailModal({
     ]);
   };
 
+  const handleSeatConflict = async () => {
+    showToast(t("carpool.seatConflict"), { variant: "info", duration: 3000 });
+    setActiveSeatIndex(null);
+    setPickerMode(null);
+    setCustomLabel("");
+    await load();
+    onChanged();
+  };
+
   const assignMe = async () => {
     if (activeSeatIndex == null) return;
     setBusy(true);
@@ -174,6 +190,8 @@ export function VehicleDetailModal({
       setActiveSeatIndex(null);
       await load();
       onChanged();
+    } catch {
+      await handleSeatConflict();
     } finally {
       setBusy(false);
     }
@@ -188,6 +206,8 @@ export function VehicleDetailModal({
       setPickerMode(null);
       await load();
       onChanged();
+    } catch {
+      await handleSeatConflict();
     } finally {
       setBusy(false);
     }
@@ -205,6 +225,8 @@ export function VehicleDetailModal({
       setCustomLabel("");
       await load();
       onChanged();
+    } catch {
+      await handleSeatConflict();
     } finally {
       setBusy(false);
     }
@@ -306,15 +328,35 @@ export function VehicleDetailModal({
             departureDate ? (
               <View className="mb-4" style={{ gap: 4 }}>
                 {vehicle.departure_location || vehicle.arrival_location ? (
-                  <Text>
-                    📍{" "}
-                    <Text variant="label">
-                      {vehicle.departure_location ?? "?"}
-                      {vehicle.arrival_location
-                        ? ` → ${vehicle.arrival_location}`
-                        : ""}
+                  <Pressable
+                    onPress={() => {
+                      const url =
+                        buildTripMapsUrl(
+                          vehicle.departure_location,
+                          vehicle.arrival_location,
+                        ) ||
+                        vehicle.departure_location_url ||
+                        vehicle.arrival_location_url ||
+                        (vehicle.departure_location
+                          ? buildMapsUrlFromText(vehicle.departure_location)
+                          : null);
+                      if (url) Linking.openURL(url).catch(() => undefined);
+                    }}
+                    hitSlop={4}
+                    className="active:opacity-70"
+                  >
+                    <Text>
+                      📍{" "}
+                      <Text variant="label">
+                        {vehicle.departure_location
+                          ? shortenAddress(vehicle.departure_location)
+                          : "?"}
+                        {vehicle.arrival_location
+                          ? ` → ${shortenAddress(vehicle.arrival_location)}`
+                          : ""}
+                      </Text>
                     </Text>
-                  </Text>
+                  </Pressable>
                 ) : null}
                 {departureDate ? (
                   <Text>
@@ -344,6 +386,7 @@ export function VehicleDetailModal({
                 layout={vehicle.seat_layout}
                 seats={seats}
                 onSeatPress={handleSeatPress}
+                activeIndex={activeSeatIndex}
               />
             </View>
 

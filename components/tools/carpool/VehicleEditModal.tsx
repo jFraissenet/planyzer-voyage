@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Avatar, Button, DateTimeInput, Input, Text } from "@/components/ui";
+import {
+  AddressInput,
+  Avatar,
+  Button,
+  DateTimeInput,
+  Input,
+  Text,
+} from "@/components/ui";
 import {
   createRoundTripVehicles,
   createVehicle,
@@ -93,8 +100,10 @@ export function VehicleEditModal(props: Props) {
   const [driverId, setDriverId] = useState(currentUserId);
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [locationUrl, setLocationUrl] = useState("");
   const [date, setDate] = useState("");
   const [arrivalLocation, setArrivalLocation] = useState("");
+  const [arrivalLocationUrl, setArrivalLocationUrl] = useState("");
   const [tripMode, setTripMode] = useState<
     "outbound" | "return" | "round_trip"
   >("outbound");
@@ -114,8 +123,10 @@ export function VehicleEditModal(props: Props) {
       setDriverId(props.existingSeats.find((s) => s.seat_index === 0)?.user_id ?? currentUserId);
       setDescription(v.description ?? "");
       setLocation(v.departure_location ?? "");
+      setLocationUrl(v.departure_location_url ?? "");
       setDate(isoToLocalInput(v.departure_date));
       setArrivalLocation(v.arrival_location ?? "");
+      setArrivalLocationUrl(v.arrival_location_url ?? "");
       setTripMode(v.journey_type === "return" ? "return" : "outbound");
       setReturnDate("");
       setStops(props.existingStops.map((s) => s.label));
@@ -125,8 +136,10 @@ export function VehicleEditModal(props: Props) {
       setDriverId(currentUserId);
       setDescription("");
       setLocation("");
+      setLocationUrl("");
       setDate("");
       setArrivalLocation("");
+      setArrivalLocationUrl("");
       setTripMode("outbound");
       setReturnDate("");
       setStops([]);
@@ -176,14 +189,18 @@ export function VehicleEditModal(props: Props) {
     try {
       const dateIso = parseDateInput(date);
       const arrival = arrivalLocation.trim() || null;
+      const arrivalUrl = arrivalLocationUrl.trim() || null;
       const departure = location.trim() || null;
+      const departureUrl = locationUrl.trim() || null;
       const cleanedStops = stops.filter((s) => s.trim().length > 0);
       if (isEdit) {
         await updateVehicle(props.existing.vehicle_id, {
           description: description.trim() || null,
           departure_location: departure,
+          departure_location_url: departureUrl,
           departure_date: dateIso,
           arrival_location: arrival,
+          arrival_location_url: arrivalUrl,
           seat_count: seatCount,
           seat_layout: layout,
           stops: cleanedStops,
@@ -195,8 +212,10 @@ export function VehicleEditModal(props: Props) {
           driver_user_id: driverId,
           description: description.trim() || null,
           outbound_location: departure,
+          outbound_location_url: departureUrl,
           outbound_date: dateIso,
           arrival_location: arrival,
+          arrival_location_url: arrivalUrl,
           return_date: returnIso,
           seat_count: seatCount,
           seat_layout: layout,
@@ -208,8 +227,10 @@ export function VehicleEditModal(props: Props) {
           driver_user_id: driverId,
           description: description.trim() || null,
           departure_location: departure,
+          departure_location_url: departureUrl,
           departure_date: dateIso,
           arrival_location: arrival,
+          arrival_location_url: arrivalUrl,
           seat_count: seatCount,
           seat_layout: layout,
           stops: cleanedStops,
@@ -310,11 +331,18 @@ export function VehicleEditModal(props: Props) {
                 value={description}
                 onChangeText={setDescription}
               />
-              <Input
+              <AddressInput
                 label={t("carpool.departureLocation")}
                 placeholder={t("carpool.departureLocationPlaceholder")}
                 value={location}
-                onChangeText={setLocation}
+                onChangeText={(text) => {
+                  setLocation(text);
+                  if (locationUrl) setLocationUrl("");
+                }}
+                onPickSuggestion={(s) => {
+                  setLocation(s.short);
+                  setLocationUrl(s.mapsUrl);
+                }}
               />
               <DateTimeInput
                 label={t("carpool.departureDate")}
@@ -322,11 +350,18 @@ export function VehicleEditModal(props: Props) {
                 value={date}
                 onChange={setDate}
               />
-              <Input
+              <AddressInput
                 label={t("carpool.arrivalLocation")}
                 placeholder={t("carpool.arrivalLocationPlaceholder")}
                 value={arrivalLocation}
-                onChangeText={setArrivalLocation}
+                onChangeText={(text) => {
+                  setArrivalLocation(text);
+                  if (arrivalLocationUrl) setArrivalLocationUrl("");
+                }}
+                onPickSuggestion={(s) => {
+                  setArrivalLocation(s.short);
+                  setArrivalLocationUrl(s.mapsUrl);
+                }}
               />
             </View>
 

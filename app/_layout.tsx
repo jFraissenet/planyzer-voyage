@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { ToastProvider } from "@/components/ui";
 import { consumePendingInvite } from "@/lib/pendingInvite";
 import { SessionProvider, useSession } from "@/lib/useSession";
 
@@ -88,8 +89,10 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <SessionProvider>
-      <StatusBar style="dark" />
-      <RootLayoutNav />
+      <ToastProvider>
+        <StatusBar style="dark" />
+        <RootLayoutNav />
+      </ToastProvider>
     </SessionProvider>
   );
 }

@@ -42,23 +42,28 @@ function Seat({
   size = 68,
   onPress,
   pressable,
+  selected = false,
 }: {
   state: SeatState;
   size?: number;
   onPress?: () => void;
   pressable?: boolean;
+  selected?: boolean;
 }) {
   const isEmpty = state.kind === "empty";
   const isDriver = state.kind === "driver";
-  const isLabel = state.kind === "label";
   const bg = isEmpty ? "#FFFFFF" : isDriver ? "#FEF3C7" : "#EEECFC";
   const borderColor = isEmpty ? "#E8E3DB" : isDriver ? "#FDE68A" : "#DDD6FE";
   const labelColor = isDriver ? "#78350F" : "#4F3FD1";
 
-  const content = () => {
+  const renderContent = (active: boolean) => {
     if (isEmpty) {
       return (
-        <Ionicons name="add" size={Math.round(size * 0.45)} color="#6050DC" />
+        <Ionicons
+          name="add"
+          size={Math.round(size * 0.45)}
+          color={active ? "#FFFFFF" : "#6050DC"}
+        />
       );
     }
     if (state.kind === "driver" || state.kind === "user") {
@@ -70,9 +75,12 @@ function Seat({
         />
       );
     }
-    // label
     return (
-      <Ionicons name="paw-outline" size={Math.round(size * 0.4)} color={labelColor} />
+      <Ionicons
+        name="paw-outline"
+        size={Math.round(size * 0.4)}
+        color={labelColor}
+      />
     );
   };
 
@@ -83,44 +91,45 @@ function Seat({
         ? state.seat.label
         : state.seat.full_name;
 
-  const node = (
-    <View
-      className="items-center"
-      style={{ width: size }}
-    >
-      <View
-        className="items-center justify-center rounded-2xl"
-        style={{
-          width: size,
-          height: size,
-          borderRadius: size / 2.2,
-          backgroundColor: bg,
-          borderWidth: 1.5,
-          borderColor,
-        }}
-      >
-        {content()}
+  const renderSeat = (pressed: boolean) => {
+    const active = pressed || selected;
+    return (
+      <View className="items-center" style={{ width: size }}>
+        <View
+          className="items-center justify-center"
+          style={{
+            width: size,
+            height: size,
+            borderRadius: size / 2.2,
+            backgroundColor: active && isEmpty ? "#6050DC" : bg,
+            borderWidth: active ? 2.5 : 1.5,
+            borderColor: active ? "#6050DC" : borderColor,
+            transform: [{ scale: pressed ? 0.92 : 1 }],
+          }}
+        >
+          {renderContent(active)}
+        </View>
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 11,
+            color: labelColor,
+            fontWeight: "600",
+            marginTop: 4,
+            textAlign: "center",
+            maxWidth: size,
+          }}
+        >
+          {captionText ?? ""}
+        </Text>
       </View>
-      <Text
-        numberOfLines={1}
-        style={{
-          fontSize: 11,
-          color: labelColor,
-          fontWeight: "600",
-          marginTop: 4,
-          textAlign: "center",
-          maxWidth: size,
-        }}
-      >
-        {captionText ?? ""}
-      </Text>
-    </View>
-  );
+    );
+  };
 
-  if (!pressable || !onPress) return node;
+  if (!pressable || !onPress) return renderSeat(false);
   return (
     <Pressable onPress={onPress} hitSlop={6}>
-      {node}
+      {({ pressed }) => renderSeat(pressed)}
     </Pressable>
   );
 }
@@ -168,10 +177,12 @@ export function SeatLayoutInteractive({
   layout,
   seats,
   onSeatPress,
+  activeIndex,
 }: {
   layout: string;
   seats: VehicleSeat[];
   onSeatPress: (state: SeatState) => void;
+  activeIndex?: number | null;
 }) {
   const rows = parseLayout(layout);
   const seatsByIndex = new Map(seats.map((s) => [s.seat_index, s]));
@@ -194,6 +205,7 @@ export function SeatLayoutInteractive({
                 key={state.index}
                 state={state}
                 pressable
+                selected={activeIndex === state.index}
                 onPress={() => onSeatPress(state)}
               />
             ))}

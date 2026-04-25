@@ -201,6 +201,8 @@
   "carpool": {
     "youAreIn": "你在 {{vehicle}}",
     "youAreNotIn": "你暂未在任何车辆中",
+    "youAreInBadge": "你在这辆车上",
+    "seatConflict": "有人刚刚修改了这个座位——已刷新",
     "addVehicle": "添加车辆",
     "newVehicle": "新车辆",
     "editVehicle": "编辑车辆",

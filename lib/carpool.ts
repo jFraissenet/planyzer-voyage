@@ -6,8 +6,10 @@ export type Vehicle = {
   vehicle_id: string;
   description: string | null;
   departure_location: string | null;
+  departure_location_url: string | null;
   departure_date: string | null;
   arrival_location: string | null;
+  arrival_location_url: string | null;
   journey_type: JourneyType;
   linked_vehicle_id: string | null;
   seat_count: number;
@@ -53,8 +55,12 @@ export async function listVehicles(toolId: string): Promise<Vehicle[]> {
     vehicle_id: r.vehicle_id as string,
     description: (r.description as string | null) ?? null,
     departure_location: (r.departure_location as string | null) ?? null,
+    departure_location_url:
+      (r.departure_location_url as string | null) ?? null,
     departure_date: (r.departure_date as string | null) ?? null,
     arrival_location: (r.arrival_location as string | null) ?? null,
+    arrival_location_url:
+      (r.arrival_location_url as string | null) ?? null,
     journey_type: (r.journey_type as JourneyType) ?? "outbound",
     linked_vehicle_id: (r.linked_vehicle_id as string | null) ?? null,
     seat_count: r.seat_count as number,
@@ -107,8 +113,10 @@ export async function createVehicle(input: {
   driver_user_id: string;
   description?: string | null;
   departure_location?: string | null;
+  departure_location_url?: string | null;
   departure_date?: string | null;
   arrival_location?: string | null;
+  arrival_location_url?: string | null;
   journey_type?: JourneyType;
   linked_vehicle_id?: string | null;
   seat_count: number;
@@ -123,8 +131,12 @@ export async function createVehicle(input: {
       event_tool_vehicle_description: input.description ?? null,
       event_tool_vehicle_departure_location:
         input.departure_location ?? null,
+      event_tool_vehicle_departure_location_url:
+        input.departure_location_url ?? null,
       event_tool_vehicle_departure_date: input.departure_date ?? null,
       event_tool_vehicle_arrival_location: input.arrival_location ?? null,
+      event_tool_vehicle_arrival_location_url:
+        input.arrival_location_url ?? null,
       event_tool_vehicle_journey_type: input.journey_type ?? "outbound",
       event_tool_vehicle_linked_vehicle_id: input.linked_vehicle_id ?? null,
       event_tool_vehicle_seat_count: input.seat_count,
@@ -173,8 +185,10 @@ export async function updateVehicle(
   input: {
     description?: string | null;
     departure_location?: string | null;
+    departure_location_url?: string | null;
     departure_date?: string | null;
     arrival_location?: string | null;
+    arrival_location_url?: string | null;
     linked_vehicle_id?: string | null;
     seat_count?: number;
     seat_layout?: string;
@@ -186,10 +200,16 @@ export async function updateVehicle(
     patch.event_tool_vehicle_description = input.description;
   if (input.departure_location !== undefined)
     patch.event_tool_vehicle_departure_location = input.departure_location;
+  if (input.departure_location_url !== undefined)
+    patch.event_tool_vehicle_departure_location_url =
+      input.departure_location_url;
   if (input.departure_date !== undefined)
     patch.event_tool_vehicle_departure_date = input.departure_date;
   if (input.arrival_location !== undefined)
     patch.event_tool_vehicle_arrival_location = input.arrival_location;
+  if (input.arrival_location_url !== undefined)
+    patch.event_tool_vehicle_arrival_location_url =
+      input.arrival_location_url;
   if (input.linked_vehicle_id !== undefined)
     patch.event_tool_vehicle_linked_vehicle_id = input.linked_vehicle_id;
   if (input.seat_count !== undefined)
@@ -232,8 +252,10 @@ export async function createRoundTripVehicles(input: {
   driver_user_id: string;
   description?: string | null;
   outbound_location: string | null;
+  outbound_location_url?: string | null;
   outbound_date: string | null;
   arrival_location: string | null;
+  arrival_location_url?: string | null;
   return_date: string | null;
   seat_count: number;
   seat_layout: string;
@@ -244,8 +266,10 @@ export async function createRoundTripVehicles(input: {
     driver_user_id: input.driver_user_id,
     description: input.description,
     departure_location: input.outbound_location,
+    departure_location_url: input.outbound_location_url,
     departure_date: input.outbound_date,
     arrival_location: input.arrival_location,
+    arrival_location_url: input.arrival_location_url,
     seat_count: input.seat_count,
     seat_layout: input.seat_layout,
     stops: input.stops,
@@ -256,8 +280,10 @@ export async function createRoundTripVehicles(input: {
     driver_user_id: input.driver_user_id,
     description: input.description,
     departure_location: input.arrival_location,
+    departure_location_url: input.arrival_location_url,
     departure_date: input.return_date,
     arrival_location: input.outbound_location,
+    arrival_location_url: input.outbound_location_url,
     seat_count: input.seat_count,
     seat_layout: input.seat_layout,
     stops: [],

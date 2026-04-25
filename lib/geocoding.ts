@@ -123,3 +123,23 @@ export function buildMapsUrlFromText(text: string): string {
     text.trim(),
   )}`;
 }
+
+/**
+ * Build a Google Maps URL that highlights the trip if both endpoints are
+ * provided, otherwise falls back to the single point we know.
+ */
+export function buildTripMapsUrl(
+  from: string | null,
+  to: string | null,
+): string | null {
+  const f = (from ?? "").trim();
+  const t = (to ?? "").trim();
+  if (f && t) {
+    return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
+      f,
+    )}&destination=${encodeURIComponent(t)}`;
+  }
+  if (f) return buildMapsUrlFromText(f);
+  if (t) return buildMapsUrlFromText(t);
+  return null;
+}
