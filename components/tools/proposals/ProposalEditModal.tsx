@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Button, DateTimeInput, Input, Text } from "@/components/ui";
+import { AddressInput, Button, DateTimeInput, Input, Text } from "@/components/ui";
 import {
   createEventToolProposal,
   deleteEventToolProposal,
@@ -473,19 +473,19 @@ export function ProposalEditModal({
                   />
                 </View>
               </View>
-              <Input
+              <AddressInput
                 label={t("proposals.locationLabel")}
                 placeholder={t("proposals.locationPlaceholder")}
                 value={location}
-                onChangeText={setLocation}
-              />
-              <Input
-                label={t("proposals.locationUrlLabel")}
-                placeholder="https://maps..."
-                value={locationUrl}
-                onChangeText={setLocationUrl}
-                autoCapitalize="none"
-                keyboardType="url"
+                onChangeText={(text) => {
+                  setLocation(text);
+                  // Free-typed text invalidates any previously picked URL.
+                  if (locationUrl) setLocationUrl("");
+                }}
+                onPickSuggestion={(s) => {
+                  setLocation(s.short);
+                  setLocationUrl(s.mapsUrl);
+                }}
               />
               <View className="flex-row" style={{ gap: 8 }}>
                 <View className="flex-1">

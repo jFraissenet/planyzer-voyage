@@ -347,6 +347,9 @@
       "days_other": "{{count}}d ago"
     }
   },
+  "address": {
+    "searching": "Searching…"
+  },
   "proposals": {
     "add": "New proposal",
     "empty": "No proposals yet — add the first one!",

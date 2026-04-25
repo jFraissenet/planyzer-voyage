@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Image, Pressable, TextInput, View } from "react-native";
+import { Image, Linking, Pressable, TextInput, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { Avatar, Card, Text } from "@/components/ui";
@@ -14,7 +14,8 @@ import {
   type ProposalStatus,
   type VoteValue,
 } from "@/lib/proposals";
-import { formatCapacityRange, formatPriceRange } from "./formatters";
+import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
+import { shortenAddress } from "@/lib/geocoding";
 import { VoteChips } from "./VoteChips";
 
 function initialsOf(name: string | null): string {
@@ -60,11 +61,13 @@ const STATUS_COLORS: Record<ProposalStatus, { bg: string; fg: string }> = {
 function Chip({
   icon,
   label,
+  onPress,
 }: {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   label: string;
+  onPress?: () => void;
 }) {
-  return (
+  const inner = (
     <View
       className="flex-row items-center px-2 py-0.5 rounded-full"
       style={{ backgroundColor: "#F3F0FA", gap: 4 }}
@@ -75,6 +78,14 @@ function Chip({
       </Text>
     </View>
   );
+  if (onPress) {
+    return (
+      <Pressable onPress={onPress} className="active:opacity-70">
+        {inner}
+      </Pressable>
+    );
+  }
+  return inner;
 }
 
 type Props = {
@@ -251,7 +262,16 @@ export function ProposalCard({
             <View className="flex-row flex-wrap mb-2" style={{ gap: 6 }}>
               {priceLabel ? <Chip icon="pricetag" label={priceLabel} /> : null}
               {proposal.location ? (
-                <Chip icon="location" label={proposal.location} />
+                <Chip
+                  icon="location"
+                  label={shortenAddress(proposal.location)}
+                  onPress={() => {
+                    const url =
+                      proposal.location_url ||
+                      buildMapsUrl(proposal.location ?? "");
+                    Linking.openURL(url).catch(() => undefined);
+                  }}
+                />
               ) : null}
               {dateLabel ? <Chip icon="calendar" label={dateLabel} /> : null}
               {capacityLabel ? (

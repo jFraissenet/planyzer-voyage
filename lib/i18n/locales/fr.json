@@ -347,6 +347,9 @@
       "days_other": "il y a {{count}} j"
     }
   },
+  "address": {
+    "searching": "Recherche en cours…"
+  },
   "proposals": {
     "add": "Nouvelle proposition",
     "empty": "Aucune proposition — ajoute la première !",

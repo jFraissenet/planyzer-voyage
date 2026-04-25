@@ -27,7 +27,7 @@ import {
   type ProposalStatus,
   type VoteValue,
 } from "@/lib/proposals";
-import { formatCapacityRange, formatPriceRange } from "./formatters";
+import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
 import { VoteChips } from "./VoteChips";
 
 type Props = {
@@ -404,10 +404,11 @@ export function ProposalDetailModal({
                   {proposal.location ? (
                     <InfoRow
                       icon="location"
-                      onPress={
-                        proposal.location_url
-                          ? () => openUrl(proposal.location_url)
-                          : undefined
+                      onPress={() =>
+                        openUrl(
+                          proposal.location_url ||
+                            buildMapsUrl(proposal.location ?? ""),
+                        )
                       }
                     >
                       <Text style={{ fontSize: 14, color: "#1A1A1A" }}>

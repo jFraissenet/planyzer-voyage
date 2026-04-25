@@ -1,3 +1,9 @@
+export function buildMapsUrl(address: string): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    address.trim(),
+  )}`;
+}
+
 export function formatPriceValue(value: number, locale: string): string {
   try {
     return new Intl.NumberFormat(locale, {

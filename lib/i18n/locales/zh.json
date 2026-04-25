@@ -343,6 +343,9 @@
       "days_other": "{{count}} 天前"
     }
   },
+  "address": {
+    "searching": "搜索中……"
+  },
   "proposals": {
     "add": "新增提议",
     "empty": "还没有提议——快来添加第一个吧！",
