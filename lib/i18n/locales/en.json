@@ -203,6 +203,7 @@
     "youAreIn": "You're in {{vehicle}}",
     "youAreNotIn": "You're not in any vehicle",
     "youAreInBadge": "You're in this vehicle",
+    "yourVehicle": "Your vehicle",
     "seatConflict": "Someone just changed this seat — refreshed",
     "addVehicle": "Add a vehicle",
     "newVehicle": "New vehicle",

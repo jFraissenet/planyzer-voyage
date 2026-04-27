@@ -111,25 +111,32 @@ function VehicleCard({
           accessibilityLabel={t("carpool.youAreInBadge")}
           style={{
             position: "absolute",
-            top: -7,
-            left: -7,
+            top: -6,
+            left: 10,
             zIndex: 10,
-            width: 32,
-            height: 32,
-            borderRadius: 16,
+            paddingHorizontal: 5,
+            paddingVertical: 0.5,
+            borderRadius: 7,
             backgroundColor: "#6050DC",
-            alignItems: "center",
-            justifyContent: "center",
-            borderWidth: 2.5,
+            borderWidth: 1.5,
             borderColor: "#FFFFFF",
             shadowColor: "#6050DC",
-            shadowOffset: { width: 0, height: 3 },
-            shadowOpacity: 0.45,
-            shadowRadius: 6,
-            elevation: 5,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.35,
+            shadowRadius: 4,
+            elevation: 3,
           }}
         >
-          <Ionicons name="car" size={15} color="#FFFFFF" />
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 8,
+              fontWeight: "700",
+              letterSpacing: 0.3,
+            }}
+          >
+            {t("carpool.yourVehicle").toUpperCase()}
+          </Text>
         </View>
       ) : null}
       <Card className="overflow-hidden p-0">

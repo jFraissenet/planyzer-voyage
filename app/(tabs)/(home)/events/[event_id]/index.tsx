@@ -488,6 +488,7 @@ export default function EventDetailScreen() {
     : null;
 
   const isAdmin = myRole === "admin";
+  const canAddTools = isAdmin || myRole === "member";
 
   return (
     <View className="flex-1 bg-background">
@@ -609,26 +610,32 @@ export default function EventDetailScreen() {
                   <Text variant="caption">{t("events.detail.noTools")}</Text>
                 </View>
               ) : (
-                tools.map((tl) => (
-                  <ToolCard
-                    key={tl.event_tool_id}
-                    tool={tl}
-                    iconUri={toolIconByCode.get(tl.event_tool_type_code) ?? null}
-                    onPress={() =>
-                      router.push(
-                        `/events/${tl.event_tool_event_id}/tools/${tl.event_tool_id}`,
-                      )
-                    }
-                    onEdit={isAdmin ? () => setEditingTool(tl) : null}
-                  />
-                ))
+                tools.map((tl) => {
+                  const canEditTool =
+                    isAdmin || tl.event_tool_created_by === currentUserId;
+                  return (
+                    <ToolCard
+                      key={tl.event_tool_id}
+                      tool={tl}
+                      iconUri={
+                        toolIconByCode.get(tl.event_tool_type_code) ?? null
+                      }
+                      onPress={() =>
+                        router.push(
+                          `/events/${tl.event_tool_event_id}/tools/${tl.event_tool_id}`,
+                        )
+                      }
+                      onEdit={canEditTool ? () => setEditingTool(tl) : null}
+                    />
+                  );
+                })
               )}
             </View>
           </ScrollView>
         </>
       )}
 
-      {event && isAdmin ? (
+      {event && canAddTools ? (
         <FAB
           onPress={() => setNewToolOpen(true)}
           accessibilityLabel={t("events.detail.addTool")}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 import { Text } from "./Text";
 
@@ -10,7 +11,10 @@ interface Props {
   className?: string;
 }
 
-const sizeClasses: Record<Size, { container: string; text: string; image: number }> = {
+const sizeClasses: Record<
+  Size,
+  { container: string; text: string; image: number }
+> = {
   xs: { container: "w-6 h-6", text: "text-[10px]", image: 24 },
   sm: { container: "w-8 h-8", text: "text-xs", image: 32 },
   md: { container: "w-10 h-10", text: "text-sm", image: 40 },
@@ -19,11 +23,18 @@ const sizeClasses: Record<Size, { container: string; text: string; image: number
 
 export function Avatar({ src, initials, size = "md", className = "" }: Props) {
   const s = sizeClasses[size];
+  const [errored, setErrored] = useState(false);
 
-  if (src) {
+  // Reset the error state if the source URL changes (different user, refresh).
+  useEffect(() => {
+    setErrored(false);
+  }, [src]);
+
+  if (src && !errored) {
     return (
       <Image
         source={{ uri: src }}
+        onError={() => setErrored(true)}
         className={`${s.container} rounded-full ${className}`}
         style={{ width: s.image, height: s.image }}
       />
