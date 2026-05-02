@@ -400,6 +400,14 @@ export async function updateEventTool(
   if (error) throw error;
 }
 
+export async function deleteEventTool(toolId: string): Promise<void> {
+  const { error } = await supabase
+    .from("event_tools")
+    .delete()
+    .eq("event_tool_id", toolId);
+  if (error) throw error;
+}
+
 export type EventPreview = {
   event_id: string;
   event_title: string;

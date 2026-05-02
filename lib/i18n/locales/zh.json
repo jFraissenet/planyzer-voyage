@@ -113,7 +113,12 @@
       "action": "编辑",
       "save": "保存",
       "saving": "保存中...",
-      "errorGeneric": "保存失败"
+      "errorGeneric": "保存失败",
+      "delete": "删除工具",
+      "deleting": "删除中...",
+      "deleteConfirm": "删除 \"{{name}}\"?",
+      "deleteConfirmBody": "与此工具相关的所有数据将丢失(笔记、费用、车辆、提案……)。此操作不可撤销。",
+      "errorDelete": "删除失败"
     },
     "newTool": {
       "title": "新建工具",

@@ -113,7 +113,12 @@
       "action": "Modifier",
       "save": "Enregistrer",
       "saving": "Enregistrement...",
-      "errorGeneric": "Erreur lors de l'enregistrement"
+      "errorGeneric": "Erreur lors de l'enregistrement",
+      "delete": "Supprimer l'outil",
+      "deleting": "Suppression...",
+      "deleteConfirm": "Supprimer \"{{name}}\" ?",
+      "deleteConfirmBody": "Toutes les données liées à cet outil seront perdues (notes, dépenses, véhicules, propositions...). Cette action est irréversible.",
+      "errorDelete": "Erreur lors de la suppression"
     },
     "newTool": {
       "title": "Nouvel outil",

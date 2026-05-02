@@ -113,7 +113,12 @@
       "action": "Editar",
       "save": "Guardar",
       "saving": "Guardando...",
-      "errorGeneric": "Error al guardar"
+      "errorGeneric": "Error al guardar",
+      "delete": "Eliminar herramienta",
+      "deleting": "Eliminando...",
+      "deleteConfirm": "¿Eliminar \"{{name}}\"?",
+      "deleteConfirmBody": "Se perderán todos los datos asociados a esta herramienta (notas, gastos, vehículos, propuestas...). Esta acción es irreversible.",
+      "errorDelete": "Error al eliminar"
     },
     "newTool": {
       "title": "Nueva herramienta",

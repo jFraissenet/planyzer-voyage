@@ -113,7 +113,12 @@
       "action": "Edit",
       "save": "Save",
       "saving": "Saving...",
-      "errorGeneric": "Error while saving"
+      "errorGeneric": "Error while saving",
+      "delete": "Delete tool",
+      "deleting": "Deleting...",
+      "deleteConfirm": "Delete \"{{name}}\"?",
+      "deleteConfirmBody": "All data attached to this tool will be lost (notes, expenses, vehicles, proposals...). This action is irreversible.",
+      "errorDelete": "Error while deleting"
     },
     "newTool": {
       "title": "New tool",

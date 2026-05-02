@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
-import { updateEventTool, type EventTool } from "@/lib/events";
+import { deleteEventTool, updateEventTool, type EventTool } from "@/lib/events";
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -26,14 +26,22 @@ type Props = {
   tool: EventTool | null;
   onClose: () => void;
   onSaved: () => void;
+  onDeleted?: () => void;
 };
 
-export function EditToolModal({ visible, tool, onClose, onSaved }: Props) {
+export function EditToolModal({
+  visible,
+  tool,
+  onClose,
+  onSaved,
+  onDeleted,
+}: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState<"all" | "restricted">("all");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (visible && tool) {
@@ -41,8 +49,45 @@ export function EditToolModal({ visible, tool, onClose, onSaved }: Props) {
       setVisibility(tool.event_tool_visibility);
       setError(null);
       setBusy(false);
+      setDeleting(false);
     }
   }, [visible, tool]);
+
+  const doDelete = async () => {
+    if (!tool) return;
+    setError(null);
+    setDeleting(true);
+    try {
+      await deleteEventTool(tool.event_tool_id);
+      onDeleted?.();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("deleteEventTool failed:", err);
+      setError(t("events.editTool.errorDelete"));
+      setDeleting(false);
+    }
+  };
+
+  const confirmDelete = () => {
+    if (!tool) return;
+    const title = t("events.editTool.deleteConfirm", {
+      name: tool.event_tool_name,
+    });
+    const body = t("events.editTool.deleteConfirmBody");
+    if (Platform.OS === "web") {
+      // eslint-disable-next-line no-alert
+      if (window.confirm(`${title}\n\n${body}`)) void doDelete();
+      return;
+    }
+    Alert.alert(title, body, [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("events.editTool.delete"),
+        style: "destructive",
+        onPress: () => void doDelete(),
+      },
+    ]);
+  };
 
   const handleSubmit = async () => {
     if (!tool) return;
@@ -150,14 +195,29 @@ export function EditToolModal({ visible, tool, onClose, onSaved }: Props) {
                     : t("events.editTool.save")
                 }
                 onPress={handleSubmit}
-                disabled={busy}
+                disabled={busy || deleting}
               />
               <Button
                 variant="ghost"
                 label={t("events.newTool.cancel")}
                 onPress={onClose}
-                disabled={busy}
+                disabled={busy || deleting}
               />
+              <Pressable
+                onPress={confirmDelete}
+                disabled={busy || deleting}
+                className="items-center justify-center py-3 active:opacity-70"
+                style={{ opacity: busy || deleting ? 0.5 : 1 }}
+              >
+                <Text
+                  variant="label"
+                  style={{ color: "#EF4444", fontWeight: "700" }}
+                >
+                  {deleting
+                    ? t("events.editTool.deleting")
+                    : t("events.editTool.delete")}
+                </Text>
+              </Pressable>
             </View>
           </ScrollView>
         </Pressable>
