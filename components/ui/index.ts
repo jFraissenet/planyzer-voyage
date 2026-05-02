@@ -1,5 +1,7 @@
 export { AddressInput } from "./AddressInput";
 export { Avatar } from "./Avatar";
+export { AvatarStack } from "./AvatarStack";
+export type { AvatarStackEntry } from "./AvatarStack";
 export { Badge } from "./Badge";
 export { Button } from "./Button";
 export { Card } from "./Card";

@@ -442,7 +442,7 @@
     "visitor": "访客"
   },
   "invite": {
-    "button": "+ 邀请",
+    "button": "邀请",
     "title": "邀请朋友",
     "subtitle": "按姓名搜索",
     "searchPlaceholder": "姓名……",

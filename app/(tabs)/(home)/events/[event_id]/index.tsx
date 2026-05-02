@@ -15,10 +15,18 @@ import { SvgUri } from "react-native-svg";
 import { EditEventModal } from "@/components/EditEventModal";
 import { EditToolModal } from "@/components/EditToolModal";
 import { InviteModal } from "@/components/InviteModal";
-import { Button, Card, FAB, Input, ScreenHeader, Text } from "@/components/ui";
+import {
+  AvatarStack,
+  Button,
+  Card,
+  Input,
+  ScreenHeader,
+  Text,
+} from "@/components/ui";
 import {
   Event,
   EventTool,
+  ParticipantEntry,
   ToolType,
   createEventTool,
   ensureEventShareToken,
@@ -247,7 +255,12 @@ function NewToolModal({
         <Pressable
           onPress={(e) => e.stopPropagation()}
           className="w-full max-w-md bg-background rounded-2xl p-5"
+          style={{ maxHeight: "90%" }}
         >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
           <Text variant="h2" className="mb-4">
             {t("events.newTool.title")}
           </Text>
@@ -352,6 +365,7 @@ function NewToolModal({
               disabled={submitting}
             />
           </View>
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>
@@ -372,7 +386,7 @@ export default function EventDetailScreen() {
   const [tools, setTools] = useState<EventTool[]>([]);
   const [toolTypes, setToolTypes] = useState<ToolType[]>([]);
   const [myRole, setMyRole] = useState<string | null>(null);
-  const [participantCount, setParticipantCount] = useState(0);
+  const [participants, setParticipants] = useState<ParticipantEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [newToolOpen, setNewToolOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -429,19 +443,19 @@ export default function EventDetailScreen() {
     }
   }, [event, sharing, t]);
 
-  const refreshParticipantCount = useCallback(async () => {
+  const refreshParticipants = useCallback(async () => {
     if (!event_id) return;
     try {
       const list = await listParticipants(event_id);
-      setParticipantCount(list.length);
+      setParticipants(list);
     } catch {
-      setParticipantCount(0);
+      setParticipants([]);
     }
   }, [event_id]);
 
   const load = useCallback(async () => {
     if (!event_id) return;
-    const [e, ts, tt, role, participants] = await Promise.all([
+    const [e, ts, tt, role, p] = await Promise.all([
       getEvent(event_id),
       listEventTools(event_id),
       listToolTypes(),
@@ -452,7 +466,7 @@ export default function EventDetailScreen() {
     setTools(ts);
     setToolTypes(tt);
     setMyRole(role);
-    setParticipantCount(participants.length);
+    setParticipants(p);
   }, [event_id]);
 
   useEffect(() => {
@@ -535,48 +549,27 @@ export default function EventDetailScreen() {
               >
                 {t("invite.participantsSection")}
               </Text>
+              <AvatarStack
+                participants={participants.map((p) => ({
+                  id: p.user_id,
+                  full_name: p.full_name,
+                  avatar_url: p.avatar_url,
+                }))}
+                onPress={() => setInviteOpen(true)}
+                className="mr-3"
+              />
               <Pressable
                 onPress={() => setInviteOpen(true)}
-                className="px-3 py-1.5 rounded-full mr-2"
-                style={{ backgroundColor: "#EEECFC" }}
-              >
-                <Text
-                  variant="label"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
-                >
-                  {t("invite.button")}
-                </Text>
-              </Pressable>
-              <Pressable
-                onPress={handleShare}
-                disabled={sharing}
-                accessibilityLabel={t("events.share.action")}
-                className="flex-row items-center px-3 py-1.5 rounded-full mr-2 active:opacity-70"
+                accessibilityLabel={t("invite.button")}
+                className="items-center justify-center rounded-full active:opacity-70"
                 style={{
+                  width: 28,
+                  height: 28,
                   backgroundColor: "#EEECFC",
-                  opacity: sharing ? 0.6 : 1,
-                  gap: 4,
                 }}
               >
-                <Ionicons name="share-outline" size={14} color="#6050DC" />
-                <Text
-                  variant="label"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
-                >
-                  {t("events.share.button")}
-                </Text>
+                <Ionicons name="add" size={18} color="#6050DC" />
               </Pressable>
-              <View
-                className="px-2.5 py-0.5 rounded-full"
-                style={{ backgroundColor: "#EEECFC" }}
-              >
-                <Text
-                  variant="caption"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
-                >
-                  {participantCount}
-                </Text>
-              </View>
             </View>
 
             <View className="px-6 mb-3 flex-row items-center">
@@ -592,7 +585,7 @@ export default function EventDetailScreen() {
                 {t("events.detail.toolsTitle")}
               </Text>
               <View
-                className="px-2.5 py-0.5 rounded-full"
+                className="px-2.5 py-0.5 rounded-full mr-3"
                 style={{ backgroundColor: "#EEECFC" }}
               >
                 <Text
@@ -602,6 +595,20 @@ export default function EventDetailScreen() {
                   {tools.length}
                 </Text>
               </View>
+              {canAddTools ? (
+                <Pressable
+                  onPress={() => setNewToolOpen(true)}
+                  accessibilityLabel={t("events.detail.addTool")}
+                  className="items-center justify-center rounded-full active:opacity-70"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    backgroundColor: "#EEECFC",
+                  }}
+                >
+                  <Ionicons name="add" size={18} color="#6050DC" />
+                </Pressable>
+              ) : null}
             </View>
 
             <View className="px-6">
@@ -635,13 +642,6 @@ export default function EventDetailScreen() {
         </>
       )}
 
-      {event && canAddTools ? (
-        <FAB
-          onPress={() => setNewToolOpen(true)}
-          accessibilityLabel={t("events.detail.addTool")}
-        />
-      ) : null}
-
       {event ? (
         <NewToolModal
           visible={newToolOpen}
@@ -665,7 +665,9 @@ export default function EventDetailScreen() {
           currentUserId={currentUserId}
           eventCreatorId={event.event_creator_id}
           onClose={() => setInviteOpen(false)}
-          onChanged={refreshParticipantCount}
+          onShare={handleShare}
+          sharing={sharing}
+          onChanged={refreshParticipants}
         />
       ) : null}
 

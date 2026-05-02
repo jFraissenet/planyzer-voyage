@@ -452,7 +452,7 @@
     "visitor": "Visiteur"
   },
   "invite": {
-    "button": "+ Inviter",
+    "button": "Inviter",
     "title": "Inviter des amis",
     "subtitle": "Cherche par nom ou prénom",
     "searchPlaceholder": "Nom, prénom…",

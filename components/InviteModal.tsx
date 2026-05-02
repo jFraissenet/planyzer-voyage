@@ -7,6 +7,7 @@ import {
   ScrollView,
   View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { Avatar, Button, Input, Text } from "@/components/ui";
 import {
@@ -56,6 +57,8 @@ type Props = {
   currentUserId: string;
   eventCreatorId: string;
   onClose: () => void;
+  onShare?: () => void;
+  sharing?: boolean;
   onChanged?: () => void;
 };
 
@@ -66,6 +69,8 @@ export function InviteModal({
   currentUserId,
   eventCreatorId,
   onClose,
+  onShare,
+  sharing = false,
   onChanged,
 }: Props) {
   const { t } = useTranslation();
@@ -213,6 +218,28 @@ export function InviteModal({
             <Text variant="caption" className="mb-4">
               {t("invite.subtitle")}
             </Text>
+
+            {onShare ? (
+              <Pressable
+                onPress={onShare}
+                disabled={sharing}
+                accessibilityLabel={t("events.share.action")}
+                className="flex-row items-center justify-center px-3 py-2.5 rounded-full mb-4 active:opacity-70"
+                style={{
+                  backgroundColor: "#EEECFC",
+                  opacity: sharing ? 0.6 : 1,
+                  gap: 6,
+                }}
+              >
+                <Ionicons name="share-outline" size={16} color="#6050DC" />
+                <Text
+                  variant="label"
+                  style={{ color: "#6050DC", fontWeight: "700" }}
+                >
+                  {t("events.share.button")}
+                </Text>
+              </Pressable>
+            ) : null}
 
             {isAdmin ? (
               <>
