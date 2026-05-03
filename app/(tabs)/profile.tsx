@@ -39,7 +39,7 @@ export default function ProfileScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <ScreenHeader title={t("profile.title")} />
+      <ScreenHeader title={t("profile.title")} showLogo />
       <View className="px-6 pt-8">
         <View className="items-center mb-8">
           <Avatar

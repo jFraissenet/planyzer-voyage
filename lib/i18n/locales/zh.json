@@ -63,6 +63,10 @@
   "events": {
     "title": "活动",
     "newButton": "新建活动",
+    "createBanner": {
+      "title": "添加活动",
+      "subtitle": "创建你的第一个活动并邀请朋友"
+    },
     "sections": {
       "mine": "我的活动",
       "shared": "共享活动"

@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Pressable, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useIsMobile } from "@/lib/responsive";
 import { Text } from "./Text";
@@ -17,6 +17,7 @@ interface Props {
   secondaryActionIcon?: IconName;
   secondaryActionLabel?: string;
   onTitlePress?: () => void;
+  showLogo?: boolean;
 }
 
 export function ScreenHeader({
@@ -30,12 +31,14 @@ export function ScreenHeader({
   secondaryActionIcon,
   secondaryActionLabel,
   onTitlePress,
+  showLogo = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const isMobile = useIsMobile();
   const btnSize = isMobile ? 36 : 44;
   const backIconSize = isMobile ? 22 : 26;
   const actionIconSize = isMobile ? 20 : 24;
+  const logoSize = btnSize * 2;
 
   const titleStyle = {
     color: "#1A1A1A",
@@ -100,6 +103,22 @@ export function ScreenHeader({
           >
             <Ionicons name="chevron-back" size={backIconSize} color="#1A1A1A" />
           </Pressable>
+        ) : showLogo ? (
+          <View style={{ width: logoSize, height: btnSize }}>
+            <Image
+              // eslint-disable-next-line @typescript-eslint/no-require-imports
+              source={require("@/assets/planyzer_logo.png")}
+              accessibilityLabel="Planyzer"
+              resizeMode="contain"
+              style={{
+                position: "absolute",
+                width: logoSize,
+                height: logoSize,
+                left: 0,
+                top: (btnSize - logoSize) / 2,
+              }}
+            />
+          </View>
         ) : (
           <View style={{ width: btnSize }} />
         )}
@@ -147,7 +166,7 @@ export function ScreenHeader({
               />
             </Pressable>
           ) : !onSecondaryAction ? (
-            <View style={{ width: btnSize }} />
+            <View style={{ width: showLogo ? logoSize : btnSize }} />
           ) : null}
         </View>
       </View>

@@ -63,6 +63,10 @@
   "events": {
     "title": "Events",
     "newButton": "New event",
+    "createBanner": {
+      "title": "Add an event",
+      "subtitle": "Create your first event and invite your friends"
+    },
     "sections": {
       "mine": "My events",
       "shared": "Shared events"

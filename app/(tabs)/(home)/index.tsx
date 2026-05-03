@@ -290,6 +290,8 @@ export default function EventsScreen() {
     }
   }, [load]);
 
+  const showCreateBanner = !loading && mine.length === 0 && !showArchived;
+
   const removeFromLists = useCallback((eventId: string) => {
     setMine((prev) => prev.filter((e) => e.event_id !== eventId));
     setShared((prev) => prev.filter((e) => e.event_id !== eventId));
@@ -321,7 +323,7 @@ export default function EventsScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <ScreenHeader title={t("events.title")} />
+      <ScreenHeader title={t("events.title")} showLogo />
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator />
@@ -348,6 +350,57 @@ export default function EventsScreen() {
             />
           </View>
 
+          {showCreateBanner ? (
+            <Pressable
+              onPress={() => setNewEventOpen(true)}
+              accessibilityLabel={t("events.newButton")}
+              className="active:opacity-90 mb-6 overflow-hidden rounded-2xl"
+            >
+              <LinearGradient
+                colors={["#6050DC", "#8B7BEE"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ paddingVertical: 28, paddingHorizontal: 20 }}
+              >
+                <View
+                  className="flex-row items-center"
+                  style={{ gap: 16 }}
+                >
+                  <View
+                    className="rounded-full items-center justify-center"
+                    style={{
+                      width: 56,
+                      height: 56,
+                      backgroundColor: "rgba(255,255,255,0.2)",
+                    }}
+                  >
+                    <Ionicons name="add" size={32} color="#FFFFFF" />
+                  </View>
+                  <View className="flex-1">
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontSize: 18,
+                        fontWeight: "700",
+                      }}
+                    >
+                      {t("events.createBanner.title")}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "rgba(255,255,255,0.85)",
+                        fontSize: 13,
+                        marginTop: 2,
+                      }}
+                    >
+                      {t("events.createBanner.subtitle")}
+                    </Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </Pressable>
+          ) : null}
+
           <Section
             title={t("events.sections.mine")}
             events={mine}
@@ -370,10 +423,12 @@ export default function EventsScreen() {
           />
         </ScrollView>
       )}
-      <FAB
-        onPress={() => setNewEventOpen(true)}
-        accessibilityLabel={t("events.newButton")}
-      />
+      {!showCreateBanner && !showArchived ? (
+        <FAB
+          onPress={() => setNewEventOpen(true)}
+          accessibilityLabel={t("events.newButton")}
+        />
+      ) : null}
       <NewEventModal
         visible={newEventOpen}
         onClose={() => setNewEventOpen(false)}
