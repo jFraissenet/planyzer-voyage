@@ -62,6 +62,7 @@
   },
   "events": {
     "title": "Events",
+    "titleArchived": "Archived events",
     "newButton": "New event",
     "createBanner": {
       "title": "Add an event",
@@ -69,7 +70,9 @@
     },
     "sections": {
       "mine": "My events",
-      "shared": "Shared events"
+      "shared": "Shared events",
+      "mineArchived": "My archived events",
+      "sharedArchived": "Archived shared events"
     },
     "empty": {
       "mine": "No events created yet",
@@ -86,9 +89,14 @@
       "toolsTitle": "Tools",
       "noTools": "No tools yet",
       "addTool": "+ Add a tool",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "toolsBanner": {
+        "title": "Add a tool",
+        "subtitle": "Money, notes, carpool, polls..."
+      }
     },
     "showArchived": "Show archived",
+    "showActive": "Show active",
     "edit": {
       "title": "Edit event",
       "subtitle": "Update your event info",
@@ -139,6 +147,7 @@
       "cancel": "Cancel",
       "errorTypeRequired": "Select a type",
       "errorNameRequired": "Name is required",
+      "errorNameDuplicate": "A tool with this name already exists in this event",
       "errorGeneric": "Error while creating"
     },
     "new": {
@@ -146,6 +155,9 @@
       "subtitle": "Invite your friends and share a moment",
       "infoSection": "Info",
       "datesSection": "Dates",
+      "detailsSection": "Details (optional)",
+      "locationLabel": "Location",
+      "locationPlaceholder": "e.g. Rome, Italy",
       "titleLabel": "Title",
       "titlePlaceholder": "Dinner, meeting, trip…",
       "descriptionLabel": "Description",

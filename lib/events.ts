@@ -6,6 +6,7 @@ export type Event = {
   event_description: string | null;
   event_start_date: string | null;
   event_end_date: string | null;
+  event_location: string | null;
   event_creator_id: string;
   event_created_at: string;
   event_updated_at: string;
@@ -17,6 +18,7 @@ export type CreateEventInput = {
   event_description?: string | null;
   event_start_date?: string | null;
   event_end_date?: string | null;
+  event_location?: string | null;
 };
 
 async function requireUserId(): Promise<string> {
@@ -59,6 +61,7 @@ export async function createEvent(input: CreateEventInput): Promise<Event> {
       event_description: input.event_description ?? null,
       event_start_date: input.event_start_date ?? null,
       event_end_date: input.event_end_date ?? null,
+      event_location: input.event_location ?? null,
       event_creator_id: userId,
     })
     .select()
@@ -136,6 +139,7 @@ export type UpdateEventInput = {
   event_description?: string | null;
   event_start_date?: string | null;
   event_end_date?: string | null;
+  event_location?: string | null;
 };
 
 export async function updateEvent(

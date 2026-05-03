@@ -1,10 +1,18 @@
-import { Platform, Pressable, PressableProps, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  Pressable,
+  PressableProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import { theme } from "@/lib/theme";
 
-interface Props extends PressableProps {
+interface Props extends Omit<PressableProps, "style"> {
   children: React.ReactNode;
   className?: string;
   pressable?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
 const shadowStyle: ViewStyle = {
@@ -19,9 +27,13 @@ export function Card({
   children,
   className = "",
   pressable = false,
+  style,
   ...props
 }: Props) {
   const classes = `bg-surface rounded-2xl p-4 border border-border ${className}`;
+  const mergedStyle: StyleProp<ViewStyle> = style
+    ? [shadowStyle, style]
+    : shadowStyle;
 
   if (pressable) {
     const pressClasses =
@@ -31,7 +43,7 @@ export function Card({
     return (
       <Pressable
         className={`${classes} ${pressClasses}`}
-        style={shadowStyle}
+        style={mergedStyle}
         {...props}
       >
         {children}
@@ -40,7 +52,7 @@ export function Card({
   }
 
   return (
-    <View className={classes} style={shadowStyle}>
+    <View className={classes} style={mergedStyle}>
       {children}
     </View>
   );

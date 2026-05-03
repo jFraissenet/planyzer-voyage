@@ -62,6 +62,7 @@
   },
   "events": {
     "title": "Eventos",
+    "titleArchived": "Eventos archivados",
     "newButton": "Nuevo evento",
     "createBanner": {
       "title": "Añadir un evento",
@@ -69,7 +70,9 @@
     },
     "sections": {
       "mine": "Mis eventos",
-      "shared": "Eventos compartidos"
+      "shared": "Eventos compartidos",
+      "mineArchived": "Mis eventos archivados",
+      "sharedArchived": "Eventos compartidos archivados"
     },
     "empty": {
       "mine": "Aún no has creado eventos",
@@ -86,9 +89,14 @@
       "toolsTitle": "Herramientas",
       "noTools": "Aún no hay herramientas",
       "addTool": "+ Añadir una herramienta",
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "toolsBanner": {
+        "title": "Añadir una herramienta",
+        "subtitle": "Dinero, notas, coche compartido, encuestas..."
+      }
     },
     "showArchived": "Mostrar archivados",
+    "showActive": "Mostrar activos",
     "edit": {
       "title": "Editar evento",
       "subtitle": "Actualiza la información de tu evento",
@@ -139,6 +147,7 @@
       "cancel": "Cancelar",
       "errorTypeRequired": "Selecciona un tipo",
       "errorNameRequired": "El nombre es obligatorio",
+      "errorNameDuplicate": "Ya existe una herramienta con este nombre en este evento",
       "errorGeneric": "Error al crear"
     },
     "new": {
@@ -146,6 +155,9 @@
       "subtitle": "Invita a tus amigos y comparte un momento",
       "infoSection": "Información",
       "datesSection": "Fechas",
+      "detailsSection": "Detalles (opcional)",
+      "locationLabel": "Lugar",
+      "locationPlaceholder": "p. ej. Roma, Italia",
       "titleLabel": "Título",
       "titlePlaceholder": "Cena, reunión, viaje…",
       "descriptionLabel": "Descripción",

@@ -11,14 +11,13 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ToastProvider } from "@/components/ui";
 import { consumePendingInvite } from "@/lib/pendingInvite";
+import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { SessionProvider, useSession } from "@/lib/useSession";
-
-const TABLET_BREAKPOINT = 1024;
 
 function WebFrame({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
   if (Platform.OS !== "web") return <>{children}</>;
-  const isWide = width >= TABLET_BREAKPOINT;
+  const isWide = width >= MAX_CONTENT_WIDTH;
   return (
     <View
       style={{
@@ -30,7 +29,8 @@ function WebFrame({ children }: { children: React.ReactNode }) {
       <View
         style={{
           flex: 1,
-          width: isWide ? "80%" : "100%",
+          width: "100%",
+          maxWidth: MAX_CONTENT_WIDTH,
           backgroundColor: "#FAF7F2",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 0 },

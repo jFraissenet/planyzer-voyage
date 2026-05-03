@@ -10,7 +10,8 @@ import {
   View,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SvgUri } from "react-native-svg";
 import { EditEventModal } from "@/components/EditEventModal";
@@ -103,13 +104,13 @@ function ToolCard({
     <Card className="mb-3 overflow-hidden p-0">
       <Pressable
         onPress={onPress}
-        className="flex-row items-center p-4 active:opacity-90"
+        className="flex-row items-center p-1 active:opacity-90"
       >
         <View
-          className="mr-3 items-center justify-center rounded-2xl"
-          style={{ width: 48, height: 48, backgroundColor: theme.primarySoft }}
+          className="mr-2 items-center justify-center rounded-xl"
+          style={{ width: 40, height: 40, backgroundColor: theme.primarySoft }}
         >
-          <ToolIcon uri={iconUri} size={28} />
+          <ToolIcon uri={iconUri} size={24} />
         </View>
         <View className="flex-1">
           <Text
@@ -202,6 +203,7 @@ function NewToolModal({
   const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState<ToolType | null>(null);
   const [name, setName] = useState("");
+  const [nameAutoFilled, setNameAutoFilled] = useState(true);
   const [visibility, setVisibility] = useState<"all" | "restricted">("all");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
@@ -214,6 +216,7 @@ function NewToolModal({
     if (!visible) {
       setSelectedType(null);
       setName("");
+      setNameAutoFilled(true);
       setVisibility("all");
       setErrors({});
       setSubmitting(false);
@@ -223,14 +226,20 @@ function NewToolModal({
   const selectType = (tt: ToolType) => {
     setSelectedType(tt);
     setVisibility(tt.tool_type_default_visibility);
-    if (!name.trim()) {
+    if (nameAutoFilled || !name.trim()) {
       setName(
         t(`tools.${tt.tool_type_code}.name`, {
           defaultValue: tt.tool_type_code,
         }),
       );
+      setNameAutoFilled(true);
     }
     setErrors((e) => ({ ...e, type: undefined }));
+  };
+
+  const handleNameChange = (next: string) => {
+    setName(next);
+    setNameAutoFilled(false);
   };
 
   const handleSubmit = async () => {
@@ -253,13 +262,21 @@ function NewToolModal({
       onCreated(created);
       onClose();
     } catch (err) {
-      const msg =
-        err && typeof err === "object" && "message" in err
-          ? String((err as { message: unknown }).message)
-          : t("events.newTool.errorGeneric");
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code: unknown }).code)
+          : null;
       // eslint-disable-next-line no-console
       console.error("createEventTool failed:", err);
-      setErrors({ form: msg });
+      if (code === "23505") {
+        setErrors({ name: t("events.newTool.errorNameDuplicate") });
+      } else {
+        const msg =
+          err && typeof err === "object" && "message" in err
+            ? String((err as { message: unknown }).message)
+            : t("events.newTool.errorGeneric");
+        setErrors({ form: msg });
+      }
     } finally {
       setSubmitting(false);
     }
@@ -288,6 +305,15 @@ function NewToolModal({
           <Text variant="h2" className="mb-4">
             {t("events.newTool.title")}
           </Text>
+
+          <Input
+            label={t("events.newTool.nameLabel")}
+            placeholder={t("events.newTool.namePlaceholder")}
+            value={name}
+            onChangeText={handleNameChange}
+            error={errors.name}
+            className="mb-4"
+          />
 
           <Text variant="label" className="mb-2">
             {t("events.newTool.typeLabel")}
@@ -321,15 +347,6 @@ function NewToolModal({
           {errors.type ? (
             <Text className="text-error text-sm mb-2">{errors.type}</Text>
           ) : null}
-
-          <Input
-            label={t("events.newTool.nameLabel")}
-            placeholder={t("events.newTool.namePlaceholder")}
-            value={name}
-            onChangeText={setName}
-            error={errors.name}
-            className="mb-4"
-          />
 
           <Text variant="label" className="mb-2">
             {t("events.newTool.visibilityLabel")}
@@ -493,23 +510,25 @@ export default function EventDetailScreen() {
     setParticipants(p);
   }, [event_id]);
 
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    load()
-      .catch(() => {
-        if (active) {
-          setEvent(null);
-          setTools([]);
-        }
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      setLoading(true);
+      load()
+        .catch(() => {
+          if (active) {
+            setEvent(null);
+            setTools([]);
+          }
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+      return () => {
+        active = false;
+      };
+    }, [load]),
+  );
 
   const toolIconByCode = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -584,13 +603,28 @@ export default function EventDetailScreen() {
             actionLabel={t("events.edit.action")}
           />
           <ScrollView contentContainerStyle={{ paddingBottom: 120, paddingTop: 20 }}>
+            {event.event_location ? (
+              <View
+                className="px-3 mb-3 flex-row items-center"
+                style={{ gap: 6 }}
+              >
+                <Ionicons
+                  name="location-outline"
+                  size={16}
+                  color={theme.sectionLabel}
+                />
+                <Text variant="body" className="flex-1">
+                  {event.event_location}
+                </Text>
+              </View>
+            ) : null}
             {event.event_description ? (
-              <View className="px-6 mb-6">
+              <View className="px-3 mb-6">
                 <Text variant="body">{event.event_description}</Text>
               </View>
             ) : null}
 
-            <View className="px-6 mb-4 flex-row items-center">
+            <View className="px-3 mb-4 flex-row items-center">
               <Text
                 className="flex-1 uppercase"
                 style={{
@@ -625,7 +659,7 @@ export default function EventDetailScreen() {
               </Pressable>
             </View>
 
-            <View className="px-6 mb-3 flex-row items-center">
+            <View className="px-3 mb-3 flex-row items-center">
               <Text
                 className="flex-1 uppercase"
                 style={{
@@ -664,11 +698,62 @@ export default function EventDetailScreen() {
               ) : null}
             </View>
 
-            <View className="px-6">
+            <View className="px-3">
               {tools.length === 0 ? (
-                <View className="py-4">
-                  <Text variant="caption">{t("events.detail.noTools")}</Text>
-                </View>
+                canAddTools ? (
+                  <Pressable
+                    onPress={() => setNewToolOpen(true)}
+                    accessibilityLabel={t("events.detail.addTool")}
+                    className="active:opacity-90 mb-4 overflow-hidden rounded-2xl"
+                  >
+                    <LinearGradient
+                      colors={[theme.primary, theme.primaryLight]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{ paddingVertical: 28, paddingHorizontal: 20 }}
+                    >
+                      <View
+                        className="flex-row items-center"
+                        style={{ gap: 16 }}
+                      >
+                        <View
+                          className="rounded-full items-center justify-center"
+                          style={{
+                            width: 56,
+                            height: 56,
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                          }}
+                        >
+                          <Ionicons name="add" size={32} color="#FFFFFF" />
+                        </View>
+                        <View className="flex-1">
+                          <Text
+                            style={{
+                              color: "#FFFFFF",
+                              fontSize: 18,
+                              fontWeight: "700",
+                            }}
+                          >
+                            {t("events.detail.toolsBanner.title")}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "rgba(255,255,255,0.85)",
+                              fontSize: 13,
+                              marginTop: 2,
+                            }}
+                          >
+                            {t("events.detail.toolsBanner.subtitle")}
+                          </Text>
+                        </View>
+                      </View>
+                    </LinearGradient>
+                  </Pressable>
+                ) : (
+                  <View className="py-4">
+                    <Text variant="caption">{t("events.detail.noTools")}</Text>
+                  </View>
+                )
               ) : (
                 tools.map((tl) => {
                   const canEditTool =

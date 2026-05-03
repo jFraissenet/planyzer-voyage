@@ -107,7 +107,15 @@ export function EditToolModal({
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("updateEventTool failed:", err);
-      setError(t("events.editTool.errorGeneric"));
+      const code =
+        err && typeof err === "object" && "code" in err
+          ? String((err as { code: unknown }).code)
+          : null;
+      if (code === "23505") {
+        setError(t("events.newTool.errorNameDuplicate"));
+      } else {
+        setError(t("events.editTool.errorGeneric"));
+      }
     } finally {
       setBusy(false);
     }

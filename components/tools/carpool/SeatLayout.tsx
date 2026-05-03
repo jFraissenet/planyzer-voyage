@@ -137,39 +137,66 @@ function Seat({
 
 export function SeatLayoutPreview({
   layout,
+  seats,
+  currentUserId,
   seatSize = 32,
   gap = 8,
 }: {
   layout: string;
+  seats?: VehicleSeat[];
+  currentUserId?: string;
   seatSize?: number;
   gap?: number;
 }) {
   const rows = parseLayout(layout);
+  const seatsByIndex = new Map((seats ?? []).map((s) => [s.seat_index, s]));
+  let cursor = 0;
   return (
     <View style={{ gap }}>
-      {rows.map((count, rowIdx) => (
-        <View
-          key={rowIdx}
-          className="flex-row justify-center"
-          style={{ gap }}
-        >
-          {Array.from({ length: count }).map((_, i) => (
-            <View
-              key={i}
-              style={{
-                width: seatSize,
-                height: seatSize,
-                borderRadius: seatSize / 2.2,
-                backgroundColor:
-                  rowIdx === 0 && i === 0 ? "#FEF3C7" : theme.primarySoft,
-                borderWidth: 1.5,
-                borderColor:
-                  rowIdx === 0 && i === 0 ? "#FDE68A" : "#DDD6FE",
-              }}
-            />
-          ))}
-        </View>
-      ))}
+      {rows.map((count, rowIdx) => {
+        const startCursor = cursor;
+        cursor += count;
+        return (
+          <View
+            key={rowIdx}
+            className="flex-row justify-center"
+            style={{ gap }}
+          >
+            {Array.from({ length: count }).map((_, i) => {
+              const flatIndex = startCursor + i;
+              const seat = seatsByIndex.get(flatIndex);
+              const isTaken = !!seat;
+              const isMe =
+                !!seat && !!currentUserId && seat.user_id === currentUserId;
+              let bg: string;
+              let borderColor: string;
+              if (isMe) {
+                bg = "#FEF3C7";
+                borderColor = "#FDE68A";
+              } else if (isTaken) {
+                bg = theme.primary;
+                borderColor = theme.primaryDeep;
+              } else {
+                bg = "#FFFFFF";
+                borderColor = "#E8E3DB";
+              }
+              return (
+                <View
+                  key={i}
+                  style={{
+                    width: seatSize,
+                    height: seatSize,
+                    borderRadius: seatSize / 2.2,
+                    backgroundColor: bg,
+                    borderWidth: 1.5,
+                    borderColor,
+                  }}
+                />
+              );
+            })}
+          </View>
+        );
+      })}
     </View>
   );
 }

@@ -18,7 +18,6 @@ import {
   buildTripMapsUrl,
   shortenAddress,
 } from "@/lib/geocoding";
-import { supabase } from "@/lib/supabase";
 import { useSession } from "@/lib/useSession";
 import { SeatLayoutPreview } from "./carpool/SeatLayout";
 import { VehicleDetailModal } from "./carpool/VehicleDetailModal";
@@ -52,12 +51,16 @@ function VehicleCard({
   vehicle,
   locale,
   youAreIn,
+  seats,
+  currentUserId,
   onPress,
   onEdit,
 }: {
   vehicle: Vehicle;
   locale: string;
   youAreIn: boolean;
+  seats?: VehicleSeat[];
+  currentUserId?: string;
   onPress: () => void;
   onEdit: (() => void) | null;
 }) {
@@ -278,6 +281,8 @@ function VehicleCard({
         >
           <SeatLayoutPreview
             layout={vehicle.seat_layout}
+            seats={seats}
+            currentUserId={currentUserId}
             seatSize={11}
             gap={3}
           />
@@ -308,6 +313,9 @@ export function CarSharingTool(props: ToolProps) {
   const [mySeatVehicleIds, setMySeatVehicleIds] = useState<Set<string>>(
     new Set(),
   );
+  const [seatsByVehicle, setSeatsByVehicle] = useState<
+    Map<string, VehicleSeat[]>
+  >(new Map());
   const [creating, setCreating] = useState(false);
   const [openVehicle, setOpenVehicle] = useState<Vehicle | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<{
@@ -325,28 +333,30 @@ export function CarSharingTool(props: ToolProps) {
       setMembers(m);
       setVehicles(v);
 
-      if (v.length > 0 && currentUserId) {
-        const { data: mine } = await supabase
-          .from("event_tool_vehicle_seats")
-          .select("event_tool_vehicle_seat_vehicle_id")
-          .in(
-            "event_tool_vehicle_seat_vehicle_id",
-            v.map((vh) => vh.vehicle_id),
-          )
-          .eq("event_tool_vehicle_seat_user_id", currentUserId);
-        setMySeatVehicleIds(
-          new Set(
-            (mine ?? []).map(
-              (r) => r.event_tool_vehicle_seat_vehicle_id as string,
-            ),
-          ),
+      if (v.length > 0) {
+        const allSeats = await Promise.all(
+          v.map((vh) => listVehicleSeats(vh.vehicle_id)),
         );
+        const map = new Map<string, VehicleSeat[]>();
+        v.forEach((vh, i) => map.set(vh.vehicle_id, allSeats[i]));
+        setSeatsByVehicle(map);
+        if (currentUserId) {
+          const mine = new Set<string>();
+          for (const [vid, list] of map) {
+            if (list.some((s) => s.user_id === currentUserId)) mine.add(vid);
+          }
+          setMySeatVehicleIds(mine);
+        } else {
+          setMySeatVehicleIds(new Set());
+        }
       } else {
+        setSeatsByVehicle(new Map());
         setMySeatVehicleIds(new Set());
       }
     } catch {
       setMembers([]);
       setVehicles([]);
+      setSeatsByVehicle(new Map());
       setMySeatVehicleIds(new Set());
     }
   }, [props.tool.event_tool_id, currentUserId]);
@@ -386,6 +396,8 @@ export function CarSharingTool(props: ToolProps) {
               vehicle={v}
               locale={i18n.language}
               youAreIn={mySeatVehicleIds.has(v.vehicle_id)}
+              seats={seatsByVehicle.get(v.vehicle_id)}
+              currentUserId={currentUserId}
               onPress={() => setOpenVehicle(v)}
               onEdit={canEditVehicle(v) ? () => openEditVehicle(v) : null}
             />

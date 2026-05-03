@@ -39,7 +39,13 @@ export function ToolShell({
         onTitlePress={isToolAdmin && onEdit ? onEdit : undefined}
         actionLabel={t("events.editTool.action")}
       />
-      <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 120 }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 5,
+          paddingTop: 5,
+          paddingBottom: 120,
+        }}
+      >
         <View
           className="flex-row items-center flex-wrap mb-6"
           style={{ gap: 6 }}

@@ -100,15 +100,24 @@ function EventRow({
     ? "arrow-undo-outline"
     : "archive-outline";
 
+  const gradientColors: [string, string] = archivedMode
+    ? ["#F59E0B", "#FBBF24"]
+    : [theme.primary, theme.primaryLight];
+
   return (
     <Card
-      pressable
-      onPress={() => router.push(`/events/${event.event_id}`)}
+      pressable={!archivedMode}
+      onPress={
+        archivedMode
+          ? undefined
+          : () => router.push(`/events/${event.event_id}`)
+      }
       className="mb-3 overflow-hidden p-0"
+      style={archivedMode ? { backgroundColor: "#FFFBEB" } : undefined}
     >
       <View className="flex-row">
         <LinearGradient
-          colors={[theme.primary, theme.primaryLight]}
+          colors={gradientColors}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={{ width: 6 }}
@@ -124,7 +133,7 @@ function EventRow({
             <Text variant="caption" className="flex-1" numberOfLines={1}>
               {range ?? t("events.card.noDates")}
             </Text>
-            {isAdmin ? (
+            {!archivedMode && isAdmin ? (
               <Pressable
                 onPress={() => onEdit(event)}
                 accessibilityLabel={t("events.edit.action")}
@@ -153,6 +162,21 @@ function EventRow({
               <Ionicons name={archiveIcon} size={archiveSize} color="#92400E" />
             </Pressable>
           </View>
+          {event.event_location ? (
+            <View
+              className="flex-row items-center mt-1"
+              style={{ gap: 4 }}
+            >
+              <Ionicons
+                name="location-outline"
+                size={12}
+                color={theme.sectionLabel}
+              />
+              <Text variant="caption" className="flex-1" numberOfLines={1}>
+                {event.event_location}
+              </Text>
+            </View>
+          ) : null}
           {event.event_description ? (
             <Text variant="body" className="mt-2" numberOfLines={2}>
               {event.event_description}
@@ -324,7 +348,10 @@ export default function EventsScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <ScreenHeader title={t("events.title")} showLogo />
+      <ScreenHeader
+        title={t(showArchived ? "events.titleArchived" : "events.title")}
+        showLogo
+      />
       {loading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator />
@@ -341,7 +368,9 @@ export default function EventsScreen() {
           }
         >
           <View className="flex-row items-center justify-between mb-4">
-            <Text variant="label">{t("events.showArchived")}</Text>
+            <Text variant="label">
+              {t(showArchived ? "events.showActive" : "events.showArchived")}
+            </Text>
             <Switch
               value={showArchived}
               onValueChange={setShowArchived}
@@ -403,7 +432,11 @@ export default function EventsScreen() {
           ) : null}
 
           <Section
-            title={t("events.sections.mine")}
+            title={t(
+              showArchived
+                ? "events.sections.mineArchived"
+                : "events.sections.mine",
+            )}
             events={mine}
             emptyLabel={t("events.empty.mine")}
             locale={i18n.language}
@@ -413,7 +446,11 @@ export default function EventsScreen() {
             onEdit={setEditingEvent}
           />
           <Section
-            title={t("events.sections.shared")}
+            title={t(
+              showArchived
+                ? "events.sections.sharedArchived"
+                : "events.sections.shared",
+            )}
             events={shared}
             emptyLabel={t("events.empty.shared")}
             locale={i18n.language}

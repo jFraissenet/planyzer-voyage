@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { Modal, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Button, DateTimeInput, Input, Text } from "@/components/ui";
+import {
+  AddressInput,
+  Button,
+  DateTimeInput,
+  Input,
+  Text,
+} from "@/components/ui";
 import { createEvent } from "@/lib/events";
 import { theme } from "@/lib/theme";
 
@@ -47,6 +53,8 @@ export function NewEventModal({
   const [description, setDescription] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [location, setLocation] = useState("");
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
     start?: string;
@@ -61,6 +69,8 @@ export function NewEventModal({
       setDescription("");
       setStart("");
       setEnd("");
+      setLocation("");
+      setDetailsOpen(false);
       setErrors({});
       setSubmitting(false);
     }
@@ -101,6 +111,7 @@ export function NewEventModal({
         event_description: description.trim() || null,
         event_start_date: parsedStart === "invalid" ? null : parsedStart,
         event_end_date: parsedEnd === "invalid" ? null : parsedEnd,
+        event_location: location.trim() || null,
       });
       onCreated();
     } catch {
@@ -158,23 +169,53 @@ export function NewEventModal({
               />
             </View>
 
-            <SectionLabel>{t("events.new.datesSection")}</SectionLabel>
-            <View className="gap-3 mb-5">
-              <DateTimeInput
-                label={t("events.new.startLabel")}
-                placeholder={t("events.new.datePlaceholder")}
-                value={start}
-                onChange={setStart}
-                error={errors.start}
-              />
-              <DateTimeInput
-                label={t("events.new.endLabel")}
-                placeholder={t("events.new.datePlaceholder")}
-                value={end}
-                onChange={setEnd}
-                error={errors.end}
-              />
-            </View>
+            <Pressable
+              onPress={() => setDetailsOpen((v) => !v)}
+              className="flex-row items-center py-2 mb-3 active:opacity-70"
+            >
+              <Text
+                variant="caption"
+                className="flex-1 uppercase"
+                style={{
+                  letterSpacing: 1.2,
+                  fontWeight: "700",
+                  fontSize: 11,
+                  color: theme.sectionLabel,
+                }}
+              >
+                {t("events.new.detailsSection")}
+              </Text>
+              <Text
+                variant="caption"
+                style={{ color: theme.sectionLabel }}
+              >
+                {detailsOpen ? "▾" : "▸"}
+              </Text>
+            </Pressable>
+            {detailsOpen ? (
+              <View className="gap-3 mb-5">
+                <AddressInput
+                  label={t("events.new.locationLabel")}
+                  placeholder={t("events.new.locationPlaceholder")}
+                  value={location}
+                  onChangeText={setLocation}
+                />
+                <DateTimeInput
+                  label={t("events.new.startLabel")}
+                  placeholder={t("events.new.datePlaceholder")}
+                  value={start}
+                  onChange={setStart}
+                  error={errors.start}
+                />
+                <DateTimeInput
+                  label={t("events.new.endLabel")}
+                  placeholder={t("events.new.datePlaceholder")}
+                  value={end}
+                  onChange={setEnd}
+                  error={errors.end}
+                />
+              </View>
+            ) : null}
 
             {errors.form ? (
               <Text className="text-error text-sm mb-3">{errors.form}</Text>

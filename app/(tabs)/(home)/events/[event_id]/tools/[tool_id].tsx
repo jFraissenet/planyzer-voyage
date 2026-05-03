@@ -139,6 +139,10 @@ export default function ToolDetailScreen() {
             if (updated) setTool(updated);
           })();
         }}
+        onDeleted={() => {
+          setEditOpen(false);
+          router.replace(`/events/${event_id}`);
+        }}
       />
     </>
   );

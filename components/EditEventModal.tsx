@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Button, DateTimeInput, Input, Text } from "@/components/ui";
+import {
+  AddressInput,
+  Button,
+  DateTimeInput,
+  Input,
+  Text,
+} from "@/components/ui";
 import {
   disableEventShareToken,
   getEventShareToken,
@@ -65,6 +71,8 @@ export function EditEventModal({
   const [description, setDescription] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [location, setLocation] = useState("");
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
     start?: string;
@@ -83,6 +91,14 @@ export function EditEventModal({
       setDescription(event.event_description ?? "");
       setStart(isoToLocalInput(event.event_start_date));
       setEnd(isoToLocalInput(event.event_end_date));
+      setLocation(event.event_location ?? "");
+      setDetailsOpen(
+        Boolean(
+          event.event_start_date ||
+            event.event_end_date ||
+            event.event_location,
+        ),
+      );
       setErrors({});
       setSubmitting(false);
       setShareTokenStatus("unknown");
@@ -169,6 +185,7 @@ export function EditEventModal({
         event_description: description.trim() || null,
         event_start_date: parsedStart === "invalid" ? null : parsedStart,
         event_end_date: parsedEnd === "invalid" ? null : parsedEnd,
+        event_location: location.trim() || null,
       });
       onSaved();
     } catch {
@@ -226,23 +243,53 @@ export function EditEventModal({
               />
             </View>
 
-            <SectionLabel>{t("events.new.datesSection")}</SectionLabel>
-            <View className="gap-3 mb-5">
-              <DateTimeInput
-                label={t("events.new.startLabel")}
-                placeholder={t("events.new.datePlaceholder")}
-                value={start}
-                onChange={setStart}
-                error={errors.start}
-              />
-              <DateTimeInput
-                label={t("events.new.endLabel")}
-                placeholder={t("events.new.datePlaceholder")}
-                value={end}
-                onChange={setEnd}
-                error={errors.end}
-              />
-            </View>
+            <Pressable
+              onPress={() => setDetailsOpen((v) => !v)}
+              className="flex-row items-center py-2 mb-3 active:opacity-70"
+            >
+              <Text
+                variant="caption"
+                className="flex-1 uppercase"
+                style={{
+                  letterSpacing: 1.2,
+                  fontWeight: "700",
+                  fontSize: 11,
+                  color: theme.sectionLabel,
+                }}
+              >
+                {t("events.new.detailsSection")}
+              </Text>
+              <Text
+                variant="caption"
+                style={{ color: theme.sectionLabel }}
+              >
+                {detailsOpen ? "▾" : "▸"}
+              </Text>
+            </Pressable>
+            {detailsOpen ? (
+              <View className="gap-3 mb-5">
+                <AddressInput
+                  label={t("events.new.locationLabel")}
+                  placeholder={t("events.new.locationPlaceholder")}
+                  value={location}
+                  onChangeText={setLocation}
+                />
+                <DateTimeInput
+                  label={t("events.new.startLabel")}
+                  placeholder={t("events.new.datePlaceholder")}
+                  value={start}
+                  onChange={setStart}
+                  error={errors.start}
+                />
+                <DateTimeInput
+                  label={t("events.new.endLabel")}
+                  placeholder={t("events.new.datePlaceholder")}
+                  value={end}
+                  onChange={setEnd}
+                  error={errors.end}
+                />
+              </View>
+            ) : null}
 
             <SectionLabel>{t("events.share.sectionLabel")}</SectionLabel>
             <View
