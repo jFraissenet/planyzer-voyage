@@ -6,6 +6,8 @@
 //           it finds og:* tags and renders a rich preview card instead of
 //           a bare link. Human visitors are redirected to /invite/:token.
 
+import { theme } from "@/lib/theme";
+
 type EventPreview = {
   event_id: string;
   event_title: string;
@@ -106,7 +108,7 @@ function renderHtml(opts: {
   <script>window.location.replace(${JSON.stringify(redirectUrl)});</script>
   <style>
     body { font-family: system-ui, sans-serif; padding: 32px; color: #1A1A1A; background: #FAF7F2; }
-    a { color: #6050DC; }
+    a { color: ${theme.primary}; }
   </style>
 </head>
 <body>

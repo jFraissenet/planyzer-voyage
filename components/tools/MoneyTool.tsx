@@ -16,6 +16,7 @@ import { ExpenseEditModal } from "./money/ExpenseEditModal";
 import { ExpensesTab } from "./money/ExpensesTab";
 import { SettleModal } from "./money/SettleModal";
 import { ToolShell, type ToolProps } from "./ToolShell";
+import { theme } from "@/lib/theme";
 
 type Tab = "expenses" | "breakdown";
 
@@ -45,14 +46,14 @@ function TopTabs({
             className="flex-1 items-center py-3"
             style={{
               borderBottomWidth: 2,
-              borderBottomColor: active ? "#6050DC" : "transparent",
+              borderBottomColor: active ? theme.primary : "transparent",
               marginBottom: -1,
             }}
           >
             <Text
               variant="label"
               style={{
-                color: active ? "#6050DC" : "#A3A3A3",
+                color: active ? theme.primary : "#A3A3A3",
                 fontWeight: active ? "700" : "500",
                 fontSize: 14,
               }}

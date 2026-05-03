@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 import { Avatar, Text } from "@/components/ui";
+import { theme } from "@/lib/theme";
 
 export { useIsMobile } from "@/lib/responsive";
 
@@ -29,7 +30,7 @@ export function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}
@@ -45,13 +46,13 @@ export function TransferArrow({ size = 22 }: { size?: number }) {
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: "#EEECFC",
+        backgroundColor: theme.primarySoft,
       }}
     >
       <Ionicons
         name="arrow-forward"
         size={Math.round(size * 0.55)}
-        color="#6050DC"
+        color={theme.primary}
       />
     </View>
   );

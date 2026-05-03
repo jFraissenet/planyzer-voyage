@@ -13,6 +13,7 @@ import {
   type Settlement,
 } from "@/lib/expenses";
 import { firstName, initialsOf, TransferArrow, useIsMobile } from "./shared";
+import { theme } from "@/lib/theme";
 
 export function BreakdownTab({
   expenses,
@@ -117,7 +118,7 @@ export function BreakdownTab({
           letterSpacing: 1.2,
           fontWeight: "700",
           fontSize: 11,
-          color: "#6050DC",
+          color: theme.sectionLabel,
         }}
       >
         {t("money.breakdown.filterLabel")}
@@ -131,12 +132,12 @@ export function BreakdownTab({
         <Pressable
           onPress={bulkToggle}
           className="px-3 py-1.5 rounded-full"
-          style={{ backgroundColor: allSelected ? "#6050DC" : "#EEECFC" }}
+          style={{ backgroundColor: allSelected ? theme.primary : theme.primarySoft }}
         >
           <Text
             variant="label"
             style={{
-              color: allSelected ? "#FFFFFF" : "#6050DC",
+              color: allSelected ? "#FFFFFF" : theme.primary,
               fontWeight: "700",
             }}
           >
@@ -153,7 +154,7 @@ export function BreakdownTab({
               onPress={() => toggle(m.user_id)}
               className="flex-row items-center px-2 py-1 rounded-full"
               style={{
-                backgroundColor: active ? "#6050DC" : "#EEECFC",
+                backgroundColor: active ? theme.primary : theme.primarySoft,
                 gap: 6,
               }}
             >
@@ -165,7 +166,7 @@ export function BreakdownTab({
               <Text
                 variant="label"
                 style={{
-                  color: active ? "#FFFFFF" : "#6050DC",
+                  color: active ? "#FFFFFF" : theme.primary,
                   fontWeight: "700",
                   paddingRight: 6,
                 }}
@@ -262,7 +263,7 @@ export function BreakdownTab({
           letterSpacing: 1.2,
           fontWeight: "700",
           fontSize: 11,
-          color: "#6050DC",
+          color: theme.sectionLabel,
         }}
       >
         {t("money.breakdown.settleTitle")}
@@ -270,9 +271,9 @@ export function BreakdownTab({
       {visibleSuggestions.length === 0 ? (
         <View
           className="rounded-2xl p-4 mb-6"
-          style={{ backgroundColor: "#EEECFC" }}
+          style={{ backgroundColor: theme.primarySoft }}
         >
-          <Text variant="caption" style={{ color: "#4F3FD1" }}>
+          <Text variant="caption" style={{ color: theme.primaryDeep }}>
             {t("money.breakdown.settleEmpty")}
           </Text>
         </View>
@@ -353,11 +354,11 @@ export function BreakdownTab({
                   <Pressable
                     onPress={() => onSettle(s.from, s.to, s.amount)}
                     className="px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: "#EEECFC" }}
+                    style={{ backgroundColor: theme.primarySoft }}
                   >
                     <Text
                       variant="label"
-                      style={{ color: "#6050DC", fontWeight: "700" }}
+                      style={{ color: theme.primary, fontWeight: "700" }}
                     >
                       {t("money.breakdown.settleAction")}
                     </Text>
@@ -424,11 +425,11 @@ export function BreakdownTab({
                   <Pressable
                     onPress={() => onSettle(s.from, s.to, s.amount)}
                     className="px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: "#EEECFC" }}
+                    style={{ backgroundColor: theme.primarySoft }}
                   >
                     <Text
                       variant="label"
-                      style={{ color: "#6050DC", fontWeight: "700" }}
+                      style={{ color: theme.primary, fontWeight: "700" }}
                     >
                       {t("money.breakdown.settleAction")}
                     </Text>
@@ -448,7 +449,7 @@ export function BreakdownTab({
           letterSpacing: 1.2,
           fontWeight: "700",
           fontSize: 11,
-          color: "#6050DC",
+          color: theme.sectionLabel,
         }}
       >
         {t("money.breakdown.recordedTitle")}

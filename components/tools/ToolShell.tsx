@@ -2,6 +2,7 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { ScreenHeader, Text } from "@/components/ui";
 import type { EventTool } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 export type ToolProps = {
   tool: EventTool;
@@ -45,11 +46,11 @@ export function ToolShell({
         >
           <View
             className="px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: "#EEECFC" }}
+            style={{ backgroundColor: theme.primarySoft }}
           >
             <Text
               style={{
-                color: "#6050DC",
+                color: theme.primary,
                 fontWeight: "700",
                 fontSize: 12,
               }}
@@ -60,11 +61,11 @@ export function ToolShell({
           {!isRestricted ? (
             <View
               className="px-2.5 py-1 rounded-full"
-              style={{ backgroundColor: "#EEECFC" }}
+              style={{ backgroundColor: theme.primarySoft }}
             >
               <Text
                 style={{
-                  color: "#6050DC",
+                  color: theme.primary,
                   fontWeight: "700",
                   fontSize: 12,
                 }}

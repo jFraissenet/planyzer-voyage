@@ -17,6 +17,7 @@ import {
 import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
 import { shortenAddress } from "@/lib/geocoding";
 import { VoteChips } from "./VoteChips";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -53,7 +54,7 @@ function formatDateRange(
 }
 
 const STATUS_COLORS: Record<ProposalStatus, { bg: string; fg: string }> = {
-  proposed: { bg: "#EEECFC", fg: "#4F3FD1" },
+  proposed: { bg: theme.primarySoft, fg: theme.primaryDeep },
   validated: { bg: "#DCFCE7", fg: "#166534" },
   rejected: { bg: "#FEE2E2", fg: "#991B1B" },
 };
@@ -72,8 +73,8 @@ function Chip({
       className="flex-row items-center px-2 py-0.5 rounded-full"
       style={{ backgroundColor: "#F3F0FA", gap: 4 }}
     >
-      <Ionicons name={icon} size={11} color="#6050DC" />
-      <Text style={{ color: "#4F3FD1", fontSize: 11, fontWeight: "600" }}>
+      <Ionicons name={icon} size={11} color={theme.primary} />
+      <Text style={{ color: theme.primaryDeep, fontSize: 11, fontWeight: "600" }}>
         {label}
       </Text>
     </View>
@@ -195,7 +196,7 @@ export function ProposalCard({
             style={{
               width: "100%",
               height: 160,
-              backgroundColor: "#EEECFC",
+              backgroundColor: theme.primarySoft,
             }}
             resizeMode="cover"
           />
@@ -239,10 +240,10 @@ export function ProposalCard({
                 style={{
                   width: 26,
                   height: 26,
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                 }}
               >
-                <Ionicons name="pencil" size={12} color="#6050DC" />
+                <Ionicons name="pencil" size={12} color={theme.primary} />
               </Pressable>
             ) : null}
           </View>
@@ -327,11 +328,11 @@ export function ProposalCard({
           <Ionicons
             name={expanded ? "chevron-up" : "chatbubble-outline"}
             size={13}
-            color="#6050DC"
+            color={theme.primary}
           />
           <Text
             style={{
-              color: "#6050DC",
+              color: theme.primary,
               fontSize: 12,
               fontWeight: "600",
             }}
@@ -376,7 +377,7 @@ export function ProposalCard({
                         style={{
                           fontSize: 11,
                           fontWeight: "700",
-                          color: "#4F3FD1",
+                          color: theme.primaryDeep,
                         }}
                       >
                         {firstName(c.author_full_name)}
@@ -436,7 +437,7 @@ export function ProposalCard({
                   width: 30,
                   height: 30,
                   borderRadius: 15,
-                  backgroundColor: commentText.trim() ? "#6050DC" : "#E8E3DB",
+                  backgroundColor: commentText.trim() ? theme.primary : "#E8E3DB",
                   opacity: commentBusy ? 0.5 : 1,
                 }}
               >

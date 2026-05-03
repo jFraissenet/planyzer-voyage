@@ -187,7 +187,7 @@
         "body": "Organizad los trayectos juntos: quién va con quién, a qué hora y cuántas plazas quedan libres."
       },
       "proposals": {
-        "title": "Propuestas",
+        "title": "Encuestas y propuestas",
         "body": "Lanza una encuesta o un tablero de ideas: proponed opciones, recoged votos y decidid juntos."
       }
     }
@@ -196,7 +196,7 @@
     "money": { "name": "Dinero" },
     "notes": { "name": "Notas" },
     "car_sharing": { "name": "Compartir coche" },
-    "proposals": { "name": "Propuestas" }
+    "proposals": { "name": "Encuestas y propuestas" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participante",

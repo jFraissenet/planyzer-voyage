@@ -31,6 +31,7 @@ import {
 import { useIsMobile } from "@/lib/responsive";
 import { SeatLayoutInteractive, type SeatState } from "./SeatLayout";
 import { VehicleEditModal } from "./VehicleEditModal";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -395,13 +396,13 @@ export function VehicleDetailModal({
               <View
                 className="rounded-2xl p-4 mb-4"
                 style={{
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                 }}
               >
                 <Text
                   variant="label"
                   className="mb-3"
-                  style={{ color: "#4F3FD1", fontWeight: "700" }}
+                  style={{ color: theme.primaryDeep, fontWeight: "700" }}
                 >
                   {t("carpool.seat.title")}
                 </Text>

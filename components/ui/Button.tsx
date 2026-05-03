@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, PressableProps, View } from "react-native";
 import { Text } from "./Text";
+import { theme } from "@/lib/theme";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "cta";
 type Size = "sm" | "md" | "lg";
@@ -59,14 +60,14 @@ export function Button({
       >
         {({ pressed }) => (
           <LinearGradient
-            colors={["#4F3FD1", "#6050DC", "#8B7BEE"]}
+            colors={[theme.primaryDeep, theme.primary, theme.primaryLight]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
               alignItems: "center",
               justifyContent: "center",
               opacity: pressed ? 0.92 : 1,
-              shadowColor: "#6050DC",
+              shadowColor: theme.primary,
               shadowOffset: { width: 0, height: 6 },
               shadowOpacity: 0.35,
               shadowRadius: 12,

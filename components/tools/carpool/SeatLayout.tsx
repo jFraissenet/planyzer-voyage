@@ -2,6 +2,7 @@ import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Avatar, Text } from "@/components/ui";
 import { parseLayout, type VehicleSeat } from "@/lib/carpool";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -52,9 +53,9 @@ function Seat({
 }) {
   const isEmpty = state.kind === "empty";
   const isDriver = state.kind === "driver";
-  const bg = isEmpty ? "#FFFFFF" : isDriver ? "#FEF3C7" : "#EEECFC";
+  const bg = isEmpty ? "#FFFFFF" : isDriver ? "#FEF3C7" : theme.primarySoft;
   const borderColor = isEmpty ? "#E8E3DB" : isDriver ? "#FDE68A" : "#DDD6FE";
-  const labelColor = isDriver ? "#78350F" : "#4F3FD1";
+  const labelColor = isDriver ? "#78350F" : theme.primaryDeep;
 
   const renderContent = (active: boolean) => {
     if (isEmpty) {
@@ -62,7 +63,7 @@ function Seat({
         <Ionicons
           name="add"
           size={Math.round(size * 0.45)}
-          color={active ? "#FFFFFF" : "#6050DC"}
+          color={active ? "#FFFFFF" : theme.primary}
         />
       );
     }
@@ -101,9 +102,9 @@ function Seat({
             width: size,
             height: size,
             borderRadius: size / 2.2,
-            backgroundColor: active && isEmpty ? "#6050DC" : bg,
+            backgroundColor: active && isEmpty ? theme.primary : bg,
             borderWidth: active ? 2.5 : 1.5,
-            borderColor: active ? "#6050DC" : borderColor,
+            borderColor: active ? theme.primary : borderColor,
             transform: [{ scale: pressed ? 0.92 : 1 }],
           }}
         >
@@ -160,7 +161,7 @@ export function SeatLayoutPreview({
                 height: seatSize,
                 borderRadius: seatSize / 2.2,
                 backgroundColor:
-                  rowIdx === 0 && i === 0 ? "#FEF3C7" : "#EEECFC",
+                  rowIdx === 0 && i === 0 ? "#FEF3C7" : theme.primarySoft,
                 borderWidth: 1.5,
                 borderColor:
                   rowIdx === 0 && i === 0 ? "#FDE68A" : "#DDD6FE",

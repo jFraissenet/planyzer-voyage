@@ -3,6 +3,7 @@ import { Modal, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Button, DateTimeInput, Input, Text } from "@/components/ui";
 import { createEvent } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 function parseDate(value: string): string | null | "invalid" {
   const trimmed = value.trim();
@@ -24,7 +25,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}

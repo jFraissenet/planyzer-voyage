@@ -187,7 +187,7 @@
         "body": "Plan rides together: who goes with whom, at what time, and how many seats are left."
       },
       "proposals": {
-        "title": "Proposals",
+        "title": "Polls & proposals",
         "body": "Run a poll or idea board: suggest options, collect votes, and decide together."
       }
     }
@@ -196,7 +196,7 @@
     "money": { "name": "Money" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Carpool" },
-    "proposals": { "name": "Proposals" }
+    "proposals": { "name": "Polls & proposals" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",

@@ -24,6 +24,7 @@ import {
   unarchiveEvent,
 } from "@/lib/events";
 import { useIsMobile } from "@/lib/responsive";
+import { theme } from "@/lib/theme";
 
 function formatDateRange(
   start: string | null,
@@ -107,7 +108,7 @@ function EventRow({
     >
       <View className="flex-row">
         <LinearGradient
-          colors={["#6050DC", "#8B7BEE"]}
+          colors={[theme.primary, theme.primaryLight]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={{ width: 6 }}
@@ -132,10 +133,10 @@ function EventRow({
                 style={{
                   width: iconBtnSize,
                   height: iconBtnSize,
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                 }}
               >
-                <Ionicons name="pencil" size={pencilSize} color="#6050DC" />
+                <Ionicons name="pencil" size={pencilSize} color={theme.primary} />
               </Pressable>
             ) : null}
             <Pressable
@@ -192,7 +193,7 @@ function Section({
         <Text
           className="flex-1 uppercase"
           style={{
-            color: "#6050DC",
+            color: theme.sectionLabel,
             fontSize: 12,
             fontWeight: "700",
             letterSpacing: 1.5,
@@ -203,17 +204,17 @@ function Section({
         <Text
           variant="caption"
           className="mr-2"
-          style={{ color: "#6050DC" }}
+          style={{ color: theme.sectionLabel }}
         >
           {open ? "▾" : "▸"}
         </Text>
         <View
           className="px-2.5 py-0.5 rounded-full"
-          style={{ backgroundColor: "#EEECFC" }}
+          style={{ backgroundColor: theme.primarySoft }}
         >
           <Text
             variant="caption"
-            style={{ color: "#6050DC", fontWeight: "700" }}
+            style={{ color: theme.primary, fontWeight: "700" }}
           >
             {events.length}
           </Text>
@@ -344,7 +345,7 @@ export default function EventsScreen() {
             <Switch
               value={showArchived}
               onValueChange={setShowArchived}
-              trackColor={{ false: "#E8E3DB", true: "#6050DC" }}
+              trackColor={{ false: "#E8E3DB", true: theme.primary }}
               thumbColor="#FFFFFF"
               ios_backgroundColor="#E8E3DB"
             />
@@ -357,7 +358,7 @@ export default function EventsScreen() {
               className="active:opacity-90 mb-6 overflow-hidden rounded-2xl"
             >
               <LinearGradient
-                colors={["#6050DC", "#8B7BEE"]}
+                colors={[theme.primary, theme.primaryLight]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ paddingVertical: 28, paddingHorizontal: 20 }}

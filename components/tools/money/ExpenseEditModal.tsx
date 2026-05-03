@@ -23,6 +23,7 @@ import {
   type ShareMode,
 } from "@/lib/expenses";
 import { initialsOf, SectionLabel } from "./shared";
+import { theme } from "@/lib/theme";
 
 type LocalShare = {
   user_id: string;
@@ -301,7 +302,7 @@ export function ExpenseEditModal({
                     />
                     <Text className="flex-1">{m.full_name ?? "?"}</Text>
                     {selected ? (
-                      <Text style={{ color: "#6050DC", fontWeight: "700" }}>
+                      <Text style={{ color: theme.primary, fontWeight: "700" }}>
                         ✓
                       </Text>
                     ) : null}
@@ -330,7 +331,7 @@ export function ExpenseEditModal({
                       <Text numberOfLines={1}>{m?.full_name ?? "?"}</Text>
                       <Text
                         variant="caption"
-                        style={{ fontSize: 12, color: "#6050DC" }}
+                        style={{ fontSize: 12, color: theme.primary }}
                       >
                         {formatAmount(computed)}
                       </Text>
@@ -339,14 +340,14 @@ export function ExpenseEditModal({
                       onPress={() => cycleMode(s.user_id)}
                       className="mr-2 px-2 py-1 rounded-lg"
                       style={{
-                        backgroundColor: "#EEECFC",
+                        backgroundColor: theme.primarySoft,
                         minWidth: 44,
                         alignItems: "center",
                       }}
                     >
                       <Text
                         variant="label"
-                        style={{ color: "#6050DC", fontWeight: "700" }}
+                        style={{ color: theme.primary, fontWeight: "700" }}
                       >
                         {t(`money.mode.${s.mode}`)}
                       </Text>

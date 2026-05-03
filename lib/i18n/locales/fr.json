@@ -187,7 +187,7 @@
         "body": "Organise les trajets ensemble : qui part avec qui, à quelle heure, et combien de places libres il reste."
       },
       "proposals": {
-        "title": "Propositions",
+        "title": "Sondages & propositions",
         "body": "Lance un sondage ou une boîte à idées : propose des options, collectez les votes et tranchez ensemble."
       }
     }
@@ -196,7 +196,7 @@
     "money": { "name": "Argent" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Covoiturage" },
-    "proposals": { "name": "Propositions" }
+    "proposals": { "name": "Sondages & propositions" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",

@@ -4,6 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { searchAddresses, type AddressSuggestion } from "@/lib/geocoding";
 import { Text } from "./Text";
+import { theme } from "@/lib/theme";
 
 type Props = {
   label?: string;
@@ -118,7 +119,7 @@ export function AddressInput({
             color: "#1A1A1A",
           }}
         />
-        {loading ? <ActivityIndicator size="small" color="#6050DC" /> : null}
+        {loading ? <ActivityIndicator size="small" color={theme.primary} /> : null}
       </View>
 
       {showDropdown ? (
@@ -132,7 +133,7 @@ export function AddressInput({
         >
           {loading && suggestions.length === 0 ? (
             <View className="px-3 py-3 flex-row items-center" style={{ gap: 8 }}>
-              <ActivityIndicator size="small" color="#6050DC" />
+              <ActivityIndicator size="small" color={theme.primary} />
               <Text variant="caption" style={{ fontSize: 12 }}>
                 {t("address.searching")}
               </Text>
@@ -153,7 +154,7 @@ export function AddressInput({
                   <Ionicons
                     name="location"
                     size={14}
-                    color="#6050DC"
+                    color={theme.primary}
                     style={{ marginTop: 2 }}
                   />
                   <Text

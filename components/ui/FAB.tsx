@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, View } from "react-native";
 import { useIsMobile } from "@/lib/responsive";
 import { Text } from "./Text";
+import { theme } from "@/lib/theme";
 
 type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
@@ -32,7 +33,7 @@ export function FAB({
       >
         {({ pressed }) => (
           <LinearGradient
-            colors={["#4F3FD1", "#6050DC", "#8B7BEE"]}
+            colors={[theme.primaryDeep, theme.primary, theme.primaryLight]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -45,7 +46,7 @@ export function FAB({
               alignItems: "center",
               justifyContent: "center",
               transform: [{ scale: pressed ? 0.95 : 1 }],
-              shadowColor: "#6050DC",
+              shadowColor: theme.primary,
               shadowOffset: { width: 0, height: 10 },
               shadowOpacity: 0.5,
               shadowRadius: 20,

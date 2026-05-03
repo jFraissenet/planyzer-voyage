@@ -9,6 +9,7 @@ import {
   updateEvent,
   type Event,
 } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 function isoToLocalInput(iso: string | null): string {
   if (!iso) return "";
@@ -40,7 +41,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}
@@ -259,13 +260,13 @@ export function EditEventModal({
                   disabled={tokenBusy}
                   className="px-3 py-1.5 rounded-full active:opacity-70"
                   style={{
-                    backgroundColor: "#EEECFC",
+                    backgroundColor: theme.primarySoft,
                     opacity: tokenBusy ? 0.6 : 1,
                   }}
                 >
                   <Text
                     variant="label"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
+                    style={{ color: theme.primary, fontWeight: "700" }}
                   >
                     {t("events.share.rotateAction")}
                   </Text>

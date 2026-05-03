@@ -3,6 +3,7 @@ import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-nativ
 import { useTranslation } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
 import { deleteEventTool, updateEventTool, type EventTool } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -13,7 +14,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}

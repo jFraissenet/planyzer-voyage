@@ -11,6 +11,7 @@ import {
 } from "@/components/ui";
 import { useSession } from "@/lib/useSession";
 import { signOut } from "@/lib/auth";
+import { theme } from "@/lib/theme";
 
 const languages = [
   { code: "fr", label: "Français" },
@@ -102,7 +103,7 @@ export default function ProfileScreen() {
                   }}
                   className={`py-3 px-4 ${idx > 0 ? "border-t border-border" : ""} ${selected ? "bg-primary/10" : ""}`}
                 >
-                  <Text style={selected ? { color: "#6050DC" } : undefined}>
+                  <Text style={selected ? { color: theme.primary } : undefined}>
                     {lang.label}
                   </Text>
                 </Pressable>

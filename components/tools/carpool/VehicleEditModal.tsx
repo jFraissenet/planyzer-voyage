@@ -23,6 +23,7 @@ import {
 } from "@/lib/carpool";
 import type { EffectiveMember } from "@/lib/expenses";
 import { SeatLayoutPreview } from "./SeatLayout";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -44,7 +45,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}
@@ -277,7 +278,7 @@ export function VehicleEditModal(props: Props) {
             {isEdit ? (
               <View
                 className="flex-row items-center p-3 rounded-xl mb-5"
-                style={{ backgroundColor: "#EEECFC" }}
+                style={{ backgroundColor: theme.primarySoft }}
               >
                 <Avatar
                   src={currentDriver?.avatar_url ?? undefined}
@@ -287,7 +288,7 @@ export function VehicleEditModal(props: Props) {
                 />
                 <Text
                   className="flex-1"
-                  style={{ color: "#4F3FD1", fontWeight: "700" }}
+                  style={{ color: theme.primaryDeep, fontWeight: "700" }}
                 >
                   {currentDriver?.full_name ?? "?"}
                 </Text>
@@ -314,7 +315,7 @@ export function VehicleEditModal(props: Props) {
                       />
                       <Text className="flex-1">{m.full_name ?? "?"}</Text>
                       {selected ? (
-                        <Text style={{ color: "#6050DC", fontWeight: "700" }}>
+                        <Text style={{ color: theme.primary, fontWeight: "700" }}>
                           ✓
                         </Text>
                       ) : null}
@@ -386,14 +387,14 @@ export function VehicleEditModal(props: Props) {
                         onPress={() => setTripMode(opt.value)}
                         className="flex-1 rounded-xl items-center py-3 px-1"
                         style={{
-                          backgroundColor: active ? "#6050DC" : "#EEECFC",
+                          backgroundColor: active ? theme.primary : theme.primarySoft,
                         }}
                       >
                         <Text
                           variant="label"
                           numberOfLines={1}
                           style={{
-                            color: active ? "#FFFFFF" : "#6050DC",
+                            color: active ? "#FFFFFF" : theme.primary,
                             fontWeight: "700",
                             fontSize: 13,
                           }}
@@ -451,11 +452,11 @@ export function VehicleEditModal(props: Props) {
               <Pressable
                 onPress={addStop}
                 className="self-start px-3 py-1.5 rounded-full"
-                style={{ backgroundColor: "#EEECFC" }}
+                style={{ backgroundColor: theme.primarySoft }}
               >
                 <Text
                   variant="label"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
+                  style={{ color: theme.primary, fontWeight: "700" }}
                 >
                   + {t("carpool.addStop")}
                 </Text>
@@ -475,13 +476,13 @@ export function VehicleEditModal(props: Props) {
                     style={{
                       width: 44,
                       height: 44,
-                      backgroundColor: active ? "#6050DC" : "#EEECFC",
+                      backgroundColor: active ? theme.primary : theme.primarySoft,
                     }}
                   >
                     <Text
                       variant="label"
                       style={{
-                        color: active ? "#FFFFFF" : "#6050DC",
+                        color: active ? "#FFFFFF" : theme.primary,
                         fontWeight: "700",
                       }}
                     >
@@ -503,8 +504,8 @@ export function VehicleEditModal(props: Props) {
                     className="rounded-2xl p-4 items-center"
                     style={{
                       borderWidth: 1.5,
-                      borderColor: active ? "#6050DC" : "#E8E3DB",
-                      backgroundColor: active ? "#EEECFC" : "#FFFFFF",
+                      borderColor: active ? theme.primary : "#E8E3DB",
+                      backgroundColor: active ? theme.primarySoft : "#FFFFFF",
                       minWidth: 96,
                     }}
                   >
@@ -513,7 +514,7 @@ export function VehicleEditModal(props: Props) {
                       variant="caption"
                       className="mt-2"
                       style={{
-                        color: active ? "#6050DC" : "#525252",
+                        color: active ? theme.primary : "#525252",
                         fontWeight: "700",
                       }}
                     >

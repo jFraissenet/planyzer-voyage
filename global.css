@@ -18,10 +18,10 @@
     /* Border — warm neutral that matches beige */
     --color-border: #E8E3DB;
 
-    /* Brand — Majorelle Blue (Partiful signature) */
-    --color-primary: #6050DC;
-    --color-primary-deep: #4F3FD1;
-    --color-primary-soft: #EEECFC;
+    /* Brand — Emerald (logo-aligned) */
+    --color-primary: #10B981;
+    --color-primary-deep: #059669;
+    --color-primary-soft: #D1FAE5;
     --color-primary-foreground: #FFFFFF;
 
     /* Accent — Amber (celebration, warm lights) */
@@ -30,16 +30,16 @@
     --color-accent-soft: #FEF3C7;
     --color-accent-foreground: #1A1A1A;
 
-    /* Gradient stops — tonal Majorelle (sober) */
-    --color-gradient-start: #4F3FD1;
-    --color-gradient-mid: #6050DC;
-    --color-gradient-end: #8B7BEE;
+    /* Gradient stops — tonal Emerald */
+    --color-gradient-start: #059669;
+    --color-gradient-mid: #10B981;
+    --color-gradient-end: #34D399;
 
     /* Semantic */
-    --color-success: #10B981;
+    --color-success: #16A34A;
     --color-warning: #F59E0B;
     --color-error: #EF4444;
-    --color-info: #6050DC;
+    --color-info: #10B981;
   }
 
   .dark {
@@ -49,9 +49,9 @@
     --color-foreground-secondary: #D4D4D8;
     --color-foreground-tertiary: #A1A1AA;
     --color-border: #2D2545;
-    --color-primary: #8B7BEE;
-    --color-primary-deep: #6050DC;
-    --color-primary-soft: #1E1B3F;
+    --color-primary: #34D399;
+    --color-primary-deep: #10B981;
+    --color-primary-soft: #064E3B;
     --color-primary-foreground: #FFFFFF;
     --color-accent: #FBBF24;
     --color-accent-deep: #F59E0B;
@@ -60,7 +60,7 @@
     --color-success: #34D399;
     --color-warning: #FBBF24;
     --color-error: #F87171;
-    --color-info: #8B7BEE;
+    --color-info: #34D399;
     --color-muted: #2D2545;
     --color-muted-foreground: #D4D4D8;
   }

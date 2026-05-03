@@ -9,6 +9,7 @@ import {
   type Expense,
 } from "@/lib/expenses";
 import { firstName, initialsOf, useIsMobile } from "./shared";
+import { theme } from "@/lib/theme";
 
 function ExpenseRow({
   expense,
@@ -31,12 +32,12 @@ function ExpenseRow({
           style={{
             width: 36,
             height: 36,
-            backgroundColor: "#EEECFC",
+            backgroundColor: theme.primarySoft,
           }}
         >
           <Text
             variant="label"
-            style={{ color: "#6050DC", fontWeight: "700", fontSize: 12 }}
+            style={{ color: theme.primary, fontWeight: "700", fontSize: 12 }}
           >
             #{expense.expense_order + 1}
           </Text>
@@ -122,33 +123,33 @@ export function ExpensesTab({
         <View
           className="rounded-2xl p-4 mb-4"
           style={{
-            backgroundColor: "#EEECFC",
+            backgroundColor: theme.primarySoft,
           }}
         >
           <View className="flex-row justify-between mb-2">
-            <Text variant="label" style={{ color: "#4F3FD1" }}>
+            <Text variant="label" style={{ color: theme.primaryDeep }}>
               {t("money.totals.pot")}
             </Text>
             <Text
               variant="label"
-              style={{ color: "#4F3FD1", fontWeight: "700" }}
+              style={{ color: theme.primaryDeep, fontWeight: "700" }}
             >
               {formatAmount(total)}
             </Text>
           </View>
           <View className="flex-row justify-between mb-2">
-            <Text variant="caption" style={{ color: "#4F3FD1" }}>
+            <Text variant="caption" style={{ color: theme.primaryDeep }}>
               {t("money.totals.paid")}
             </Text>
-            <Text variant="caption" style={{ color: "#4F3FD1" }}>
+            <Text variant="caption" style={{ color: theme.primaryDeep }}>
               {formatAmount(iPaid)}
             </Text>
           </View>
           <View className="flex-row justify-between">
-            <Text variant="caption" style={{ color: "#4F3FD1" }}>
+            <Text variant="caption" style={{ color: theme.primaryDeep }}>
               {t("money.totals.share")}
             </Text>
-            <Text variant="caption" style={{ color: "#4F3FD1" }}>
+            <Text variant="caption" style={{ color: theme.primaryDeep }}>
               {formatAmount(myShare)}
             </Text>
           </View>

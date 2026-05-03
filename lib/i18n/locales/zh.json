@@ -187,7 +187,7 @@
         "body": "一起安排行程：谁和谁同车、几点出发、还剩几个座位。"
       },
       "proposals": {
-        "title": "提议",
+        "title": "投票与提议",
         "body": "发起投票或点子板：提出选项、收集投票、一起拍板。"
       }
     }
@@ -196,7 +196,7 @@
     "money": { "name": "账务" },
     "notes": { "name": "笔记" },
     "car_sharing": { "name": "拼车" },
-    "proposals": { "name": "提议" }
+    "proposals": { "name": "投票与提议" }
   },
   "toolDetail": {
     "participants_other": "{{count}} 名参与者",

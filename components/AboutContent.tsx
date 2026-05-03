@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Text } from "@/components/ui";
+import { theme } from "@/lib/theme";
 
 function Feature({
   icon,
@@ -18,7 +19,7 @@ function Feature({
         style={{
           width: 48,
           height: 48,
-          backgroundColor: "#EEECFC",
+          backgroundColor: theme.primarySoft,
         }}
       >
         <Text style={{ fontSize: 22 }}>{icon}</Text>
@@ -37,6 +38,7 @@ const TOOLS: { code: string; icon: string }[] = [
   { code: "money", icon: "💰" },
   { code: "notes", icon: "📝" },
   { code: "car_sharing", icon: "🚗" },
+  { code: "proposals", icon: "🗳️" },
 ];
 
 export function AboutContent() {
@@ -74,7 +76,7 @@ export function AboutContent() {
           letterSpacing: 1.2,
           fontWeight: "700",
           fontSize: 11,
-          color: "#6050DC",
+          color: theme.sectionLabel,
         }}
       >
         {t("about.toolsSection")}

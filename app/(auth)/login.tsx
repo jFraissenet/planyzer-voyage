@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Input, ScreenHeader, Text } from "@/components/ui";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signInWithEmail } from "@/lib/auth";
+import { theme } from "@/lib/theme";
 
 export default function LoginScreen() {
   const { t } = useTranslation();
@@ -99,7 +100,7 @@ export default function LoginScreen() {
             <Pressable>
               <Text
                 className="text-sm font-semibold"
-                style={{ color: "#6050DC" }}
+                style={{ color: theme.primary }}
               >
                 {t("auth.login.signupLink")}
               </Text>

@@ -40,6 +40,7 @@ import {
 } from "@/lib/events";
 import { useIsMobile } from "@/lib/responsive";
 import { useSession } from "@/lib/useSession";
+import { theme } from "@/lib/theme";
 
 function formatDateRange(
   start: string | null,
@@ -106,7 +107,7 @@ function ToolCard({
       >
         <View
           className="mr-3 items-center justify-center rounded-2xl"
-          style={{ width: 48, height: 48, backgroundColor: "#EEECFC" }}
+          style={{ width: 48, height: 48, backgroundColor: theme.primarySoft }}
         >
           <ToolIcon uri={iconUri} size={28} />
         </View>
@@ -153,10 +154,10 @@ function ToolCard({
                 style={{
                   width: badgeSize,
                   height: badgeSize,
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                 }}
               >
-                <Ionicons name="pencil" size={badgeIconSize} color="#6050DC" />
+                <Ionicons name="pencil" size={badgeIconSize} color={theme.primary} />
               </Pressable>
             ) : null}
             {onDelete ? (
@@ -593,7 +594,7 @@ export default function EventDetailScreen() {
               <Text
                 className="flex-1 uppercase"
                 style={{
-                  color: "#6050DC",
+                  color: theme.sectionLabel,
                   fontSize: 12,
                   fontWeight: "700",
                   letterSpacing: 1.5,
@@ -617,10 +618,10 @@ export default function EventDetailScreen() {
                 style={{
                   width: 28,
                   height: 28,
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                 }}
               >
-                <Ionicons name="add" size={18} color="#6050DC" />
+                <Ionicons name="add" size={18} color={theme.primary} />
               </Pressable>
             </View>
 
@@ -628,7 +629,7 @@ export default function EventDetailScreen() {
               <Text
                 className="flex-1 uppercase"
                 style={{
-                  color: "#6050DC",
+                  color: theme.sectionLabel,
                   fontSize: 12,
                   fontWeight: "700",
                   letterSpacing: 1.5,
@@ -638,11 +639,11 @@ export default function EventDetailScreen() {
               </Text>
               <View
                 className="px-2.5 py-0.5 rounded-full mr-3"
-                style={{ backgroundColor: "#EEECFC" }}
+                style={{ backgroundColor: theme.primarySoft }}
               >
                 <Text
                   variant="caption"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
+                  style={{ color: theme.primary, fontWeight: "700" }}
                 >
                   {tools.length}
                 </Text>
@@ -655,10 +656,10 @@ export default function EventDetailScreen() {
                   style={{
                     width: 28,
                     height: 28,
-                    backgroundColor: "#EEECFC",
+                    backgroundColor: theme.primarySoft,
                   }}
                 >
-                  <Ionicons name="add" size={18} color="#6050DC" />
+                  <Ionicons name="add" size={18} color={theme.primary} />
                 </Pressable>
               ) : null}
             </View>

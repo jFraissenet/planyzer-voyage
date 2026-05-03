@@ -24,6 +24,7 @@ import { SeatLayoutPreview } from "./carpool/SeatLayout";
 import { VehicleDetailModal } from "./carpool/VehicleDetailModal";
 import { VehicleEditModal } from "./carpool/VehicleEditModal";
 import { ToolShell, type ToolProps } from "./ToolShell";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -117,10 +118,10 @@ function VehicleCard({
             paddingHorizontal: 5,
             paddingVertical: 0.5,
             borderRadius: 7,
-            backgroundColor: "#6050DC",
+            backgroundColor: theme.primary,
             borderWidth: 1.5,
             borderColor: "#FFFFFF",
-            shadowColor: "#6050DC",
+            shadowColor: theme.primary,
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.35,
             shadowRadius: 4,
@@ -199,10 +200,10 @@ function VehicleCard({
                   style={{
                     width: 26,
                     height: 26,
-                    backgroundColor: "#EEECFC",
+                    backgroundColor: theme.primarySoft,
                   }}
                 >
-                  <Ionicons name="pencil" size={12} color="#6050DC" />
+                  <Ionicons name="pencil" size={12} color={theme.primary} />
                 </Pressable>
               ) : null}
             </View>
@@ -233,7 +234,7 @@ function VehicleCard({
                 className="flex-row items-center active:opacity-70"
                 style={{ gap: 8 }}
               >
-                <Ionicons name="location" size={14} color="#6050DC" />
+                <Ionicons name="location" size={14} color={theme.primary} />
                 <Text
                   className="flex-1"
                   numberOfLines={1}
@@ -254,7 +255,7 @@ function VehicleCard({
                 className="flex-row items-center"
                 style={{ gap: 8 }}
               >
-                <Ionicons name="calendar" size={14} color="#6050DC" />
+                <Ionicons name="calendar" size={14} color={theme.primary} />
                 <Text variant="caption" style={{ fontSize: 12 }}>
                   {departureDate}
                 </Text>
@@ -282,7 +283,7 @@ function VehicleCard({
           />
           <Text
             style={{
-              color: isFull ? "#A3A3A3" : "#6050DC",
+              color: isFull ? "#A3A3A3" : theme.primary,
               fontWeight: "700",
               fontSize: 12,
             }}

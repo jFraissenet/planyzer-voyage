@@ -31,7 +31,13 @@ export function DateTimeInput({
             onChange(e.target.value)
           }
           className={`w-full px-4 py-3 rounded-lg border bg-surface text-base text-foreground ${borderClass}`}
-          style={{ fontFamily: "inherit", outline: "none" }}
+          style={{
+            fontFamily: "inherit",
+            outline: "none",
+            width: "100%",
+            minWidth: 0,
+            boxSizing: "border-box",
+          }}
         />
       ) : (
         <TextInput

@@ -82,8 +82,6 @@ export function ScreenHeader({
         paddingTop: insets.top + 16,
         paddingBottom: 20,
         paddingHorizontal: 16,
-        borderBottomLeftRadius: 28,
-        borderBottomRightRadius: 28,
       }}
     >
       <View className="flex-row items-center">

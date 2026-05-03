@@ -29,6 +29,7 @@ import {
 } from "@/lib/proposals";
 import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
 import { VoteChips } from "./VoteChips";
+import { theme } from "@/lib/theme";
 
 type Props = {
   visible: boolean;
@@ -43,7 +44,7 @@ type Props = {
 };
 
 const STATUS_COLORS: Record<ProposalStatus, { bg: string; fg: string }> = {
-  proposed: { bg: "#EEECFC", fg: "#4F3FD1" },
+  proposed: { bg: theme.primarySoft, fg: theme.primaryDeep },
   validated: { bg: "#DCFCE7", fg: "#166534" },
   rejected: { bg: "#FEE2E2", fg: "#991B1B" },
 };
@@ -85,7 +86,7 @@ function InfoRow({
 }) {
   const inner = (
     <View className="flex-row items-center" style={{ gap: 8 }}>
-      <Ionicons name={icon} size={16} color="#6050DC" />
+      <Ionicons name={icon} size={16} color={theme.primary} />
       <View className="flex-1">{children}</View>
       {onPress ? (
         <Ionicons name="open-outline" size={14} color="#A3A3A3" />
@@ -289,7 +290,7 @@ export function ProposalDetailModal({
                       style={{
                         width: carouselWidth,
                         height: 220,
-                        backgroundColor: "#EEECFC",
+                        backgroundColor: theme.primarySoft,
                       }}
                       resizeMode="cover"
                     />
@@ -441,7 +442,7 @@ export function ProposalDetailModal({
                     style={{
                       fontSize: 11,
                       fontWeight: "700",
-                      color: "#6050DC",
+                      color: theme.primary,
                       letterSpacing: 1,
                     }}
                   >
@@ -454,12 +455,12 @@ export function ProposalDetailModal({
                       className="flex-row items-center py-2 active:opacity-70"
                       style={{ gap: 8 }}
                     >
-                      <Ionicons name="link" size={14} color="#6050DC" />
+                      <Ionicons name="link" size={14} color={theme.primary} />
                       <Text
                         className="flex-1"
                         numberOfLines={1}
                         style={{
-                          color: "#6050DC",
+                          color: theme.primary,
                           fontSize: 14,
                           fontWeight: "600",
                         }}
@@ -480,7 +481,7 @@ export function ProposalDetailModal({
                     style={{
                       fontSize: 11,
                       fontWeight: "700",
-                      color: "#6050DC",
+                      color: theme.primary,
                       letterSpacing: 1,
                     }}
                   >
@@ -525,11 +526,11 @@ export function ProposalDetailModal({
                     <Pressable
                       onPress={onEdit}
                       className="flex-1 items-center justify-center py-2.5 rounded-lg"
-                      style={{ backgroundColor: "#EEECFC" }}
+                      style={{ backgroundColor: theme.primarySoft }}
                     >
                       <Text
                         style={{
-                          color: "#6050DC",
+                          color: theme.primary,
                           fontWeight: "700",
                           fontSize: 13,
                         }}
@@ -572,7 +573,7 @@ export function ProposalDetailModal({
                 style={{
                   fontSize: 11,
                   fontWeight: "700",
-                  color: "#6050DC",
+                  color: theme.primary,
                   letterSpacing: 1,
                 }}
               >
@@ -604,7 +605,7 @@ export function ProposalDetailModal({
                           style={{
                             fontSize: 12,
                             fontWeight: "700",
-                            color: "#4F3FD1",
+                            color: theme.primaryDeep,
                           }}
                         >
                           {firstName(c.author_full_name)}
@@ -664,7 +665,7 @@ export function ProposalDetailModal({
                     width: 34,
                     height: 34,
                     borderRadius: 17,
-                    backgroundColor: commentText.trim() ? "#6050DC" : "#E8E3DB",
+                    backgroundColor: commentText.trim() ? theme.primary : "#E8E3DB",
                     opacity: commentBusy ? 0.5 : 1,
                   }}
                 >

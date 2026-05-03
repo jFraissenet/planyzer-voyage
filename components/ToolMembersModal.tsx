@@ -10,6 +10,7 @@ import {
   type ParticipantEntry,
   type ToolMemberEntry,
 } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -151,13 +152,13 @@ export function ToolMembersModal({
                   disabled={bulkBusy}
                   className="flex-row items-center justify-between py-2 mb-2 px-3 rounded-lg"
                   style={{
-                    backgroundColor: "#EEECFC",
+                    backgroundColor: theme.primarySoft,
                     opacity: bulkBusy ? 0.5 : 1,
                   }}
                 >
                   <Text
                     variant="label"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
+                    style={{ color: theme.primary, fontWeight: "700" }}
                   >
                     {allSelected
                       ? t("toolMembers.deselectAll")
@@ -165,7 +166,7 @@ export function ToolMembersModal({
                   </Text>
                   <Text
                     variant="label"
-                    style={{ color: "#6050DC", fontWeight: "700" }}
+                    style={{ color: theme.primary, fontWeight: "700" }}
                   >
                     {allSelected ? "☑" : "☐"}
                   </Text>
@@ -206,7 +207,7 @@ export function ToolMembersModal({
                             borderRadius: 8,
                             borderWidth: checked ? 0 : 1.5,
                             borderColor: "#E8E3DB",
-                            backgroundColor: checked ? "#6050DC" : "#FFFFFF",
+                            backgroundColor: checked ? theme.primary : "#FFFFFF",
                           }}
                         >
                           {checked ? (

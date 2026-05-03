@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Image, Pressable, View } from "react-native";
 import { useIsMobile } from "@/lib/responsive";
 import { Text } from "./Text";
+import { theme } from "@/lib/theme";
 
 export type AvatarStackEntry = {
   id: string;
@@ -30,7 +31,7 @@ const PALETTE = [
   "#3B82F6",
   "#EF4444",
   "#22C55E",
-  "#6050DC",
+  theme.primary,
   "#F59E0B",
 ];
 

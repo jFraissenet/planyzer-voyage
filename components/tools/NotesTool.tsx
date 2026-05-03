@@ -14,6 +14,7 @@ import {
 import { useSession } from "@/lib/useSession";
 import { NoteEditModal } from "./NoteEditModal";
 import { ToolShell, type ToolProps } from "./ToolShell";
+import { theme } from "@/lib/theme";
 
 function firstName(full: string | null): string {
   if (!full) return "?";
@@ -58,7 +59,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}
@@ -84,7 +85,7 @@ function Checkbox({
         borderRadius: 8,
         borderWidth: checked ? 0 : 1.5,
         borderColor: "#E8E3DB",
-        backgroundColor: checked ? "#6050DC" : "#FFFFFF",
+        backgroundColor: checked ? theme.primary : "#FFFFFF",
       }}
     >
       {checked ? (
@@ -160,7 +161,7 @@ function NoteRow({
           className="items-center justify-center"
           style={{ width: 32, height: 32 }}
         >
-          <Ionicons name="pencil" size={16} color="#6050DC" />
+          <Ionicons name="pencil" size={16} color={theme.primary} />
         </Pressable>
       ) : null}
     </View>
@@ -277,7 +278,7 @@ export function NotesTool(props: ToolProps) {
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: newText.trim() ? "#6050DC" : "#E8E3DB",
+            backgroundColor: newText.trim() ? theme.primary : "#E8E3DB",
             opacity: creating ? 0.5 : 1,
           }}
         >

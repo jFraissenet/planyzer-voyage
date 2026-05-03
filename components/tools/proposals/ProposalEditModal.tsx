@@ -20,6 +20,7 @@ import {
   type ProposalInput,
 } from "@/lib/proposals";
 import { isoToLocalInput, localInputToIso } from "./dateHelpers";
+import { theme } from "@/lib/theme";
 
 type Mode = "create" | "edit";
 
@@ -69,11 +70,11 @@ function Section({
           {badge ? (
             <View
               className="px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: "#EEECFC" }}
+              style={{ backgroundColor: theme.primarySoft }}
             >
               <Text
                 style={{
-                  color: "#6050DC",
+                  color: theme.primary,
                   fontSize: 11,
                   fontWeight: "700",
                 }}
@@ -522,10 +523,10 @@ export function ProposalEditModal({
                     className="flex-row items-center"
                     style={{ gap: 4 }}
                   >
-                    <Ionicons name="add" size={16} color="#6050DC" />
+                    <Ionicons name="add" size={16} color={theme.primary} />
                     <Text
                       style={{
-                        color: "#6050DC",
+                        color: theme.primary,
                         fontWeight: "600",
                         fontSize: 13,
                       }}
@@ -576,7 +577,7 @@ export function ProposalEditModal({
                             width: "100%",
                             height: 120,
                             borderRadius: 10,
-                            backgroundColor: "#EEECFC",
+                            backgroundColor: theme.primarySoft,
                           }}
                           resizeMode="cover"
                         />
@@ -595,10 +596,10 @@ export function ProposalEditModal({
                     className="flex-row items-center"
                     style={{ gap: 4 }}
                   >
-                    <Ionicons name="add" size={16} color="#6050DC" />
+                    <Ionicons name="add" size={16} color={theme.primary} />
                     <Text
                       style={{
-                        color: "#6050DC",
+                        color: theme.primary,
                         fontWeight: "600",
                         fontSize: 13,
                       }}

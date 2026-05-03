@@ -16,6 +16,7 @@ import {
 } from "@/lib/events";
 import { setPendingInvite } from "@/lib/pendingInvite";
 import { useSession } from "@/lib/useSession";
+import { theme } from "@/lib/theme";
 
 function formatDateRange(
   start: string | null,
@@ -170,11 +171,11 @@ export default function InviteScreen() {
 
           <View
             className="self-start px-2.5 py-0.5 rounded-full mb-5"
-            style={{ backgroundColor: "#EEECFC" }}
+            style={{ backgroundColor: theme.primarySoft }}
           >
             <Text
               variant="caption"
-              style={{ color: "#6050DC", fontWeight: "700" }}
+              style={{ color: theme.primary, fontWeight: "700" }}
             >
               {t("invitePage.participantCount", {
                 count: preview.participant_count,

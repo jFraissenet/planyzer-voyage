@@ -16,6 +16,7 @@ import { ProposalCard } from "./ProposalCard";
 import { ProposalDetailModal } from "./ProposalDetailModal";
 import { ProposalEditModal } from "./ProposalEditModal";
 import { ToolShell, type ToolProps } from "../ToolShell";
+import { theme } from "@/lib/theme";
 
 export function ProposalsTool(props: ToolProps) {
   const { t, i18n } = useTranslation();
@@ -135,7 +136,7 @@ export function ProposalsTool(props: ToolProps) {
                   className="flex-row items-center"
                   style={{ gap: 10 }}
                 >
-                  <Ionicons name="time-outline" size={16} color="#6050DC" />
+                  <Ionicons name="time-outline" size={16} color={theme.primary} />
                   <View className="flex-1">
                     <DateTimeInput
                       label={t("proposals.deadlineLabel")}
@@ -157,7 +158,7 @@ export function ProposalsTool(props: ToolProps) {
                     <Ionicons
                       name={lockedLocal ? "lock-closed" : "lock-open"}
                       size={16}
-                      color={lockedLocal ? "#78350F" : "#6050DC"}
+                      color={lockedLocal ? "#78350F" : theme.primary}
                     />
                     <View className="flex-1">
                       <Text
@@ -179,7 +180,7 @@ export function ProposalsTool(props: ToolProps) {
                     style={{
                       width: 44,
                       height: 26,
-                      backgroundColor: lockedLocal ? "#6050DC" : "#E8E3DB",
+                      backgroundColor: lockedLocal ? theme.primary : "#E8E3DB",
                       padding: 3,
                       flexDirection: "row",
                       justifyContent: lockedLocal ? "flex-end" : "flex-start",
@@ -203,7 +204,7 @@ export function ProposalsTool(props: ToolProps) {
                     className="flex-row items-center"
                     style={{ gap: 6 }}
                   >
-                    <Ionicons name="time-outline" size={14} color="#6050DC" />
+                    <Ionicons name="time-outline" size={14} color={theme.primary} />
                     <Text
                       style={{
                         color: "#1A1A1A",

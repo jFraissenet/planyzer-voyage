@@ -21,6 +21,7 @@ import {
   type ParticipantEntry,
   type UserSearchResult,
 } from "@/lib/events";
+import { theme } from "@/lib/theme";
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -31,7 +32,7 @@ function SectionLabel({ children }: { children: string }) {
         letterSpacing: 1.2,
         fontWeight: "700",
         fontSize: 11,
-        color: "#6050DC",
+        color: theme.sectionLabel,
       }}
     >
       {children}
@@ -226,15 +227,15 @@ export function InviteModal({
                 accessibilityLabel={t("events.share.action")}
                 className="flex-row items-center justify-center px-3 py-2.5 rounded-full mb-4 active:opacity-70"
                 style={{
-                  backgroundColor: "#EEECFC",
+                  backgroundColor: theme.primarySoft,
                   opacity: sharing ? 0.6 : 1,
                   gap: 6,
                 }}
               >
-                <Ionicons name="share-outline" size={16} color="#6050DC" />
+                <Ionicons name="share-outline" size={16} color={theme.primary} />
                 <Text
                   variant="label"
-                  style={{ color: "#6050DC", fontWeight: "700" }}
+                  style={{ color: theme.primary, fontWeight: "700" }}
                 >
                   {t("events.share.button")}
                 </Text>
@@ -287,7 +288,7 @@ export function InviteModal({
                             {already ? (
                               <Text
                                 variant="caption"
-                                style={{ color: "#6050DC", fontWeight: "600" }}
+                                style={{ color: theme.primary, fontWeight: "600" }}
                               >
                                 {t("invite.alreadyMember")}
                               </Text>
@@ -297,14 +298,14 @@ export function InviteModal({
                                 disabled={busy}
                                 className="px-3 py-1.5 rounded-full"
                                 style={{
-                                  backgroundColor: "#EEECFC",
+                                  backgroundColor: theme.primarySoft,
                                   opacity: busy ? 0.5 : 1,
                                 }}
                               >
                                 <Text
                                   variant="label"
                                   style={{
-                                    color: "#6050DC",
+                                    color: theme.primary,
                                     fontWeight: "700",
                                   }}
                                 >
@@ -317,14 +318,14 @@ export function InviteModal({
                                 disabled={busy}
                                 className="px-3 py-1.5 rounded-full"
                                 style={{
-                                  backgroundColor: "#EEECFC",
+                                  backgroundColor: theme.primarySoft,
                                   opacity: busy ? 0.5 : 1,
                                 }}
                               >
                                 <Text
                                   variant="label"
                                   style={{
-                                    color: "#6050DC",
+                                    color: theme.primary,
                                     fontWeight: "700",
                                   }}
                                 >
@@ -399,7 +400,7 @@ export function InviteModal({
                   <Text
                     className="flex-1 uppercase"
                     style={{
-                      color: "#6050DC",
+                      color: theme.sectionLabel,
                       fontSize: 11,
                       fontWeight: "700",
                       letterSpacing: 1.2,
@@ -411,7 +412,7 @@ export function InviteModal({
                   </Text>
                   <Text
                     variant="caption"
-                    style={{ color: "#6050DC" }}
+                    style={{ color: theme.sectionLabel }}
                   >
                     {formerOpen ? "▾" : "▸"}
                   </Text>
@@ -444,14 +445,14 @@ export function InviteModal({
                             disabled={busy}
                             className="px-3 py-1.5 rounded-full"
                             style={{
-                              backgroundColor: "#EEECFC",
+                              backgroundColor: theme.primarySoft,
                               opacity: busy ? 0.5 : 1,
                             }}
                           >
                             <Text
                               variant="label"
                               style={{
-                                color: "#6050DC",
+                                color: theme.primary,
                                 fontWeight: "700",
                               }}
                             >
