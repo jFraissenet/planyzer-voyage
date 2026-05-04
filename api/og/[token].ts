@@ -6,7 +6,10 @@
 //           it finds og:* tags and renders a rich preview card instead of
 //           a bare link. Human visitors are redirected to /invite/:token.
 
-import { theme } from "@/lib/theme";
+// Brand primary inlined intentionally — the @vercel/node runtime resolves
+// @/* path aliases inconsistently across cold/warm invocations. Keep this
+// in sync with --color-primary in global.css and theme.primary in lib/theme.ts.
+const BRAND_PRIMARY = "#10B981";
 
 type EventPreview = {
   event_id: string;
@@ -52,22 +55,26 @@ async function fetchPreview(
   anonKey: string,
   token: string,
 ): Promise<EventPreview | null> {
-  const res = await fetch(
-    `${supabaseUrl}/rest/v1/rpc/get_event_by_share_token`,
-    {
-      method: "POST",
-      headers: {
-        apikey: anonKey,
-        Authorization: `Bearer ${anonKey}`,
-        "Content-Type": "application/json",
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/rpc/get_event_by_share_token`,
+      {
+        method: "POST",
+        headers: {
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ p_token: token }),
       },
-      body: JSON.stringify({ p_token: token }),
-    },
-  );
-  if (!res.ok) return null;
-  const data = (await res.json()) as EventPreview[] | EventPreview;
-  if (Array.isArray(data)) return data[0] ?? null;
-  return data;
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as EventPreview[] | EventPreview;
+    if (Array.isArray(data)) return data[0] ?? null;
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 function renderHtml(opts: {
@@ -108,7 +115,7 @@ function renderHtml(opts: {
   <script>window.location.replace(${JSON.stringify(redirectUrl)});</script>
   <style>
     body { font-family: system-ui, sans-serif; padding: 32px; color: #1A1A1A; background: #FAF7F2; }
-    a { color: ${theme.primary}; }
+    a { color: ${BRAND_PRIMARY}; }
   </style>
 </head>
 <body>
@@ -126,68 +133,83 @@ export default async function handler(
     setHeader: (name: string, value: string) => void;
   },
 ) {
-  const rawToken = req.query.token;
-  const token = Array.isArray(rawToken) ? rawToken[0] : rawToken;
+  try {
+    const rawToken = req.query.token;
+    const token = Array.isArray(rawToken) ? rawToken[0] : rawToken;
 
-  const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-  const host =
-    (req.headers["x-forwarded-host"] as string | undefined) ??
-    (req.headers.host as string | undefined) ??
-    "planyzer.app";
-  const proto =
-    (req.headers["x-forwarded-proto"] as string | undefined) ?? "https";
-  const shareUrl = `${proto}://${host}/e/${token ?? ""}`;
-  const redirectUrl = `${proto}://${host}/invite/${token ?? ""}`;
+    const host =
+      (req.headers["x-forwarded-host"] as string | undefined) ??
+      (req.headers.host as string | undefined) ??
+      "planyzer.app";
+    const proto =
+      (req.headers["x-forwarded-proto"] as string | undefined) ?? "https";
+    const shareUrl = `${proto}://${host}/e/${token ?? ""}`;
+    const redirectUrl = `${proto}://${host}/invite/${token ?? ""}`;
 
-  res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300");
 
-  if (!token || !supabaseUrl || !anonKey) {
+    if (!token || !supabaseUrl || !anonKey) {
+      res.status(200).send(
+        renderHtml({
+          title: "Planyzer",
+          description: "Organise tes événements avec tes proches.",
+          url: shareUrl,
+          redirectUrl,
+        }),
+      );
+      return;
+    }
+
+    const preview = await fetchPreview(supabaseUrl, anonKey, token);
+
+    if (!preview) {
+      res.status(200).send(
+        renderHtml({
+          title: "Invitation Planyzer",
+          description: "Ce lien n'est plus valide.",
+          url: shareUrl,
+          redirectUrl,
+        }),
+      );
+      return;
+    }
+
+    const range = formatDateRange(
+      preview.event_start_date,
+      preview.event_end_date,
+    );
+    const parts = [
+      preview.organizer_name ? `Par ${preview.organizer_name}` : null,
+      range,
+      preview.event_description,
+    ].filter(Boolean);
+    const description =
+      parts.join(" · ") || "Rejoins cet événement sur Planyzer.";
+
+    res.status(200).send(
+      renderHtml({
+        title: preview.event_title,
+        description,
+        url: shareUrl,
+        redirectUrl,
+        image: preview.organizer_avatar_url,
+      }),
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("og handler crashed:", err);
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.status(200).send(
       renderHtml({
         title: "Planyzer",
         description: "Organise tes événements avec tes proches.",
-        url: shareUrl,
-        redirectUrl,
+        url: "https://planyzer.app",
+        redirectUrl: "https://planyzer.app",
       }),
     );
-    return;
   }
-
-  const preview = await fetchPreview(supabaseUrl, anonKey, token);
-
-  if (!preview) {
-    res.status(200).send(
-      renderHtml({
-        title: "Invitation Planyzer",
-        description: "Ce lien n'est plus valide.",
-        url: shareUrl,
-        redirectUrl,
-      }),
-    );
-    return;
-  }
-
-  const range = formatDateRange(
-    preview.event_start_date,
-    preview.event_end_date,
-  );
-  const parts = [
-    preview.organizer_name ? `Par ${preview.organizer_name}` : null,
-    range,
-    preview.event_description,
-  ].filter(Boolean);
-  const description = parts.join(" · ") || "Rejoins cet événement sur Planyzer.";
-
-  res.status(200).send(
-    renderHtml({
-      title: preview.event_title,
-      description,
-      url: shareUrl,
-      redirectUrl,
-      image: preview.organizer_avatar_url,
-    }),
-  );
 }

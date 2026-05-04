@@ -1,12 +1,12 @@
 import { Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { ScreenHeader, Text } from "@/components/ui";
-import type { EventTool } from "@/lib/events";
+import { AvatarStack, ScreenHeader, Text } from "@/components/ui";
+import type { EventTool, ToolParticipant } from "@/lib/events";
 import { theme } from "@/lib/theme";
 
 export type ToolProps = {
   tool: EventTool;
-  participantCount: number;
+  participants: ToolParticipant[];
   onBack: () => void;
   isToolAdmin: boolean;
   onManageMembers: () => void;
@@ -15,7 +15,7 @@ export type ToolProps = {
 
 export function ToolShell({
   tool,
-  participantCount,
+  participants,
   onBack,
   isToolAdmin,
   onManageMembers,
@@ -28,7 +28,7 @@ export function ToolShell({
   });
   const isRestricted = tool.event_tool_visibility === "restricted";
   const canManage = isToolAdmin && isRestricted;
-  const showWarning = canManage && participantCount <= 1;
+  const showWarning = canManage && participants.length <= 1;
 
   return (
     <View className="flex-1 bg-background">
@@ -50,20 +50,14 @@ export function ToolShell({
           className="flex-row items-center flex-wrap mb-6"
           style={{ gap: 6 }}
         >
-          <View
-            className="px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: theme.primarySoft }}
-          >
-            <Text
-              style={{
-                color: theme.primary,
-                fontWeight: "700",
-                fontSize: 12,
-              }}
-            >
-              {t("toolDetail.participants", { count: participantCount })}
-            </Text>
-          </View>
+          <AvatarStack
+            participants={participants.map((p) => ({
+              id: p.user_id,
+              full_name: p.full_name,
+              avatar_url: p.avatar_url,
+            }))}
+            onPress={canManage ? onManageMembers : undefined}
+          />
           {!isRestricted ? (
             <View
               className="px-2.5 py-1 rounded-full"

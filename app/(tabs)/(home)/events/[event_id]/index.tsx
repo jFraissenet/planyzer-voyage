@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Modal,
   Platform,
   Pressable,
@@ -31,7 +30,6 @@ import {
   ParticipantEntry,
   ToolType,
   createEventTool,
-  deleteEventTool,
   ensureEventShareToken,
   getEvent,
   getMyEventRole,
@@ -83,13 +81,11 @@ function ToolCard({
   iconUri,
   onPress,
   onEdit,
-  onDelete,
 }: {
   tool: EventTool;
   iconUri: string | null;
   onPress: () => void;
   onEdit: (() => void) | null;
-  onDelete: (() => void) | null;
 }) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -159,25 +155,6 @@ function ToolCard({
                 }}
               >
                 <Ionicons name="pencil" size={badgeIconSize} color={theme.primary} />
-              </Pressable>
-            ) : null}
-            {onDelete ? (
-              <Pressable
-                onPress={onDelete}
-                hitSlop={10}
-                accessibilityLabel={t("events.editTool.delete")}
-                className="items-center justify-center rounded-full active:opacity-70"
-                style={{
-                  width: badgeSize,
-                  height: badgeSize,
-                  backgroundColor: "#FEE2E2",
-                }}
-              >
-                <Ionicons
-                  name="trash-outline"
-                  size={badgeIconSize}
-                  color="#EF4444"
-                />
               </Pressable>
             ) : null}
           </View>
@@ -547,35 +524,6 @@ export default function EventDetailScreen() {
   const isAdmin = myRole === "admin";
   const canAddTools = isAdmin || myRole === "member";
 
-  const confirmDeleteTool = (tl: EventTool) => {
-    const title = t("events.editTool.deleteConfirm", {
-      name: tl.event_tool_name,
-    });
-    const body = t("events.editTool.deleteConfirmBody");
-    const doDelete = async () => {
-      try {
-        await deleteEventTool(tl.event_tool_id);
-        await load();
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("deleteEventTool failed:", err);
-      }
-    };
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(`${title}\n\n${body}`)) void doDelete();
-      return;
-    }
-    Alert.alert(title, body, [
-      { text: t("common.cancel"), style: "cancel" },
-      {
-        text: t("events.editTool.delete"),
-        style: "destructive",
-        onPress: () => void doDelete(),
-      },
-    ]);
-  };
-
   return (
     <View className="flex-1 bg-background">
       {loading ? (
@@ -771,9 +719,6 @@ export default function EventDetailScreen() {
                         )
                       }
                       onEdit={canEditTool ? () => setEditingTool(tl) : null}
-                      onDelete={
-                        canEditTool ? () => confirmDeleteTool(tl) : null
-                      }
                     />
                   );
                 })

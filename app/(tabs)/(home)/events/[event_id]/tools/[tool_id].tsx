@@ -8,9 +8,10 @@ import { getToolComponent } from "@/components/tools";
 import { ScreenHeader, Text } from "@/components/ui";
 import {
   getEventTool,
-  getToolParticipantCount,
+  getToolParticipants,
   isToolAdmin as isToolAdminApi,
   type EventTool,
+  type ToolParticipant,
 } from "@/lib/events";
 import { useSession } from "@/lib/useSession";
 
@@ -29,17 +30,17 @@ export default function ToolDetailScreen() {
   };
 
   const [tool, setTool] = useState<EventTool | null>(null);
-  const [participantCount, setParticipantCount] = useState(0);
+  const [participants, setParticipants] = useState<ToolParticipant[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [membersOpen, setMembersOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
-  const refreshCount = useCallback(async () => {
+  const refreshParticipants = useCallback(async () => {
     if (!tool) return;
     try {
-      const c = await getToolParticipantCount(tool);
-      setParticipantCount(c);
+      const list = await getToolParticipants(tool);
+      setParticipants(list);
     } catch {
       // ignore
     }
@@ -55,12 +56,12 @@ export default function ToolDetailScreen() {
         if (!active) return;
         setTool(fetched);
         if (fetched) {
-          const [c, admin] = await Promise.all([
-            getToolParticipantCount(fetched),
+          const [list, admin] = await Promise.all([
+            getToolParticipants(fetched),
             isToolAdminApi(fetched.event_tool_id),
           ]);
           if (active) {
-            setParticipantCount(c);
+            setParticipants(list);
             setIsAdmin(admin);
           }
         }
@@ -113,7 +114,7 @@ export default function ToolDetailScreen() {
     <>
       <Component
         tool={tool}
-        participantCount={participantCount}
+        participants={participants}
         onBack={goBack}
         isToolAdmin={isAdmin}
         onManageMembers={() => setMembersOpen(true)}
@@ -125,7 +126,7 @@ export default function ToolDetailScreen() {
         toolId={tool.event_tool_id}
         currentUserId={currentUserId}
         onClose={() => setMembersOpen(false)}
-        onChanged={refreshCount}
+        onChanged={refreshParticipants}
       />
       <EditToolModal
         visible={editOpen}

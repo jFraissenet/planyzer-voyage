@@ -204,6 +204,31 @@ export async function getToolParticipantCount(
   return count ?? 0;
 }
 
+export type ToolParticipant = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+};
+
+export async function getToolParticipants(
+  tool: EventTool,
+): Promise<ToolParticipant[]> {
+  if (tool.event_tool_visibility === "all") {
+    const list = await listParticipants(tool.event_tool_event_id);
+    return list.map((p) => ({
+      user_id: p.user_id,
+      full_name: p.full_name,
+      avatar_url: p.avatar_url,
+    }));
+  }
+  const list = await listToolMembers(tool.event_tool_id);
+  return list.map((m) => ({
+    user_id: m.user_id,
+    full_name: m.full_name,
+    avatar_url: m.avatar_url,
+  }));
+}
+
 export async function listEventTools(eventId: string): Promise<EventTool[]> {
   const { data, error } = await supabase
     .from("event_tools")
