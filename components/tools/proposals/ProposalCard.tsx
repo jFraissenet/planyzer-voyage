@@ -5,18 +5,17 @@ import { useTranslation } from "react-i18next";
 import { Avatar, Card, Text } from "@/components/ui";
 import {
   addEventToolProposalComment,
-  clearEventToolProposalVote,
   deleteEventToolProposalComment,
   listEventToolProposalComments,
-  setEventToolProposalVote,
   type EventToolProposal,
   type EventToolProposalComment,
   type ProposalStatus,
   type VoteValue,
 } from "@/lib/proposals";
+import type { VoteStyle } from "@/lib/proposals/modes";
 import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
 import { shortenAddress } from "@/lib/geocoding";
-import { VoteChips } from "./VoteChips";
+import { VoteWidget } from "./VoteWidget";
 import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
@@ -38,15 +37,18 @@ function firstName(full: string | null): string {
 function formatDateRange(
   start: string | null,
   end: string | null,
+  hasTime: boolean,
   locale: string,
 ): string | null {
   if (!start && !end) return null;
-  const opts: Intl.DateTimeFormatOptions = {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
+  const opts: Intl.DateTimeFormatOptions = hasTime
+    ? {
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    : { day: "2-digit", month: "short" };
   const fmt = (iso: string) => new Date(iso).toLocaleString(locale, opts);
   if (start && end) return `${fmt(start)} → ${fmt(end)}`;
   if (start) return fmt(start);
@@ -94,6 +96,10 @@ type Props = {
   locale: string;
   currentUserId: string;
   isToolAdmin: boolean;
+  isClosed?: boolean;
+  voteStyle: VoteStyle;
+  onSetVote: (proposalId: string, value: VoteValue) => Promise<void>;
+  onClearVote: (proposalId: string) => Promise<void>;
   onOpen: () => void;
   onEdit: (() => void) | null;
   onChanged: () => void;
@@ -104,6 +110,10 @@ export function ProposalCard({
   locale,
   currentUserId,
   isToolAdmin,
+  isClosed = false,
+  voteStyle,
+  onSetVote,
+  onClearVote,
   onOpen,
   onEdit,
   onChanged,
@@ -124,6 +134,7 @@ export function ProposalCard({
   const dateLabel = formatDateRange(
     proposal.date_start,
     proposal.date_end,
+    proposal.has_time,
     locale,
   );
 
@@ -150,14 +161,16 @@ export function ProposalCard({
     }
   }, [expanded, commentsLoaded, loadComments]);
 
-  const vote = async (value: VoteValue) => {
+  const setVote = async (value: VoteValue) => {
     try {
-      if (proposal.my_vote === value) {
-        await clearEventToolProposalVote(proposal.proposal_id);
-      } else {
-        await setEventToolProposalVote(proposal.proposal_id, value);
-      }
-      onChanged();
+      await onSetVote(proposal.proposal_id, value);
+    } catch {
+      // ignore
+    }
+  };
+  const clearVote = async () => {
+    try {
+      await onClearVote(proposal.proposal_id);
     } catch {
       // ignore
     }
@@ -307,15 +320,18 @@ export function ProposalCard({
               {firstName(proposal.author_full_name)}
             </Text>
           </View>
-          <VoteChips
+          <VoteWidget
+            style={voteStyle}
             counts={{
               for: proposal.votes_for,
               neutral: proposal.votes_neutral,
               against: proposal.votes_against,
             }}
             myVote={proposal.my_vote}
-            onVote={vote}
+            onSetVote={setVote}
+            onClearVote={clearVote}
             size="sm"
+            disabled={isClosed}
           />
         </View>
 

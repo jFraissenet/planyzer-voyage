@@ -6,7 +6,8 @@
     "back": "Back",
     "ok": "OK",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "close": "Close"
   },
   "auth": {
     "switcher": {
@@ -400,6 +401,109 @@
     "locked": "Proposals locked",
     "lockedLabel": "Lock proposals",
     "lockedHint": "Only the organizer can still add some",
+    "closed": "Voting closed",
+    "closedHint": "No more votes or new proposals",
+    "settingsAction": "Poll settings",
+    "settingsTitle": "Poll settings",
+    "voteCheck": {
+      "join": "Count me in",
+      "in": "Joined"
+    },
+    "dateForm": {
+      "titleCreate": "Add dates",
+      "titleEdit": "Edit date",
+      "includeTime": "Include time",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "entryLabel": "Date {{index}}",
+      "start": "Start",
+      "endOptional": "End (optional)",
+      "addAnother": "Add this period",
+      "stagedHeader_one": "{{count}} period added",
+      "stagedHeader_other": "{{count}} periods added",
+      "submitCreate": "Save dates",
+      "submitEdit": "Save",
+      "submitting": "Saving...",
+      "errorRequired": "Add at least one date",
+      "errorGeneric": "Error while saving"
+    },
+    "voteStyle": {
+      "label": "Vote style",
+      "tri": "For / Neutral / Against",
+      "triHint": "Nuanced vote on each option",
+      "check": "Multi-check (Doodle)",
+      "checkHint": "Each person ticks the options that work",
+      "single": "Single choice",
+      "singleHint": "One pick per person, exclusive"
+    },
+    "voteStyleChange": {
+      "title": "Change vote style",
+      "impactTitle": "Impact",
+      "removedVotes_one": "{{count}} vote will be removed.",
+      "removedVotes_other": "{{count}} votes will be removed.",
+      "affectedUsers_one": "Affects {{count}} user:",
+      "affectedUsers_other": "Affects {{count}} users:",
+      "moreUsers": "+{{count}}",
+      "singleResolutionHint": "For users who voted on multiple proposals, only the most recent vote will be kept.",
+      "warning": "This action is permanent and cannot be undone.",
+      "confirm": "Confirm change"
+    },
+    "history": {
+      "title": "Change history",
+      "openButton": "Open history",
+      "empty": "No setting changes yet.",
+      "loadMore": "More history",
+      "unknownAuthor": "Someone",
+      "styleDefault": "Default style",
+      "voteStyleChangeIntro": "switched from",
+      "voteStyleChangeArrow": "to",
+      "removedVotes_one": "{{count}} vote removed",
+      "removedVotes_other": "{{count}} votes removed",
+      "affectedUsers_one": "{{count}} user affected",
+      "affectedUsers_other": "{{count}} users affected",
+      "noImpact": "No votes affected"
+    },
+    "affectedBanner": {
+      "message": "Your vote was removed due to a settings change.",
+      "dismiss": "Dismiss"
+    },
+    "orderBy": {
+      "label": "Display order",
+      "votes": "By votes",
+      "date_asc": "From earliest to latest",
+      "date_desc": "From latest to earliest",
+      "created_asc": "Creation date"
+    },
+    "typePicker": {
+      "intro": "What kind of poll do you want to run?"
+    },
+    "modes": {
+      "date": {
+        "question": "Have you picked a date?",
+        "subtitle": "Run a poll on the available dates",
+        "empty": "Add the first date to vote on"
+      },
+      "place": {
+        "question": "Have you picked the place?",
+        "subtitle": "Vote on where you'll meet",
+        "empty": "Add the first place to vote on"
+      },
+      "text": {
+        "question": "A quick question to settle?",
+        "subtitle": "Car or train? Monday or Tuesday? Quick text choice",
+        "empty": "Add the first option"
+      },
+      "gift": {
+        "question": "Have you picked a gift?",
+        "subtitle": "Compare options and vote",
+        "empty": "Add the first gift idea"
+      },
+      "free": {
+        "question": "More options to compare?",
+        "subtitle": "Full form: photos, price, capacity, dates, links",
+        "empty": "Add the first proposal"
+      }
+    },
     "titleLabel": "Title",
     "titlePlaceholder": "Hotel du Parc, Restaurant…",
     "descriptionLabel": "Description",

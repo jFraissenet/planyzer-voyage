@@ -6,7 +6,8 @@
     "back": "返回",
     "ok": "确定",
     "cancel": "取消",
-    "confirm": "确认"
+    "confirm": "确认",
+    "close": "关闭"
   },
   "auth": {
     "switcher": {
@@ -393,6 +394,108 @@
     "locked": "提议已锁定",
     "lockedLabel": "锁定提议",
     "lockedHint": "只有组织者可以继续添加",
+    "closed": "投票已关闭",
+    "closedHint": "无法继续投票或添加新提议",
+    "settingsAction": "投票设置",
+    "settingsTitle": "投票设置",
+    "voteCheck": {
+      "join": "加入",
+      "in": "已加入"
+    },
+    "dateForm": {
+      "titleCreate": "添加日期",
+      "titleEdit": "编辑日期",
+      "includeTime": "包含时间",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "entryLabel": "日期 {{index}}",
+      "start": "开始",
+      "endOptional": "结束(可选)",
+      "addAnother": "添加这段时间",
+      "stagedHeader_other": "已添加 {{count}} 段时间",
+      "submitCreate": "保存日期",
+      "submitEdit": "保存",
+      "submitting": "保存中...",
+      "errorRequired": "至少添加一个日期",
+      "errorGeneric": "保存失败"
+    },
+    "voteStyle": {
+      "label": "投票方式",
+      "tri": "赞成 / 中立 / 反对",
+      "triHint": "对每个选项细致投票",
+      "check": "多选(Doodle)",
+      "checkHint": "每人勾选所有可以的选项",
+      "single": "唯一选择",
+      "singleHint": "每人一票,互斥"
+    },
+    "voteStyleChange": {
+      "title": "更改投票方式",
+      "impactTitle": "影响",
+      "removedVotes_one": "将删除 {{count}} 个投票。",
+      "removedVotes_other": "将删除 {{count}} 个投票。",
+      "affectedUsers_one": "影响 {{count}} 位用户:",
+      "affectedUsers_other": "影响 {{count}} 位用户:",
+      "moreUsers": "+{{count}}",
+      "singleResolutionHint": "对于在多个提案中投票的用户,仅保留最新的投票。",
+      "warning": "此操作不可撤销。",
+      "confirm": "确认更改"
+    },
+    "history": {
+      "title": "更改历史",
+      "openButton": "打开历史",
+      "empty": "暂无设置变更。",
+      "loadMore": "更多历史",
+      "unknownAuthor": "某人",
+      "styleDefault": "默认方式",
+      "voteStyleChangeIntro": "将投票方式从",
+      "voteStyleChangeArrow": "改为",
+      "removedVotes_one": "已删除 {{count}} 个投票",
+      "removedVotes_other": "已删除 {{count}} 个投票",
+      "affectedUsers_one": "影响 {{count}} 位用户",
+      "affectedUsers_other": "影响 {{count}} 位用户",
+      "noImpact": "未影响任何投票"
+    },
+    "affectedBanner": {
+      "message": "由于设置变更,你的投票已被移除。",
+      "dismiss": "隐藏"
+    },
+    "orderBy": {
+      "label": "显示顺序",
+      "votes": "按投票",
+      "date_asc": "从最早到最晚",
+      "date_desc": "从最晚到最早",
+      "created_asc": "创建日期"
+    },
+    "typePicker": {
+      "intro": "你想发起什么类型的投票?"
+    },
+    "modes": {
+      "date": {
+        "question": "选好日期了吗?",
+        "subtitle": "对可用日期发起投票",
+        "empty": "添加第一个日期"
+      },
+      "place": {
+        "question": "选好地点了吗?",
+        "subtitle": "投票决定去哪里",
+        "empty": "添加第一个地点"
+      },
+      "text": {
+        "question": "需要快速决定的问题?",
+        "subtitle": "开车还是坐火车?周一还是周二?快速文字选择",
+        "empty": "添加第一个选项"
+      },
+      "gift": {
+        "question": "选好礼物了吗?",
+        "subtitle": "比较选项并投票",
+        "empty": "添加第一个礼物点子"
+      },
+      "free": {
+        "question": "需要详细对比?",
+        "subtitle": "完整表单:照片、价格、容量、日期、链接",
+        "empty": "添加第一个提议"
+      }
+    },
     "titleLabel": "标题",
     "titlePlaceholder": "公园酒店、某某餐厅……",
     "descriptionLabel": "描述",

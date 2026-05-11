@@ -7,7 +7,13 @@ type Props = {
   onChange: (v: string) => void;
   placeholder?: string;
   error?: string;
+  mode?: "date" | "datetime";
 };
+
+// We keep the value contract stable as YYYY-MM-DDTHH:MM regardless of the
+// input mode. In `date` mode we strip the T... part for the underlying
+// <input type="date"> and pad it back with T00:00 on change so callers
+// don't have to special-case the format.
 
 export function DateTimeInput({
   label,
@@ -15,8 +21,16 @@ export function DateTimeInput({
   onChange,
   placeholder,
   error,
+  mode = "datetime",
 }: Props) {
   const borderClass = error ? "border-error" : "border-border";
+  const isDateOnly = mode === "date";
+  const inputValue = isDateOnly ? (value ? value.split("T")[0] : "") : value;
+
+  const handleWebChange = (next: string) => {
+    if (isDateOnly) onChange(next ? `${next}T00:00` : "");
+    else onChange(next);
+  };
 
   return (
     <View className="w-full">
@@ -25,10 +39,10 @@ export function DateTimeInput({
       </Text>
       {Platform.OS === "web" ? (
         <input
-          type="datetime-local"
-          value={value}
+          type={isDateOnly ? "date" : "datetime-local"}
+          value={inputValue}
           onChange={(e: { target: { value: string } }) =>
-            onChange(e.target.value)
+            handleWebChange(e.target.value)
           }
           className={`w-full px-4 py-3 rounded-lg border bg-surface text-base text-foreground ${borderClass}`}
           style={{

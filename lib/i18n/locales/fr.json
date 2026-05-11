@@ -6,7 +6,8 @@
     "back": "Retour",
     "ok": "OK",
     "cancel": "Annuler",
-    "confirm": "Confirmer"
+    "confirm": "Confirmer",
+    "close": "Fermer"
   },
   "auth": {
     "switcher": {
@@ -400,6 +401,109 @@
     "locked": "Propositions verrouillées",
     "lockedLabel": "Verrouiller les propositions",
     "lockedHint": "Seul l'organisateur peut encore en ajouter",
+    "closed": "Vote clôturé",
+    "closedHint": "Plus de votes ni de nouvelles propositions",
+    "settingsAction": "Paramètres du sondage",
+    "settingsTitle": "Paramètres du sondage",
+    "voteCheck": {
+      "join": "Je m'inscris",
+      "in": "Inscrit"
+    },
+    "dateForm": {
+      "titleCreate": "Ajouter des dates",
+      "titleEdit": "Modifier la date",
+      "includeTime": "Inclure l'heure",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
+      "entryLabel": "Date {{index}}",
+      "start": "Début",
+      "endOptional": "Fin (optionnel)",
+      "addAnother": "Ajouter cette période",
+      "stagedHeader_one": "{{count}} période ajoutée",
+      "stagedHeader_other": "{{count}} périodes ajoutées",
+      "submitCreate": "Enregistrer les dates",
+      "submitEdit": "Enregistrer",
+      "submitting": "Enregistrement...",
+      "errorRequired": "Ajoute au moins une date",
+      "errorGeneric": "Erreur lors de l'enregistrement"
+    },
+    "voteStyle": {
+      "label": "Style de vote",
+      "tri": "Pour / Neutre / Contre",
+      "triHint": "Vote nuancé sur chaque option",
+      "check": "Coches multiples (Doodle)",
+      "checkHint": "Chacun coche les options qui lui vont",
+      "single": "Choix unique",
+      "singleHint": "Un seul choix par personne, exclusif"
+    },
+    "voteStyleChange": {
+      "title": "Changer le style de vote",
+      "impactTitle": "Impact",
+      "removedVotes_one": "{{count}} vote sera supprimé.",
+      "removedVotes_other": "{{count}} votes seront supprimés.",
+      "affectedUsers_one": "Concerne {{count}} utilisateur :",
+      "affectedUsers_other": "Concerne {{count}} utilisateurs :",
+      "moreUsers": "+{{count}}",
+      "singleResolutionHint": "Pour les utilisateurs ayant voté sur plusieurs propositions, seul le vote le plus récent sera conservé.",
+      "warning": "Cette action est définitive et ne peut pas être annulée.",
+      "confirm": "Confirmer le changement"
+    },
+    "history": {
+      "title": "Historique des changements",
+      "openButton": "Ouvrir l'historique",
+      "empty": "Aucun changement de paramètres pour l'instant.",
+      "loadMore": "Plus d'historique",
+      "unknownAuthor": "Quelqu'un",
+      "styleDefault": "Style par défaut",
+      "voteStyleChangeIntro": "a basculé de",
+      "voteStyleChangeArrow": "vers",
+      "removedVotes_one": "{{count}} vote supprimé",
+      "removedVotes_other": "{{count}} votes supprimés",
+      "affectedUsers_one": "{{count}} utilisateur impacté",
+      "affectedUsers_other": "{{count}} utilisateurs impactés",
+      "noImpact": "Aucun vote impacté"
+    },
+    "affectedBanner": {
+      "message": "Ton vote a été retiré suite à un changement de paramètres.",
+      "dismiss": "Masquer"
+    },
+    "orderBy": {
+      "label": "Ordre d'affichage",
+      "votes": "Par votes",
+      "date_asc": "Du plus tôt au plus tard",
+      "date_desc": "Du plus tard au plus tôt",
+      "created_asc": "Date de création"
+    },
+    "typePicker": {
+      "intro": "Sur quoi veux-tu lancer le sondage ?"
+    },
+    "modes": {
+      "date": {
+        "question": "Avez-vous choisi une date ?",
+        "subtitle": "Lance un sondage sur les dates dispos",
+        "empty": "Ajoute la première date à voter"
+      },
+      "place": {
+        "question": "Avez-vous choisi le lieu ?",
+        "subtitle": "Vote sur l'endroit où vous allez",
+        "empty": "Ajoute le premier lieu à voter"
+      },
+      "text": {
+        "question": "Une question rapide à trancher ?",
+        "subtitle": "Voiture ou train ? Lundi ou mardi ? Choix textuel rapide",
+        "empty": "Ajoute la première proposition"
+      },
+      "gift": {
+        "question": "Avez-vous choisi un cadeau ?",
+        "subtitle": "Compare les options et vote",
+        "empty": "Ajoute le premier cadeau"
+      },
+      "free": {
+        "question": "Plus d'options à détailler ?",
+        "subtitle": "Formulaire complet : photos, prix, capacité, dates, liens",
+        "empty": "Ajoute la première proposition"
+      }
+    },
     "titleLabel": "Titre",
     "titlePlaceholder": "Hôtel du Parc, Resto le Gaillard…",
     "descriptionLabel": "Description",

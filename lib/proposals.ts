@@ -1,4 +1,9 @@
 import { supabase } from "./supabase";
+import type {
+  ProposalMode,
+  ProposalOrderBy,
+  VoteStyle,
+} from "./proposals/modes";
 
 export type ProposalStatus = "proposed" | "validated" | "rejected";
 export type VoteValue = "for" | "against" | "neutral";
@@ -26,6 +31,7 @@ export type EventToolProposal = {
   location_url: string | null;
   date_start: string | null;
   date_end: string | null;
+  has_time: boolean;
   capacity_min: number | null;
   capacity_max: number | null;
   status: ProposalStatus;
@@ -53,9 +59,50 @@ export type EventToolProposalComment = {
   updated_at: string;
 };
 
+export type AffectedUser = {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+};
+
+export type VoteStyleChangePreview = {
+  current_style: VoteStyle | null;
+  new_style: VoteStyle;
+  removed_votes_count: number;
+  affected_user_ids: string[];
+  multi_for_user_ids: string[];
+  affected_users: AffectedUser[];
+};
+
+export type VoteStyleChangeResult = {
+  change_id: string | null;
+  removed_votes_count: number;
+  affected_user_ids: string[];
+};
+
+export type EventToolAuditEntry = {
+  audit_id: string;
+  changed_by: string | null;
+  changed_by_full_name: string | null;
+  changed_by_avatar_url: string | null;
+  changed_at: string;
+  change_type: string;
+  from_value: Record<string, unknown> | null;
+  to_value: Record<string, unknown> | null;
+  removed_votes_count: number;
+  kept_for_resolution: Record<string, unknown> | null;
+  affected_user_ids: string[];
+  affected_users: AffectedUser[];
+};
+
 export type ProposalsToolSettings = {
   vote_deadline: string | null;
   proposals_locked: boolean;
+  mode: ProposalMode | null;
+  // Override of the mode's default vote style. null = follow mode default.
+  vote_style: VoteStyle | null;
+  // null = auto: mode "date" -> "date_asc", otherwise "votes".
+  order_by: ProposalOrderBy | null;
 };
 
 async function requireUserId(): Promise<string> {
@@ -89,6 +136,7 @@ export type ProposalInput = {
   location_url?: string | null;
   date_start?: string | null;
   date_end?: string | null;
+  has_time?: boolean;
   capacity_min?: number | null;
   capacity_max?: number | null;
   images?: { url: string }[];
@@ -112,6 +160,7 @@ export async function createEventToolProposal(
       event_tool_proposal_location_url: input.location_url ?? null,
       event_tool_proposal_date_start: input.date_start ?? null,
       event_tool_proposal_date_end: input.date_end ?? null,
+      event_tool_proposal_has_time: input.has_time ?? false,
       event_tool_proposal_capacity_min: input.capacity_min ?? null,
       event_tool_proposal_capacity_max: input.capacity_max ?? null,
       event_tool_proposal_author_id: userId,
@@ -140,6 +189,7 @@ export async function updateEventToolProposal(
       event_tool_proposal_location_url: input.location_url ?? null,
       event_tool_proposal_date_start: input.date_start ?? null,
       event_tool_proposal_date_end: input.date_end ?? null,
+      event_tool_proposal_has_time: input.has_time ?? false,
       event_tool_proposal_capacity_min: input.capacity_min ?? null,
       event_tool_proposal_capacity_max: input.capacity_max ?? null,
     })
@@ -292,32 +342,138 @@ export async function deleteEventToolProposalComment(
 // Tool settings (deadline + proposals lock) — stored in event_tools.settings jsonb
 // ---------------------------------------------------------------------------
 
+const VALID_MODES: ProposalMode[] = ["date", "place", "gift", "text", "free"];
+const VALID_VOTE_STYLES: VoteStyle[] = ["tri", "check", "single"];
+const VALID_ORDER_BY: ProposalOrderBy[] = [
+  "votes",
+  "date_asc",
+  "date_desc",
+  "created_asc",
+];
+
 export function readProposalsToolSettings(
   settings: Record<string, unknown>,
 ): ProposalsToolSettings {
   const raw = settings ?? {};
   const deadline = raw.vote_deadline;
   const locked = raw.proposals_locked;
+  const mode = raw.mode;
+  const voteStyle = raw.vote_style;
+  const orderBy = raw.order_by;
   return {
     vote_deadline: typeof deadline === "string" ? deadline : null,
     proposals_locked: locked === true,
+    mode:
+      typeof mode === "string" && VALID_MODES.includes(mode as ProposalMode)
+        ? (mode as ProposalMode)
+        : null,
+    vote_style:
+      typeof voteStyle === "string" &&
+      VALID_VOTE_STYLES.includes(voteStyle as VoteStyle)
+        ? (voteStyle as VoteStyle)
+        : null,
+    order_by:
+      typeof orderBy === "string" &&
+      VALID_ORDER_BY.includes(orderBy as ProposalOrderBy)
+        ? (orderBy as ProposalOrderBy)
+        : null,
   };
 }
+
+// `vote_style` is intentionally absent from this patch type: changing it has
+// retroactive impact on existing votes, so it goes through
+// `applyVoteStyleChange` (which audits + cleans up orphan votes).
+export type ProposalsToolSettingsPatch = Partial<
+  Omit<ProposalsToolSettings, "vote_style">
+>;
 
 export async function updateProposalsToolSettings(
   toolId: string,
   current: Record<string, unknown>,
-  patch: Partial<ProposalsToolSettings>,
+  patch: ProposalsToolSettingsPatch,
 ): Promise<void> {
   const next: Record<string, unknown> = { ...(current ?? {}) };
   if (patch.vote_deadline !== undefined) next.vote_deadline = patch.vote_deadline;
   if (patch.proposals_locked !== undefined)
     next.proposals_locked = patch.proposals_locked;
+  if (patch.mode !== undefined) next.mode = patch.mode;
+  if (patch.order_by !== undefined) next.order_by = patch.order_by;
   const { error } = await supabase
     .from("event_tools")
     .update({ event_tool_settings: next })
     .eq("event_tool_id", toolId);
   if (error) throw error;
+}
+
+// ---------------------------------------------------------------------------
+// Vote-style change — preview, apply, audit history
+// ---------------------------------------------------------------------------
+
+export async function previewVoteStyleChange(
+  toolId: string,
+  newStyle: VoteStyle,
+): Promise<VoteStyleChangePreview> {
+  const { data, error } = await supabase.rpc(
+    "preview_proposals_vote_style_change",
+    { p_tool_id: toolId, p_new_style: newStyle },
+  );
+  if (error) throw error;
+  const raw = (data ?? {}) as {
+    current_style?: string | null;
+    new_style?: string;
+    removed_votes_count?: number;
+    affected_user_ids?: string[] | null;
+    multi_for_user_ids?: string[] | null;
+    affected_users?: AffectedUser[] | null;
+  };
+  const current =
+    raw.current_style &&
+    VALID_VOTE_STYLES.includes(raw.current_style as VoteStyle)
+      ? (raw.current_style as VoteStyle)
+      : null;
+  return {
+    current_style: current,
+    new_style: newStyle,
+    removed_votes_count: raw.removed_votes_count ?? 0,
+    affected_user_ids: raw.affected_user_ids ?? [],
+    multi_for_user_ids: raw.multi_for_user_ids ?? [],
+    affected_users: raw.affected_users ?? [],
+  };
+}
+
+export async function applyVoteStyleChange(
+  toolId: string,
+  newStyle: VoteStyle,
+): Promise<VoteStyleChangeResult> {
+  const { data, error } = await supabase.rpc(
+    "apply_proposals_vote_style_change",
+    { p_tool_id: toolId, p_new_style: newStyle },
+  );
+  if (error) throw error;
+  const raw = (data ?? {}) as {
+    change_id?: string | null;
+    removed_votes_count?: number;
+    affected_user_ids?: string[] | null;
+  };
+  return {
+    change_id: raw.change_id ?? null,
+    removed_votes_count: raw.removed_votes_count ?? 0,
+    affected_user_ids: raw.affected_user_ids ?? [],
+  };
+}
+
+export async function listEventToolAudit(
+  toolId: string,
+  limit = 20,
+  offset = 0,
+): Promise<EventToolAuditEntry[]> {
+  const { data, error } = await supabase.rpc("list_event_tool_audit", {
+    p_tool_id: toolId,
+    p_limit: limit,
+    p_offset: offset,
+  });
+  if (error) throw error;
+  return (data ?? []) as EventToolAuditEntry[];
 }
 
 export async function isEventToolManager(toolId: string): Promise<boolean> {

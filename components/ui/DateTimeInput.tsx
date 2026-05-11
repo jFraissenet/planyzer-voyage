@@ -13,6 +13,7 @@ type Props = {
   onChange: (v: string) => void;
   placeholder?: string;
   error?: string;
+  mode?: "date" | "datetime";
 };
 
 const pad = (n: number) => n.toString().padStart(2, "0");
@@ -33,11 +34,17 @@ export function DateTimeInput({
   onChange,
   placeholder,
   error,
+  mode = "datetime",
 }: Props) {
   const { t } = useTranslation();
   const [iosDraft, setIosDraft] = useState<Date | null>(null);
+  const isDateOnly = mode === "date";
 
-  const display = value ? new Date(value).toLocaleString() : placeholder ?? "";
+  const display = value
+    ? isDateOnly
+      ? new Date(value).toLocaleDateString()
+      : new Date(value).toLocaleString()
+    : placeholder ?? "";
   const borderClass = error ? "border-error" : "border-border";
 
   const openAndroid = () => {
@@ -48,6 +55,18 @@ export function DateTimeInput({
       is24Hour: true,
       onChange: (_e, dateSel) => {
         if (!dateSel) return;
+        if (isDateOnly) {
+          // Skip the time step in date-only mode — store with time = 00:00.
+          const combined = new Date(
+            dateSel.getFullYear(),
+            dateSel.getMonth(),
+            dateSel.getDate(),
+            0,
+            0,
+          );
+          onChange(toLocalInputValue(combined));
+          return;
+        }
         DateTimePickerAndroid.open({
           value: dateSel,
           mode: "time",
@@ -104,10 +123,23 @@ export function DateTimeInput({
             >
               <DateTimePicker
                 value={iosDraft}
-                mode="datetime"
+                mode={isDateOnly ? "date" : "datetime"}
                 display="inline"
                 onChange={(_e, sel) => {
-                  if (sel) setIosDraft(sel);
+                  if (sel) {
+                    if (isDateOnly) {
+                      const d = new Date(
+                        sel.getFullYear(),
+                        sel.getMonth(),
+                        sel.getDate(),
+                        0,
+                        0,
+                      );
+                      setIosDraft(d);
+                    } else {
+                      setIosDraft(sel);
+                    }
+                  }
                 }}
               />
               <View className="flex-row gap-2 mt-2">

@@ -6,7 +6,8 @@
     "back": "Volver",
     "ok": "OK",
     "cancel": "Cancelar",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "close": "Cerrar"
   },
   "auth": {
     "switcher": {
@@ -400,6 +401,109 @@
     "locked": "Propuestas bloqueadas",
     "lockedLabel": "Bloquear propuestas",
     "lockedHint": "Solo el organizador puede seguir añadiendo",
+    "closed": "Votación cerrada",
+    "closedHint": "No se pueden añadir votos ni propuestas",
+    "settingsAction": "Ajustes de la encuesta",
+    "settingsTitle": "Ajustes de la encuesta",
+    "voteCheck": {
+      "join": "Me apunto",
+      "in": "Apuntado"
+    },
+    "dateForm": {
+      "titleCreate": "Añadir fechas",
+      "titleEdit": "Editar fecha",
+      "includeTime": "Incluir hora",
+      "startTime": "Hora de inicio",
+      "endTime": "Hora de fin",
+      "entryLabel": "Fecha {{index}}",
+      "start": "Inicio",
+      "endOptional": "Fin (opcional)",
+      "addAnother": "Añadir este periodo",
+      "stagedHeader_one": "{{count}} periodo añadido",
+      "stagedHeader_other": "{{count}} periodos añadidos",
+      "submitCreate": "Guardar fechas",
+      "submitEdit": "Guardar",
+      "submitting": "Guardando...",
+      "errorRequired": "Añade al menos una fecha",
+      "errorGeneric": "Error al guardar"
+    },
+    "voteStyle": {
+      "label": "Estilo de voto",
+      "tri": "A favor / Neutral / En contra",
+      "triHint": "Voto matizado en cada opción",
+      "check": "Casillas múltiples (Doodle)",
+      "checkHint": "Cada uno marca las opciones que le valen",
+      "single": "Elección única",
+      "singleHint": "Una sola opción por persona, exclusiva"
+    },
+    "voteStyleChange": {
+      "title": "Cambiar el estilo de voto",
+      "impactTitle": "Impacto",
+      "removedVotes_one": "Se eliminará {{count}} voto.",
+      "removedVotes_other": "Se eliminarán {{count}} votos.",
+      "affectedUsers_one": "Afecta a {{count}} usuario:",
+      "affectedUsers_other": "Afecta a {{count}} usuarios:",
+      "moreUsers": "+{{count}}",
+      "singleResolutionHint": "Para los usuarios que votaron en varias propuestas, solo se conservará el voto más reciente.",
+      "warning": "Esta acción es definitiva y no se puede deshacer.",
+      "confirm": "Confirmar cambio"
+    },
+    "history": {
+      "title": "Historial de cambios",
+      "openButton": "Abrir historial",
+      "empty": "Aún no hay cambios de configuración.",
+      "loadMore": "Más historial",
+      "unknownAuthor": "Alguien",
+      "styleDefault": "Estilo predeterminado",
+      "voteStyleChangeIntro": "cambió de",
+      "voteStyleChangeArrow": "a",
+      "removedVotes_one": "{{count}} voto eliminado",
+      "removedVotes_other": "{{count}} votos eliminados",
+      "affectedUsers_one": "{{count}} usuario afectado",
+      "affectedUsers_other": "{{count}} usuarios afectados",
+      "noImpact": "Ningún voto afectado"
+    },
+    "affectedBanner": {
+      "message": "Tu voto fue retirado tras un cambio de configuración.",
+      "dismiss": "Ocultar"
+    },
+    "orderBy": {
+      "label": "Orden de visualización",
+      "votes": "Por votos",
+      "date_asc": "De la más temprana a la más tardía",
+      "date_desc": "De la más tardía a la más temprana",
+      "created_asc": "Fecha de creación"
+    },
+    "typePicker": {
+      "intro": "¿Sobre qué quieres lanzar la encuesta?"
+    },
+    "modes": {
+      "date": {
+        "question": "¿Habéis elegido una fecha?",
+        "subtitle": "Lanza una encuesta sobre las fechas disponibles",
+        "empty": "Añade la primera fecha"
+      },
+      "place": {
+        "question": "¿Habéis elegido el lugar?",
+        "subtitle": "Vota dónde quedáis",
+        "empty": "Añade el primer lugar"
+      },
+      "text": {
+        "question": "¿Una pregunta rápida que decidir?",
+        "subtitle": "¿Coche o tren? ¿Lunes o martes? Elección rápida",
+        "empty": "Añade la primera opción"
+      },
+      "gift": {
+        "question": "¿Habéis elegido un regalo?",
+        "subtitle": "Compara las opciones y vota",
+        "empty": "Añade la primera idea"
+      },
+      "free": {
+        "question": "¿Más opciones a comparar?",
+        "subtitle": "Formulario completo: fotos, precio, aforo, fechas, enlaces",
+        "empty": "Añade la primera propuesta"
+      }
+    },
     "titleLabel": "Título",
     "titlePlaceholder": "Hotel del Parque, Restaurante…",
     "descriptionLabel": "Descripción",

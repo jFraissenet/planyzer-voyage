@@ -20,12 +20,14 @@ import {
   type ProposalInput,
 } from "@/lib/proposals";
 import { isoToLocalInput, localInputToIso } from "./dateHelpers";
+import type { ProposalMode } from "@/lib/proposals/modes";
 import { theme } from "@/lib/theme";
 
 type Mode = "create" | "edit";
 
 type Props = {
   mode: Mode;
+  proposalMode?: ProposalMode;
   visible: boolean;
   toolId: string;
   existing?: EventToolProposal;
@@ -114,12 +116,14 @@ function looksLikeUrl(s: string): boolean {
 
 export function ProposalEditModal({
   mode,
+  proposalMode = "free",
   visible,
   toolId,
   existing,
   onClose,
   onSaved,
 }: Props) {
+  const isText = proposalMode === "text";
   const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
@@ -317,6 +321,7 @@ export function ProposalEditModal({
       location_url: locationUrl.trim() || null,
       date_start: isoStart,
       date_end: isoEnd,
+      has_time: !!(isoStart || isoEnd),
       capacity_min: parsedCapacityMin,
       capacity_max: parsedCapacityMax,
       images: cleanImages,
@@ -405,11 +410,7 @@ export function ProposalEditModal({
               gap: 10,
             }}
           >
-            <Section
-              title={t("proposals.sectionEssential")}
-              expanded={essentialOpen}
-              onToggle={() => setEssentialOpen((v) => !v)}
-            >
+            {isText ? (
               <Input
                 label={t("proposals.titleLabel")}
                 placeholder={t("proposals.titlePlaceholder")}
@@ -417,17 +418,32 @@ export function ProposalEditModal({
                 onChangeText={setTitle}
                 autoFocus
               />
-              <Input
-                label={t("proposals.descriptionLabel")}
-                placeholder={t("proposals.descriptionPlaceholder")}
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                numberOfLines={3}
-                style={{ minHeight: 80, textAlignVertical: "top" }}
-              />
-            </Section>
+            ) : (
+              <Section
+                title={t("proposals.sectionEssential")}
+                expanded={essentialOpen}
+                onToggle={() => setEssentialOpen((v) => !v)}
+              >
+                <Input
+                  label={t("proposals.titleLabel")}
+                  placeholder={t("proposals.titlePlaceholder")}
+                  value={title}
+                  onChangeText={setTitle}
+                  autoFocus
+                />
+                <Input
+                  label={t("proposals.descriptionLabel")}
+                  placeholder={t("proposals.descriptionPlaceholder")}
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={3}
+                  style={{ minHeight: 80, textAlignVertical: "top" }}
+                />
+              </Section>
+            )}
 
+            {!isText && (
             <Section
               title={t("proposals.sectionDetails")}
               badge={detailsBadge}
@@ -507,7 +523,9 @@ export function ProposalEditModal({
                 </View>
               </View>
             </Section>
+            )}
 
+            {!isText && (
             <Section
               title={t("proposals.sectionMedia")}
               badge={mediaBadge}
@@ -659,6 +677,7 @@ export function ProposalEditModal({
                 )}
               </View>
             </Section>
+            )}
 
             {error ? (
               <Text className="text-error text-sm">{error}</Text>

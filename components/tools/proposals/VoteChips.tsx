@@ -22,9 +22,16 @@ type Props = {
   myVote: VoteValue | null;
   onVote: (value: VoteValue) => void;
   size?: "sm" | "md";
+  disabled?: boolean;
 };
 
-export function VoteChips({ counts, myVote, onVote, size = "md" }: Props) {
+export function VoteChips({
+  counts,
+  myVote,
+  onVote,
+  size = "md",
+  disabled = false,
+}: Props) {
   const isSm = size === "sm";
   const iconSize = isSm ? 13 : 15;
   const height = isSm ? 28 : 34;
@@ -32,13 +39,14 @@ export function VoteChips({ counts, myVote, onVote, size = "md" }: Props) {
   const fontSize = isSm ? 12 : 13;
 
   return (
-    <View className="flex-row" style={{ gap: 6 }}>
+    <View className="flex-row" style={{ gap: 6, opacity: disabled ? 0.5 : 1 }}>
       {ITEMS.map((it) => {
         const active = myVote === it.value;
         return (
           <Pressable
             key={it.value}
-            onPress={() => onVote(it.value)}
+            onPress={disabled ? undefined : () => onVote(it.value)}
+            disabled={disabled}
             hitSlop={4}
             className="flex-row items-center justify-center rounded-full"
             style={{

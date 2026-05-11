@@ -16,19 +16,18 @@ import { useTranslation } from "react-i18next";
 import { Avatar, Text } from "@/components/ui";
 import {
   addEventToolProposalComment,
-  clearEventToolProposalVote,
   deleteEventToolProposal,
   deleteEventToolProposalComment,
   listEventToolProposalComments,
   setEventToolProposalStatus,
-  setEventToolProposalVote,
   type EventToolProposal,
   type EventToolProposalComment,
   type ProposalStatus,
   type VoteValue,
 } from "@/lib/proposals";
+import type { VoteStyle } from "@/lib/proposals/modes";
 import { buildMapsUrl, formatCapacityRange, formatPriceRange } from "./formatters";
-import { VoteChips } from "./VoteChips";
+import { VoteWidget } from "./VoteWidget";
 import { theme } from "@/lib/theme";
 
 type Props = {
@@ -37,6 +36,10 @@ type Props = {
   currentUserId: string;
   isToolAdmin: boolean;
   isManager: boolean;
+  isClosed?: boolean;
+  voteStyle: VoteStyle;
+  onSetVote: (proposalId: string, value: VoteValue) => Promise<void>;
+  onClearVote: (proposalId: string) => Promise<void>;
   locale: string;
   onClose: () => void;
   onEdit: () => void;
@@ -65,14 +68,17 @@ function firstName(full: string | null): string {
   return full.trim().split(/\s+/)[0];
 }
 
-function formatDate(iso: string, locale: string): string {
-  return new Date(iso).toLocaleString(locale, {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function formatDate(iso: string, locale: string, withTime: boolean): string {
+  const opts: Intl.DateTimeFormatOptions = withTime
+    ? {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    : { day: "2-digit", month: "short", year: "numeric" };
+  return new Date(iso).toLocaleString(locale, opts);
 }
 
 function InfoRow({
@@ -109,6 +115,10 @@ export function ProposalDetailModal({
   currentUserId,
   isToolAdmin,
   isManager,
+  isClosed = false,
+  voteStyle,
+  onSetVote,
+  onClearVote,
   locale,
   onClose,
   onEdit,
@@ -142,17 +152,18 @@ export function ProposalDetailModal({
 
   const dateLabel = useMemo(() => {
     if (!proposal) return null;
-    if (!proposal.date_start && !proposal.date_end) return null;
-    if (proposal.date_start && proposal.date_end) {
-      return `${formatDate(proposal.date_start, locale)} → ${formatDate(
-        proposal.date_end,
+    const s = proposal.date_start;
+    const e = proposal.date_end;
+    if (!s && !e) return null;
+    const withTime = proposal.has_time;
+    if (s && e) {
+      return `${formatDate(s, locale, withTime)} → ${formatDate(
+        e,
         locale,
+        withTime,
       )}`;
     }
-    return formatDate(
-      (proposal.date_start ?? proposal.date_end) as string,
-      locale,
-    );
+    return formatDate((s ?? e) as string, locale, withTime);
   }, [proposal, locale]);
 
   if (!proposal) return null;
@@ -161,14 +172,16 @@ export function ProposalDetailModal({
     proposal.author_id === currentUserId || isToolAdmin || isManager;
   const canDelete = proposal.author_id === currentUserId || isToolAdmin;
 
-  const vote = async (value: VoteValue) => {
+  const setVote = async (value: VoteValue) => {
     try {
-      if (proposal.my_vote === value) {
-        await clearEventToolProposalVote(proposal.proposal_id);
-      } else {
-        await setEventToolProposalVote(proposal.proposal_id, value);
-      }
-      onChanged();
+      await onSetVote(proposal.proposal_id, value);
+    } catch {
+      // ignore
+    }
+  };
+  const clearVote = async () => {
+    try {
+      await onClearVote(proposal.proposal_id);
     } catch {
       // ignore
     }
@@ -365,15 +378,18 @@ export function ProposalDetailModal({
                     })}
                   </Text>
                 </View>
-                <VoteChips
+                <VoteWidget
+                  style={voteStyle}
                   counts={{
                     for: proposal.votes_for,
                     neutral: proposal.votes_neutral,
                     against: proposal.votes_against,
                   }}
                   myVote={proposal.my_vote}
-                  onVote={vote}
+                  onSetVote={setVote}
+                  onClearVote={clearVote}
                   size="sm"
+                  disabled={isClosed}
                 />
               </View>
 

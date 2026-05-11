@@ -20,8 +20,12 @@ export function ToolShell({
   isToolAdmin,
   onManageMembers,
   onEdit,
+  headerActions,
   children,
-}: ToolProps & { children?: React.ReactNode }) {
+}: ToolProps & {
+  headerActions?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
   const { t } = useTranslation();
   const typeLabel = t(`tools.${tool.event_tool_type_code}.name`, {
     defaultValue: tool.event_tool_type_code,
@@ -91,6 +95,7 @@ export function ToolShell({
               </Text>
             </Pressable>
           ) : null}
+          {headerActions}
         </View>
 
         {showWarning ? (
