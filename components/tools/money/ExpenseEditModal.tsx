@@ -270,6 +270,7 @@ export function ExpenseEditModal({
                 value={label}
                 onChangeText={setLabel}
                 autoFocus
+                required
               />
               <Input
                 label={t("money.amountField")}
@@ -277,6 +278,7 @@ export function ExpenseEditModal({
                 value={amountText}
                 onChangeText={setAmountText}
                 keyboardType="decimal-pad"
+                required
               />
             </View>
 

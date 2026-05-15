@@ -13,6 +13,7 @@ type Props = {
   onChangeText: (text: string) => void;
   onPickSuggestion?: (suggestion: AddressSuggestion) => void;
   language?: string;
+  required?: boolean;
 };
 
 export function AddressInput({
@@ -22,6 +23,7 @@ export function AddressInput({
   onChangeText,
   onPickSuggestion,
   language,
+  required,
 }: Props) {
   const { t, i18n } = useTranslation();
   const [focused, setFocused] = useState(false);
@@ -93,6 +95,7 @@ export function AddressInput({
       {label ? (
         <Text variant="label" className="mb-1.5">
           {label}
+          {required ? <Text className="text-error">{" *"}</Text> : null}
         </Text>
       ) : null}
       <View

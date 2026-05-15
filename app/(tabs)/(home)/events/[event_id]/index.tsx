@@ -290,6 +290,7 @@ function NewToolModal({
             onChangeText={handleNameChange}
             error={errors.name}
             className="mb-4"
+            required
           />
 
           <Text variant="label" className="mb-2">

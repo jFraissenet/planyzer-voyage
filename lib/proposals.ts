@@ -59,6 +59,14 @@ export type EventToolProposalComment = {
   updated_at: string;
 };
 
+export type ProposalVoter = {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  vote_value: VoteValue;
+  voted_at: string;
+};
+
 export type AffectedUser = {
   id: string;
   full_name: string | null;
@@ -298,6 +306,17 @@ export async function clearEventToolProposalVote(
     .eq("event_tool_proposal_vote_proposal_id", proposalId)
     .eq("event_tool_proposal_vote_user_id", userId);
   if (error) throw error;
+}
+
+export async function listEventToolProposalVoters(
+  proposalId: string,
+): Promise<ProposalVoter[]> {
+  const { data, error } = await supabase.rpc(
+    "list_event_tool_proposal_voters",
+    { p_proposal_id: proposalId },
+  );
+  if (error) throw error;
+  return (data ?? []) as ProposalVoter[];
 }
 
 // ---------------------------------------------------------------------------

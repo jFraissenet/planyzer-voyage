@@ -40,6 +40,7 @@ type Props = {
   voteStyle: VoteStyle;
   onSetVote: (proposalId: string, value: VoteValue) => Promise<void>;
   onClearVote: (proposalId: string) => Promise<void>;
+  onShowVoters: (proposalId: string, focus: VoteValue | null) => void;
   locale: string;
   onClose: () => void;
   onEdit: () => void;
@@ -119,6 +120,7 @@ export function ProposalDetailModal({
   voteStyle,
   onSetVote,
   onClearVote,
+  onShowVoters,
   locale,
   onClose,
   onEdit,
@@ -388,6 +390,7 @@ export function ProposalDetailModal({
                   myVote={proposal.my_vote}
                   onSetVote={setVote}
                   onClearVote={clearVote}
+                  onShowVoters={(focus) => onShowVoters(proposal.proposal_id, focus)}
                   size="sm"
                   disabled={isClosed}
                 />

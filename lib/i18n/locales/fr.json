@@ -467,6 +467,13 @@
       "message": "Ton vote a été retiré suite à un changement de paramètres.",
       "dismiss": "Masquer"
     },
+    "voters": {
+      "title": "Votants",
+      "empty": "Personne n'a voté pour l'instant",
+      "for": "Pour",
+      "neutral": "Neutre",
+      "against": "Contre"
+    },
     "orderBy": {
       "label": "Ordre d'affichage",
       "votes": "Par votes",
@@ -508,6 +515,7 @@
     "titlePlaceholder": "Hôtel du Parc, Resto le Gaillard…",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Facultatif",
+    "priceLabel": "Prix (€)",
     "priceMinLabel": "Prix min (€)",
     "priceMaxLabel": "Prix max (€)",
     "capacityMinLabel": "Capacité min",

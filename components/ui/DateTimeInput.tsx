@@ -14,6 +14,7 @@ type Props = {
   placeholder?: string;
   error?: string;
   mode?: "date" | "datetime";
+  required?: boolean;
 };
 
 const pad = (n: number) => n.toString().padStart(2, "0");
@@ -35,6 +36,7 @@ export function DateTimeInput({
   placeholder,
   error,
   mode = "datetime",
+  required,
 }: Props) {
   const { t } = useTranslation();
   const [iosDraft, setIosDraft] = useState<Date | null>(null);
@@ -98,6 +100,7 @@ export function DateTimeInput({
     <View className="w-full">
       <Text variant="label" className="mb-1.5">
         {label}
+        {required ? <Text className="text-error">{" *"}</Text> : null}
       </Text>
       <Pressable
         onPress={Platform.OS === "android" ? openAndroid : openIos}

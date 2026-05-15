@@ -8,6 +8,7 @@ type Props = {
   placeholder?: string;
   error?: string;
   mode?: "date" | "datetime";
+  required?: boolean;
 };
 
 // We keep the value contract stable as YYYY-MM-DDTHH:MM regardless of the
@@ -22,6 +23,7 @@ export function DateTimeInput({
   placeholder,
   error,
   mode = "datetime",
+  required,
 }: Props) {
   const borderClass = error ? "border-error" : "border-border";
   const isDateOnly = mode === "date";
@@ -36,6 +38,7 @@ export function DateTimeInput({
     <View className="w-full">
       <Text variant="label" className="mb-1.5">
         {label}
+        {required ? <Text className="text-error">{" *"}</Text> : null}
       </Text>
       {Platform.OS === "web" ? (
         <input

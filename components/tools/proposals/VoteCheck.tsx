@@ -11,6 +11,7 @@ type Props = {
   count: number;          // total voters who said "in"
   isMine: boolean;        // current user is in
   onToggle: () => void;
+  onShowVoters?: () => void;
   size?: "sm" | "md";
   disabled?: boolean;
 };
@@ -19,6 +20,7 @@ export function VoteCheck({
   count,
   isMine,
   onToggle,
+  onShowVoters,
   size = "md",
   disabled = false,
 }: Props) {
@@ -26,8 +28,11 @@ export function VoteCheck({
   const isSm = size === "sm";
   const height = isSm ? 28 : 34;
   const paddingX = isSm ? 10 : 12;
+  const countPaddingX = isSm ? 8 : 10;
+  const countFontSize = isSm ? 12 : 13;
   const fontSize = isSm ? 12 : 13;
   const iconSize = isSm ? 14 : 16;
+  const peopleIconSize = isSm ? 14 : 16;
   return (
     <View
       className="flex-row items-center"
@@ -62,21 +67,32 @@ export function VoteCheck({
           {isMine ? t("proposals.voteCheck.in") : t("proposals.voteCheck.join")}
         </Text>
       </Pressable>
-      <View
-        className="px-2 py-0.5 rounded-full"
-        style={{ backgroundColor: theme.primarySoft, minWidth: 28 }}
-      >
-        <Text
+      {onShowVoters ? (
+        <Pressable
+          onPress={onShowVoters}
+          hitSlop={6}
+          className="flex-row items-center justify-center rounded-full active:opacity-70"
           style={{
-            color: theme.primaryDeep,
-            fontSize: 11,
-            fontWeight: "700",
-            textAlign: "center",
+            height,
+            paddingHorizontal: countPaddingX,
+            backgroundColor: "#F3F0FA",
+            borderWidth: 1,
+            borderColor: "#E8E3DB",
+            gap: 4,
           }}
         >
-          {count}
-        </Text>
-      </View>
+          <Ionicons name="people-outline" size={peopleIconSize} color="#6B6B6B" />
+          <Text
+            style={{
+              color: "#1A1A1A",
+              fontSize: countFontSize,
+              fontWeight: "700",
+            }}
+          >
+            {count}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

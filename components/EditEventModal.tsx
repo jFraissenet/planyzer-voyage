@@ -231,6 +231,7 @@ export function EditEventModal({
                 onChangeText={setTitle}
                 error={errors.title}
                 autoFocus
+                required
               />
               <Input
                 label={t("events.new.descriptionLabel")}

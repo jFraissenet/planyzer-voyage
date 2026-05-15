@@ -124,6 +124,8 @@ export function ProposalEditModal({
   onSaved,
 }: Props) {
   const isText = proposalMode === "text";
+  const isPlace = proposalMode === "place";
+  const isGift = proposalMode === "gift";
   const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
@@ -383,6 +385,73 @@ export function ProposalEditModal({
   const titleLabel =
     mode === "create" ? t("proposals.createTitle") : t("proposals.editTitle");
 
+  const linksBlock = (
+    <View>
+      <View className="flex-row items-center justify-between mb-1.5">
+        <Text variant="label">{t("proposals.linksLabel")}</Text>
+        <Pressable
+          onPress={addLink}
+          hitSlop={8}
+          className="flex-row items-center"
+          style={{ gap: 4 }}
+        >
+          <Ionicons name="add" size={16} color={theme.primary} />
+          <Text
+            style={{
+              color: theme.primary,
+              fontWeight: "600",
+              fontSize: 13,
+            }}
+          >
+            {t("proposals.addLink")}
+          </Text>
+        </Pressable>
+      </View>
+      {links.length === 0 ? (
+        <Text variant="caption" style={{ fontSize: 12 }}>
+          {t("proposals.linksEmpty")}
+        </Text>
+      ) : (
+        links.map((l, idx) => (
+          <View key={idx} className="mb-2" style={{ gap: 6 }}>
+            <View className="flex-row items-center" style={{ gap: 8 }}>
+              <View className="flex-1">
+                <TextInput
+                  value={l.label}
+                  onChangeText={(v) => updateLink(idx, { label: v })}
+                  placeholder={t("proposals.linkLabelPlaceholder")}
+                  placeholderTextColor="#9ca3af"
+                  className="w-full px-4 py-2.5 rounded-lg border bg-surface text-base text-foreground border-border"
+                />
+              </View>
+              <Pressable
+                onPress={() => removeLink(idx)}
+                hitSlop={8}
+                className="items-center justify-center rounded-full"
+                style={{
+                  width: 30,
+                  height: 30,
+                  backgroundColor: "#FEE2E2",
+                }}
+              >
+                <Ionicons name="close" size={16} color="#991B1B" />
+              </Pressable>
+            </View>
+            <TextInput
+              value={l.url}
+              onChangeText={(v) => updateLink(idx, { url: v })}
+              placeholder={t("proposals.linkUrlPlaceholder")}
+              placeholderTextColor="#9ca3af"
+              autoCapitalize="none"
+              keyboardType="url"
+              className="w-full px-4 py-2.5 rounded-lg border bg-surface text-base text-foreground border-border"
+            />
+          </View>
+        ))
+      )}
+    </View>
+  );
+
   return (
     <Modal
       visible={visible}
@@ -417,6 +486,7 @@ export function ProposalEditModal({
                 value={title}
                 onChangeText={setTitle}
                 autoFocus
+                required
               />
             ) : (
               <Section
@@ -430,7 +500,23 @@ export function ProposalEditModal({
                   value={title}
                   onChangeText={setTitle}
                   autoFocus
+                  required
                 />
+                {isPlace ? (
+                  <AddressInput
+                    label={t("proposals.locationLabel")}
+                    placeholder={t("proposals.locationPlaceholder")}
+                    value={location}
+                    onChangeText={(text) => {
+                      setLocation(text);
+                      if (locationUrl) setLocationUrl("");
+                    }}
+                    onPickSuggestion={(s) => {
+                      setLocation(s.short);
+                      setLocationUrl(s.mapsUrl);
+                    }}
+                  />
+                ) : null}
                 <Input
                   label={t("proposals.descriptionLabel")}
                   placeholder={t("proposals.descriptionPlaceholder")}
@@ -440,10 +526,20 @@ export function ProposalEditModal({
                   numberOfLines={3}
                   style={{ minHeight: 80, textAlignVertical: "top" }}
                 />
+                {isGift ? (
+                  <Input
+                    label={t("proposals.priceLabel")}
+                    placeholder="0,00"
+                    value={priceMin}
+                    onChangeText={setPriceMin}
+                    keyboardType="decimal-pad"
+                  />
+                ) : null}
+                {isPlace || isGift ? linksBlock : null}
               </Section>
             )}
 
-            {!isText && (
+            {!isText && !isPlace && !isGift && (
             <Section
               title={t("proposals.sectionDetails")}
               badge={detailsBadge}
@@ -525,7 +621,7 @@ export function ProposalEditModal({
             </Section>
             )}
 
-            {!isText && (
+            {!isText && !isPlace && !isGift && (
             <Section
               title={t("proposals.sectionMedia")}
               badge={mediaBadge}
@@ -605,77 +701,7 @@ export function ProposalEditModal({
                 )}
               </View>
 
-              <View>
-                <View className="flex-row items-center justify-between mb-1.5">
-                  <Text variant="label">{t("proposals.linksLabel")}</Text>
-                  <Pressable
-                    onPress={addLink}
-                    hitSlop={8}
-                    className="flex-row items-center"
-                    style={{ gap: 4 }}
-                  >
-                    <Ionicons name="add" size={16} color={theme.primary} />
-                    <Text
-                      style={{
-                        color: theme.primary,
-                        fontWeight: "600",
-                        fontSize: 13,
-                      }}
-                    >
-                      {t("proposals.addLink")}
-                    </Text>
-                  </Pressable>
-                </View>
-                {links.length === 0 ? (
-                  <Text variant="caption" style={{ fontSize: 12 }}>
-                    {t("proposals.linksEmpty")}
-                  </Text>
-                ) : (
-                  links.map((l, idx) => (
-                    <View key={idx} className="mb-2" style={{ gap: 6 }}>
-                      <View
-                        className="flex-row items-center"
-                        style={{ gap: 8 }}
-                      >
-                        <View className="flex-1">
-                          <TextInput
-                            value={l.label}
-                            onChangeText={(v) =>
-                              updateLink(idx, { label: v })
-                            }
-                            placeholder={t(
-                              "proposals.linkLabelPlaceholder",
-                            )}
-                            placeholderTextColor="#9ca3af"
-                            className="w-full px-4 py-2.5 rounded-lg border bg-surface text-base text-foreground border-border"
-                          />
-                        </View>
-                        <Pressable
-                          onPress={() => removeLink(idx)}
-                          hitSlop={8}
-                          className="items-center justify-center rounded-full"
-                          style={{
-                            width: 30,
-                            height: 30,
-                            backgroundColor: "#FEE2E2",
-                          }}
-                        >
-                          <Ionicons name="close" size={16} color="#991B1B" />
-                        </Pressable>
-                      </View>
-                      <TextInput
-                        value={l.url}
-                        onChangeText={(v) => updateLink(idx, { url: v })}
-                        placeholder={t("proposals.linkUrlPlaceholder")}
-                        placeholderTextColor="#9ca3af"
-                        autoCapitalize="none"
-                        keyboardType="url"
-                        className="w-full px-4 py-2.5 rounded-lg border bg-surface text-base text-foreground border-border"
-                      />
-                    </View>
-                  ))
-                )}
-              </View>
+              {linksBlock}
             </Section>
             )}
 

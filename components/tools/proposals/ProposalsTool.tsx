@@ -34,6 +34,7 @@ import { ProposalCard } from "./ProposalCard";
 import { ProposalDetailModal } from "./ProposalDetailModal";
 import { ProposalEditModal } from "./ProposalEditModal";
 import { ProposalsTypePicker } from "./ProposalsTypePicker";
+import { VotersModal } from "./VotersModal";
 import { ToolShell, type ToolProps } from "../ToolShell";
 import { theme } from "@/lib/theme";
 
@@ -85,6 +86,10 @@ export function ProposalsTool(props: ToolProps) {
   const [impactBanner, setImpactBanner] = useState<EventToolAuditEntry | null>(
     null,
   );
+  const [votersFor, setVotersFor] = useState<{
+    proposalId: string;
+    focus: VoteValue | null;
+  } | null>(null);
 
   const propSettings = useMemo(
     () => readProposalsToolSettings(props.tool.event_tool_settings),
@@ -471,6 +476,9 @@ export function ProposalsTool(props: ToolProps) {
                 voteStyle={activeVoteStyle}
                 onSetVote={setVote}
                 onClearVote={clearVote}
+                onShowVoters={(proposalId, focus) =>
+                  setVotersFor({ proposalId, focus })
+                }
                 onOpen={() => setOpenDetail(p)}
                 onEdit={canEditThis ? () => setEditing(p) : null}
                 onChanged={load}
@@ -550,6 +558,9 @@ export function ProposalsTool(props: ToolProps) {
         voteStyle={activeVoteStyle}
         onSetVote={setVote}
         onClearVote={clearVote}
+        onShowVoters={(proposalId, focus) =>
+          setVotersFor({ proposalId, focus })
+        }
         locale={i18n.language}
         onClose={() => setOpenDetail(null)}
         onEdit={() => {
@@ -559,6 +570,14 @@ export function ProposalsTool(props: ToolProps) {
           }
         }}
         onChanged={load}
+      />
+
+      <VotersModal
+        visible={votersFor !== null}
+        proposalId={votersFor?.proposalId ?? null}
+        voteStyle={activeVoteStyle}
+        initialFocus={votersFor?.focus ?? null}
+        onClose={() => setVotersFor(null)}
       />
 
       <Modal

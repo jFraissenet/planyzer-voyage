@@ -82,6 +82,7 @@ export default function SignupScreen() {
                 value={fullName}
                 onChangeText={setFullName}
                 autoCapitalize="words"
+                required
               />
               <Input
                 label={t("auth.signup.emailLabel")}
@@ -90,6 +91,7 @@ export default function SignupScreen() {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                required
               />
               <Input
                 label={t("auth.signup.passwordLabel")}
@@ -97,6 +99,7 @@ export default function SignupScreen() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
+                required
               />
 
               {error ? (

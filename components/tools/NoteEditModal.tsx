@@ -97,6 +97,7 @@ export function NoteEditModal({
             style={{ minHeight: 100, textAlignVertical: "top" }}
             autoFocus
             className="mb-4"
+            required
           />
 
           <View className="gap-2">

@@ -100,6 +100,7 @@ type Props = {
   voteStyle: VoteStyle;
   onSetVote: (proposalId: string, value: VoteValue) => Promise<void>;
   onClearVote: (proposalId: string) => Promise<void>;
+  onShowVoters: (proposalId: string, focus: VoteValue | null) => void;
   onOpen: () => void;
   onEdit: (() => void) | null;
   onChanged: () => void;
@@ -114,6 +115,7 @@ export function ProposalCard({
   voteStyle,
   onSetVote,
   onClearVote,
+  onShowVoters,
   onOpen,
   onEdit,
   onChanged,
@@ -330,6 +332,7 @@ export function ProposalCard({
             myVote={proposal.my_vote}
             onSetVote={setVote}
             onClearVote={clearVote}
+            onShowVoters={(focus) => onShowVoters(proposal.proposal_id, focus)}
             size="sm"
             disabled={isClosed}
           />

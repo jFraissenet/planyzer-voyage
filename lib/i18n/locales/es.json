@@ -467,6 +467,13 @@
       "message": "Tu voto fue retirado tras un cambio de configuración.",
       "dismiss": "Ocultar"
     },
+    "voters": {
+      "title": "Votantes",
+      "empty": "Nadie ha votado todavía",
+      "for": "A favor",
+      "neutral": "Neutral",
+      "against": "En contra"
+    },
     "orderBy": {
       "label": "Orden de visualización",
       "votes": "Por votos",
@@ -508,6 +515,7 @@
     "titlePlaceholder": "Hotel del Parque, Restaurante…",
     "descriptionLabel": "Descripción",
     "descriptionPlaceholder": "Opcional",
+    "priceLabel": "Precio (€)",
     "priceMinLabel": "Precio mín (€)",
     "priceMaxLabel": "Precio máx (€)",
     "capacityMinLabel": "Capacidad mín",

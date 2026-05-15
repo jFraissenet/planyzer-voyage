@@ -157,6 +157,7 @@ export function NewEventModal({
                 onChangeText={setTitle}
                 error={errors.title}
                 autoFocus
+                required
               />
               <Input
                 label={t("events.new.descriptionLabel")}

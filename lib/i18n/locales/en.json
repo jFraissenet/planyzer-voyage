@@ -467,6 +467,13 @@
       "message": "Your vote was removed due to a settings change.",
       "dismiss": "Dismiss"
     },
+    "voters": {
+      "title": "Voters",
+      "empty": "No one has voted yet",
+      "for": "For",
+      "neutral": "Neutral",
+      "against": "Against"
+    },
     "orderBy": {
       "label": "Display order",
       "votes": "By votes",
@@ -508,6 +515,7 @@
     "titlePlaceholder": "Hotel du Parc, Restaurant…",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Optional",
+    "priceLabel": "Price (€)",
     "priceMinLabel": "Min price (€)",
     "priceMaxLabel": "Max price (€)",
     "capacityMinLabel": "Min capacity",

@@ -476,6 +476,7 @@ export function VehicleDetailModal({
                       value={customLabel}
                       onChangeText={setCustomLabel}
                       autoFocus
+                      required
                     />
                     <Button
                       label={t("carpool.save")}

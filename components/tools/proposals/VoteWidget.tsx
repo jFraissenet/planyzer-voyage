@@ -17,6 +17,9 @@ type Props = {
   disabled?: boolean;
   onSetVote: (value: VoteValue) => void;     // tri only
   onClearVote: () => void;                    // used by check/single to remove "for"
+  // Tap on the count opens the voters modal. For tri the bucket the user
+  // tapped on is forwarded so the modal can surface that section first.
+  onShowVoters?: (focus: VoteValue | null) => void;
 };
 
 export function VoteWidget({
@@ -27,6 +30,7 @@ export function VoteWidget({
   disabled = false,
   onSetVote,
   onClearVote,
+  onShowVoters,
 }: Props) {
   if (style === "tri") {
     return (
@@ -34,6 +38,8 @@ export function VoteWidget({
         counts={counts}
         myVote={myVote}
         onVote={onSetVote}
+        onClearVote={onClearVote}
+        onShowVoters={onShowVoters ? () => onShowVoters(null) : undefined}
         size={size}
         disabled={disabled}
       />
@@ -51,6 +57,7 @@ export function VoteWidget({
         count={counts.for}
         isMine={isMine}
         onToggle={handle}
+        onShowVoters={onShowVoters ? () => onShowVoters(null) : undefined}
         size={size}
         disabled={disabled}
       />
@@ -62,6 +69,7 @@ export function VoteWidget({
       count={counts.for}
       isMine={isMine}
       onPick={handle}
+      onShowVoters={onShowVoters ? () => onShowVoters(null) : undefined}
       size={size}
       disabled={disabled}
     />

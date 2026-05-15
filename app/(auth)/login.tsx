@@ -60,6 +60,7 @@ export default function LoginScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            required
           />
           <Input
             label={t("auth.login.passwordLabel")}
@@ -67,6 +68,7 @@ export default function LoginScreen() {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            required
           />
 
           {error ? (

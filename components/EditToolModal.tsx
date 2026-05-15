@@ -155,6 +155,7 @@ export function EditToolModal({
               onChangeText={setName}
               autoFocus
               className="mb-5"
+              required
             />
 
             <SectionLabel>{t("events.newTool.visibilityLabel")}</SectionLabel>

@@ -459,6 +459,13 @@
       "message": "由于设置变更,你的投票已被移除。",
       "dismiss": "隐藏"
     },
+    "voters": {
+      "title": "投票者",
+      "empty": "还没有人投票",
+      "for": "赞成",
+      "neutral": "中立",
+      "against": "反对"
+    },
     "orderBy": {
       "label": "显示顺序",
       "votes": "按投票",
@@ -500,6 +507,7 @@
     "titlePlaceholder": "公园酒店、某某餐厅……",
     "descriptionLabel": "描述",
     "descriptionPlaceholder": "可选",
+    "priceLabel": "价格 (€)",
     "priceMinLabel": "最低价格 (€)",
     "priceMaxLabel": "最高价格 (€)",
     "capacityMinLabel": "最少人数",

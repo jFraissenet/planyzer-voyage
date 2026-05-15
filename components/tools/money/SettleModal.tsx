@@ -105,6 +105,7 @@ export function SettleModal({
             keyboardType="decimal-pad"
             autoFocus
             className="mb-2"
+            required
           />
           {suggestedAmount > 0 ? (
             <Text variant="caption" className="mb-4">
