@@ -216,7 +216,7 @@ export function ProposalCard({
             resizeMode="cover"
           />
         ) : null}
-        <View className="p-4">
+        <View className="p-1">
           <View
             className="flex-row items-start mb-1.5"
             style={{ gap: 6 }}
@@ -299,12 +299,12 @@ export function ProposalCard({
       </Pressable>
 
       <View
-        className="px-4 pb-3"
+        className="px-3 pb-2.5"
         style={{
           borderTopWidth: 1,
           borderTopColor: "#F2EDE4",
-          paddingTop: 10,
-          gap: 10,
+          paddingTop: 8,
+          gap: 8,
         }}
       >
         <View className="flex-row items-center justify-between" style={{ gap: 8 }}>
