@@ -202,6 +202,10 @@
       "proposals": {
         "title": "Sondages & propositions",
         "body": "Lance un sondage ou une boîte à idées : propose des options, collectez les votes et tranchez ensemble."
+      },
+      "meals": {
+        "title": "Repas",
+        "body": "Note les recettes du séjour, ajoute les ingrédients : la liste de courses se prépare toute seule."
       }
     }
   },
@@ -209,7 +213,8 @@
     "money": { "name": "Argent" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Covoiturage" },
-    "proposals": { "name": "Sondages & propositions" }
+    "proposals": { "name": "Sondages & propositions" },
+    "meals": { "name": "Repas" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",
@@ -615,6 +620,85 @@
     "invalidToken": "Ce lien n'est plus valide",
     "joinError": "Impossible de rejoindre, réessaie",
     "backHome": "Retour à l'accueil"
+  },
+  "meals": {
+    "add": "Nouvelle recette",
+    "empty": "Aucune recette — ajoute la première !",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette recette ?",
+    "cancel": "Annuler",
+    "createTitle": "Nouvelle recette",
+    "editTitle": "Modifier la recette",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Ex. Poulet basquaise",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Quelques mots sur la recette (facultatif)",
+    "timeSection": "Temps (min)",
+    "timePrepLabel": "Préparation",
+    "timeCookLabel": "Cuisson",
+    "timeRestLabel": "Repos",
+    "timeTotalLabel": "{{count}} min",
+    "timeTotalShort": "Total",
+    "caloriesLabel": "Calories (par portion)",
+    "servingsLabel": "Pour combien de personnes",
+    "ingredientsSection": "Ingrédients",
+    "ingredientsEmpty": "Aucun ingrédient pour l'instant",
+    "addIngredient": "Ajouter un ingrédient",
+    "stepsSection": "Étapes",
+    "stepsEmpty": "Aucune étape",
+    "addStep": "Ajouter une étape",
+    "stepPlaceholder": "Décris l'étape…",
+    "errorTitleRequired": "Le titre est requis",
+    "errorIngredientInvalid": "Quantité ou nom manquant sur un ingrédient",
+    "ingredientSearchPlaceholder": "Rechercher un ingrédient…",
+    "ingredientCustomHint": "Pas dans le catalogue ? Tape « Ajouter \"{{name}}\" » comme texte libre.",
+    "ingredientUseCustom": "Ajouter « {{name}} »",
+    "ingredientCatalogEmpty": "Aucun résultat dans le catalogue",
+    "quantityLabel": "Quantité",
+    "unitLabel": "Unité",
+    "byAuthor": "par {{name}}",
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "ml": "mL",
+      "cl": "cL",
+      "l": "L",
+      "cas": "c. à s.",
+      "cac": "c. à c.",
+      "piece": "pièce",
+      "gousse": "gousse",
+      "botte": "botte",
+      "pincee": "pincée",
+      "sachet": "sachet",
+      "tranche": "tranche",
+      "boite": "boîte",
+      "qb": "QS"
+    },
+    "tabs": {
+      "recipes": "Recettes",
+      "shopping": "Courses"
+    },
+    "shopping": {
+      "empty": "Ajoute des recettes avec des ingrédients pour voir la liste"
+    },
+    "types": {
+      "legumes": "Légumes",
+      "fruits": "Fruits",
+      "champignons": "Champignons",
+      "viande": "Viande",
+      "poisson": "Poisson",
+      "custom": "Texte libre",
+      "cremerie": "Crémerie",
+      "epicerie_salee": "Épicerie salée",
+      "epicerie_sucree": "Épicerie sucrée",
+      "surgele": "Surgelé",
+      "boulangerie": "Boulangerie",
+      "boissons": "Boissons",
+      "condiments_epices": "Condiments & épices",
+      "frais_traiteur": "Frais & traiteur"
+    }
   },
   "profile": {
     "title": "Profil",

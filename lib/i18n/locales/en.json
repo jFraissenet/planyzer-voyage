@@ -202,6 +202,10 @@
       "proposals": {
         "title": "Polls & proposals",
         "body": "Run a poll or idea board: suggest options, collect votes, and decide together."
+      },
+      "meals": {
+        "title": "Meals",
+        "body": "Save your trip's recipes, list their ingredients, and let the shopping list build itself."
       }
     }
   },
@@ -209,7 +213,8 @@
     "money": { "name": "Money" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Carpool" },
-    "proposals": { "name": "Polls & proposals" }
+    "proposals": { "name": "Polls & proposals" },
+    "meals": { "name": "Meals" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",
@@ -615,6 +620,85 @@
     "invalidToken": "This link is no longer valid",
     "joinError": "Could not join, try again",
     "backHome": "Back to home"
+  },
+  "meals": {
+    "add": "New recipe",
+    "empty": "No recipes yet — add the first one!",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this recipe?",
+    "cancel": "Cancel",
+    "createTitle": "New recipe",
+    "editTitle": "Edit recipe",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Basque chicken",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "A few words about the recipe (optional)",
+    "timeSection": "Time (min)",
+    "timePrepLabel": "Prep",
+    "timeCookLabel": "Cook",
+    "timeRestLabel": "Rest",
+    "timeTotalLabel": "{{count}} min",
+    "timeTotalShort": "Total",
+    "caloriesLabel": "Calories (per serving)",
+    "servingsLabel": "How many servings",
+    "ingredientsSection": "Ingredients",
+    "ingredientsEmpty": "No ingredients yet",
+    "addIngredient": "Add an ingredient",
+    "stepsSection": "Steps",
+    "stepsEmpty": "No steps",
+    "addStep": "Add a step",
+    "stepPlaceholder": "Describe this step…",
+    "errorTitleRequired": "Title is required",
+    "errorIngredientInvalid": "Missing quantity or name on an ingredient",
+    "ingredientSearchPlaceholder": "Search an ingredient…",
+    "ingredientCustomHint": "Not in the catalogue? Tap “Add \"{{name}}\"” as free text.",
+    "ingredientUseCustom": "Add “{{name}}”",
+    "ingredientCatalogEmpty": "No catalogue match",
+    "quantityLabel": "Quantity",
+    "unitLabel": "Unit",
+    "byAuthor": "by {{name}}",
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "ml": "mL",
+      "cl": "cL",
+      "l": "L",
+      "cas": "tbsp",
+      "cac": "tsp",
+      "piece": "pc",
+      "gousse": "clove",
+      "botte": "bunch",
+      "pincee": "pinch",
+      "sachet": "pkt",
+      "tranche": "slice",
+      "boite": "can",
+      "qb": "to taste"
+    },
+    "tabs": {
+      "recipes": "Recipes",
+      "shopping": "Shopping list"
+    },
+    "shopping": {
+      "empty": "Add recipes with ingredients to see the shopping list"
+    },
+    "types": {
+      "legumes": "Vegetables",
+      "fruits": "Fruits",
+      "champignons": "Mushrooms",
+      "viande": "Meat",
+      "poisson": "Fish",
+      "custom": "Free text",
+      "cremerie": "Dairy",
+      "epicerie_salee": "Pantry (savory)",
+      "epicerie_sucree": "Pantry (sweet)",
+      "surgele": "Frozen",
+      "boulangerie": "Bakery",
+      "boissons": "Drinks",
+      "condiments_epices": "Spices & condiments",
+      "frais_traiteur": "Deli"
+    }
   },
   "profile": {
     "title": "Profile",

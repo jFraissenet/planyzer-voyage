@@ -202,6 +202,10 @@
       "proposals": {
         "title": "Encuestas y propuestas",
         "body": "Lanza una encuesta o un tablero de ideas: proponed opciones, recoged votos y decidid juntos."
+      },
+      "meals": {
+        "title": "Comidas",
+        "body": "Guarda las recetas del viaje y sus ingredientes: la lista de la compra se monta sola."
       }
     }
   },
@@ -209,7 +213,8 @@
     "money": { "name": "Dinero" },
     "notes": { "name": "Notas" },
     "car_sharing": { "name": "Compartir coche" },
-    "proposals": { "name": "Encuestas y propuestas" }
+    "proposals": { "name": "Encuestas y propuestas" },
+    "meals": { "name": "Comidas" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participante",
@@ -615,6 +620,85 @@
     "invalidToken": "Este enlace ya no es válido",
     "joinError": "No se pudo unir, inténtalo de nuevo",
     "backHome": "Volver al inicio"
+  },
+  "meals": {
+    "add": "Nueva receta",
+    "empty": "Aún no hay recetas — ¡añade la primera!",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar esta receta?",
+    "cancel": "Cancelar",
+    "createTitle": "Nueva receta",
+    "editTitle": "Editar receta",
+    "titleLabel": "Título",
+    "titlePlaceholder": "p. ej. Pollo a la vasca",
+    "descriptionLabel": "Descripción",
+    "descriptionPlaceholder": "Unas palabras sobre la receta (opcional)",
+    "timeSection": "Tiempo (min)",
+    "timePrepLabel": "Preparación",
+    "timeCookLabel": "Cocción",
+    "timeRestLabel": "Reposo",
+    "timeTotalLabel": "{{count}} min",
+    "timeTotalShort": "Total",
+    "caloriesLabel": "Calorías (por porción)",
+    "servingsLabel": "Para cuántas personas",
+    "ingredientsSection": "Ingredientes",
+    "ingredientsEmpty": "Aún no hay ingredientes",
+    "addIngredient": "Añadir un ingrediente",
+    "stepsSection": "Pasos",
+    "stepsEmpty": "Aún no hay pasos",
+    "addStep": "Añadir un paso",
+    "stepPlaceholder": "Describe este paso…",
+    "errorTitleRequired": "El título es obligatorio",
+    "errorIngredientInvalid": "Falta cantidad o nombre en un ingrediente",
+    "ingredientSearchPlaceholder": "Buscar un ingrediente…",
+    "ingredientCustomHint": "¿No está en el catálogo? Toca «Añadir \"{{name}}\"» como texto libre.",
+    "ingredientUseCustom": "Añadir «{{name}}»",
+    "ingredientCatalogEmpty": "Sin resultados en el catálogo",
+    "quantityLabel": "Cantidad",
+    "unitLabel": "Unidad",
+    "byAuthor": "por {{name}}",
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "ml": "mL",
+      "cl": "cL",
+      "l": "L",
+      "cas": "cda.",
+      "cac": "cdta.",
+      "piece": "pieza",
+      "gousse": "diente",
+      "botte": "manojo",
+      "pincee": "pizca",
+      "sachet": "sobre",
+      "tranche": "rebanada",
+      "boite": "lata",
+      "qb": "al gusto"
+    },
+    "tabs": {
+      "recipes": "Recetas",
+      "shopping": "Lista de la compra"
+    },
+    "shopping": {
+      "empty": "Añade recetas con ingredientes para ver la lista"
+    },
+    "types": {
+      "legumes": "Verduras",
+      "fruits": "Frutas",
+      "champignons": "Setas",
+      "viande": "Carne",
+      "poisson": "Pescado",
+      "custom": "Texto libre",
+      "cremerie": "Lácteos",
+      "epicerie_salee": "Despensa (salada)",
+      "epicerie_sucree": "Despensa (dulce)",
+      "surgele": "Congelados",
+      "boulangerie": "Panadería",
+      "boissons": "Bebidas",
+      "condiments_epices": "Especias y condimentos",
+      "frais_traiteur": "Charcutería"
+    }
   },
   "profile": {
     "title": "Perfil",

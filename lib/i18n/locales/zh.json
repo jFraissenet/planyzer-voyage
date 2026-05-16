@@ -202,6 +202,10 @@
       "proposals": {
         "title": "投票与提议",
         "body": "发起投票或点子板：提出选项、收集投票、一起拍板。"
+      },
+      "meals": {
+        "title": "餐食",
+        "body": "记下旅行的食谱与配料，购物清单自动生成。"
       }
     }
   },
@@ -209,7 +213,8 @@
     "money": { "name": "账务" },
     "notes": { "name": "笔记" },
     "car_sharing": { "name": "拼车" },
-    "proposals": { "name": "投票与提议" }
+    "proposals": { "name": "投票与提议" },
+    "meals": { "name": "餐食" }
   },
   "toolDetail": {
     "participants_other": "{{count}} 名参与者",
@@ -602,6 +607,85 @@
     "invalidToken": "该链接已失效",
     "joinError": "加入失败,请重试",
     "backHome": "返回首页"
+  },
+  "meals": {
+    "add": "新建食谱",
+    "empty": "还没有食谱——快来添加第一道吧！",
+    "save": "保存",
+    "saving": "保存中…",
+    "delete": "删除",
+    "deleteConfirm": "要删除这道食谱吗？",
+    "cancel": "取消",
+    "createTitle": "新建食谱",
+    "editTitle": "编辑食谱",
+    "titleLabel": "标题",
+    "titlePlaceholder": "例如：巴斯克炖鸡",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "简单介绍这道菜（可选）",
+    "timeSection": "时间（分钟）",
+    "timePrepLabel": "准备",
+    "timeCookLabel": "烹饪",
+    "timeRestLabel": "静置",
+    "timeTotalLabel": "{{count}} 分钟",
+    "timeTotalShort": "总计",
+    "caloriesLabel": "卡路里（每份）",
+    "servingsLabel": "几人份",
+    "ingredientsSection": "配料",
+    "ingredientsEmpty": "还没有配料",
+    "addIngredient": "添加配料",
+    "stepsSection": "步骤",
+    "stepsEmpty": "还没有步骤",
+    "addStep": "添加步骤",
+    "stepPlaceholder": "描述这一步…",
+    "errorTitleRequired": "请填写标题",
+    "errorIngredientInvalid": "配料缺少数量或名称",
+    "ingredientSearchPlaceholder": "搜索配料…",
+    "ingredientCustomHint": "目录里没有？点击「添加 \"{{name}}\"」作为自定义。",
+    "ingredientUseCustom": "添加「{{name}}」",
+    "ingredientCatalogEmpty": "目录中无匹配",
+    "quantityLabel": "数量",
+    "unitLabel": "单位",
+    "byAuthor": "由 {{name}} 创建",
+    "units": {
+      "g": "克",
+      "kg": "公斤",
+      "ml": "毫升",
+      "cl": "厘升",
+      "l": "升",
+      "cas": "汤匙",
+      "cac": "茶匙",
+      "piece": "个",
+      "gousse": "瓣",
+      "botte": "把",
+      "pincee": "撮",
+      "sachet": "袋",
+      "tranche": "片",
+      "boite": "罐",
+      "qb": "适量"
+    },
+    "tabs": {
+      "recipes": "食谱",
+      "shopping": "购物清单"
+    },
+    "shopping": {
+      "empty": "添加带有配料的食谱后会显示在这里"
+    },
+    "types": {
+      "legumes": "蔬菜",
+      "fruits": "水果",
+      "champignons": "蘑菇",
+      "viande": "肉类",
+      "poisson": "鱼类",
+      "custom": "自定义",
+      "cremerie": "乳制品",
+      "epicerie_salee": "杂货（咸）",
+      "epicerie_sucree": "杂货（甜）",
+      "surgele": "冷冻",
+      "boulangerie": "烘焙",
+      "boissons": "饮料",
+      "condiments_epices": "调味料",
+      "frais_traiteur": "熟食"
+    }
   },
   "profile": {
     "title": "个人资料",
