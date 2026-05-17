@@ -11,7 +11,7 @@ type Props = {
 export function ProposalsTypePicker({ onPick }: Props) {
   const { t } = useTranslation();
   return (
-    <View className="py-4" style={{ gap: 12 }}>
+    <View className="py-4" style={{ gap: 10 }}>
       <Text variant="caption" className="text-center mb-2" style={{ fontSize: 13 }}>
         {t("proposals.typePicker.intro")}
       </Text>

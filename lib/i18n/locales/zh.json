@@ -138,6 +138,20 @@
       "typeLabel": "工具类型",
       "nameLabel": "名称",
       "namePlaceholder": "例如：旅行笔记",
+      "nameLabelByType": {
+        "proposals": "投票标题",
+        "meals": "为你的餐食取个名字",
+        "money": "费用追踪标题",
+        "notes": "笔记标题",
+        "car_sharing": "拼车名称"
+      },
+      "namePlaceholderByType": {
+        "proposals": "我们去哪里度假？",
+        "meals": "旅行餐食",
+        "money": "旅行费用",
+        "notes": "想法与待办",
+        "car_sharing": "往返行程"
+      },
       "visibilityLabel": "可见性",
       "visibilityAll": "所有成员",
       "visibilityAllHint": "所有活动成员都能看到此工具",
@@ -213,7 +227,7 @@
     "money": { "name": "账务" },
     "notes": { "name": "笔记" },
     "car_sharing": { "name": "拼车" },
-    "proposals": { "name": "投票与提议" },
+    "proposals": { "name": "投票" },
     "meals": { "name": "餐食" }
   },
   "toolDetail": {

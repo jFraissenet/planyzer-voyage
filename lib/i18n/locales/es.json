@@ -138,6 +138,20 @@
       "typeLabel": "Tipo de herramienta",
       "nameLabel": "Nombre",
       "namePlaceholder": "ej. Notas del viaje",
+      "nameLabelByType": {
+        "proposals": "Título de la encuesta",
+        "meals": "Nombre para tus comidas",
+        "money": "Título del seguimiento de gastos",
+        "notes": "Título de las notas",
+        "car_sharing": "Nombre del coche compartido"
+      },
+      "namePlaceholderByType": {
+        "proposals": "¿A dónde vamos de vacaciones?",
+        "meals": "Comidas del viaje",
+        "money": "Gastos del viaje",
+        "notes": "Ideas y tareas",
+        "car_sharing": "Trayecto ida y vuelta"
+      },
       "visibilityLabel": "Visibilidad",
       "visibilityAll": "Todos los miembros",
       "visibilityAllHint": "Todos los miembros del evento ven esta herramienta",
@@ -213,7 +227,7 @@
     "money": { "name": "Dinero" },
     "notes": { "name": "Notas" },
     "car_sharing": { "name": "Compartir coche" },
-    "proposals": { "name": "Encuestas y propuestas" },
+    "proposals": { "name": "Encuesta" },
     "meals": { "name": "Comidas" }
   },
   "toolDetail": {

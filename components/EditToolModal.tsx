@@ -149,8 +149,22 @@ export function EditToolModal({
             </Text>
 
             <Input
-              label={t("events.newTool.nameLabel")}
-              placeholder={t("events.newTool.namePlaceholder")}
+              label={
+                tool
+                  ? t(
+                      `events.newTool.nameLabelByType.${tool.event_tool_type_code}`,
+                      { defaultValue: t("events.newTool.nameLabel") },
+                    )
+                  : t("events.newTool.nameLabel")
+              }
+              placeholder={
+                tool
+                  ? t(
+                      `events.newTool.namePlaceholderByType.${tool.event_tool_type_code}`,
+                      { defaultValue: t("events.newTool.namePlaceholder") },
+                    )
+                  : t("events.newTool.namePlaceholder")
+              }
               value={name}
               onChangeText={setName}
               autoFocus

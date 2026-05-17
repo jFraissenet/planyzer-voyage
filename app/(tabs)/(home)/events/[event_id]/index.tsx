@@ -203,10 +203,16 @@ function NewToolModal({
   const selectType = (tt: ToolType) => {
     setSelectedType(tt);
     setVisibility(tt.tool_type_default_visibility);
+    // Pre-fill the name with the contextual placeholder so the user can
+    // submit directly without typing — they can still edit if they want a
+    // custom name. We only overwrite when the field hasn't been manually
+    // edited yet (nameAutoFilled stays true until the user types).
     if (nameAutoFilled || !name.trim()) {
       setName(
-        t(`tools.${tt.tool_type_code}.name`, {
-          defaultValue: tt.tool_type_code,
+        t(`events.newTool.namePlaceholderByType.${tt.tool_type_code}`, {
+          defaultValue: t(`tools.${tt.tool_type_code}.name`, {
+            defaultValue: tt.tool_type_code,
+          }),
         }),
       );
       setNameAutoFilled(true);
@@ -284,8 +290,22 @@ function NewToolModal({
           </Text>
 
           <Input
-            label={t("events.newTool.nameLabel")}
-            placeholder={t("events.newTool.namePlaceholder")}
+            label={
+              selectedType
+                ? t(
+                    `events.newTool.nameLabelByType.${selectedType.tool_type_code}`,
+                    { defaultValue: t("events.newTool.nameLabel") },
+                  )
+                : t("events.newTool.nameLabel")
+            }
+            placeholder={
+              selectedType
+                ? t(
+                    `events.newTool.namePlaceholderByType.${selectedType.tool_type_code}`,
+                    { defaultValue: t("events.newTool.namePlaceholder") },
+                  )
+                : t("events.newTool.namePlaceholder")
+            }
             value={name}
             onChangeText={handleNameChange}
             error={errors.name}

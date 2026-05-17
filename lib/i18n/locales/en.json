@@ -138,6 +138,20 @@
       "typeLabel": "Tool type",
       "nameLabel": "Name",
       "namePlaceholder": "e.g. Trip notes",
+      "nameLabelByType": {
+        "proposals": "Poll title",
+        "meals": "Name for your meals",
+        "money": "Expense tracker title",
+        "notes": "Notes title",
+        "car_sharing": "Car-sharing name"
+      },
+      "namePlaceholderByType": {
+        "proposals": "Where are we going on holiday?",
+        "meals": "Trip meals",
+        "money": "Trip expenses",
+        "notes": "Ideas & to-dos",
+        "car_sharing": "Round trip"
+      },
       "visibilityLabel": "Visibility",
       "visibilityAll": "All members",
       "visibilityAllHint": "All event members can see this tool",
@@ -213,7 +227,7 @@
     "money": { "name": "Money" },
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Carpool" },
-    "proposals": { "name": "Polls & proposals" },
+    "proposals": { "name": "Poll" },
     "meals": { "name": "Meals" }
   },
   "toolDetail": {
