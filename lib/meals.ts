@@ -43,11 +43,16 @@ export type IngredientType =
   | "champignons"
   | "viande"
   | "poisson"
+  | "crustaces"
   | "cremerie"
+  | "boulangerie"
+  | "cereales"
+  | "feculents"
+  | "legumineuses"
+  | "graines"
   | "epicerie_salee"
   | "epicerie_sucree"
   | "surgele"
-  | "boulangerie"
   | "boissons"
   | "condiments_epices"
   | "frais_traiteur";
@@ -109,6 +114,25 @@ export function totalTimeMinutes(r: {
   );
   if (parts.length === 0) return null;
   return parts.reduce((a, b) => a + b, 0);
+}
+
+// Round a quantity to the nearest 0.25 step (so the UI never displays
+// awkward decimals like 1.86 — Jeremy's rule).
+// Non-zero quantities that would round to 0 are bumped up to 0.25 so an
+// ingredient doesn't silently disappear from a scaled recipe.
+export function roundToQuarter(n: number): number {
+  const rounded = Math.round(n * 4) / 4;
+  if (rounded === 0 && n > 0) return 0.25;
+  return rounded;
+}
+
+// Display helper: rounds and drops trailing zeros.
+//   3      → "3"
+//   3.25   → "3.25"
+//   1.86   → "1.75"  (rounded to nearest 0.25)
+//   0.001  → "0.25"  (bumped, see roundToQuarter)
+export function formatQuantity(n: number): string {
+  return String(roundToQuarter(n));
 }
 
 // Shape posted to the upsert RPC. catalog_id XOR custom_name — never both.
@@ -255,4 +279,102 @@ export async function searchIngredientCatalog(
     .limit(limit);
   if (error) throw error;
   return (data ?? []) as Ingredient[];
+}
+
+// ---------------------------------------------------------------------------
+// Recipe catalogue (shared public catalogue + personal recipes + shared
+// private). Distinct from event_tool_meal_recipe which holds trip-scoped
+// clones.
+// ---------------------------------------------------------------------------
+
+export type RecipeVisibility = "private" | "public";
+
+export type CatalogueRecipeSummary = {
+  recipe_id: string;
+  visibility: RecipeVisibility;
+  owner_id: string | null;
+  owner_full_name: string | null;
+  owner_avatar_url: string | null;
+  parent_recipe_id: string | null;
+  title: string;
+  description: string | null;
+  time_prep_minutes: number | null;
+  time_cook_minutes: number | null;
+  time_rest_minutes: number | null;
+  calories: number | null;
+  servings: number;
+  ingredients_count: number;
+  steps_count: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CatalogueRecipe = Omit<
+  CatalogueRecipeSummary,
+  "ingredients_count" | "steps_count"
+> & {
+  ingredients: MealRecipeIngredient[];
+  steps: MealRecipeStep[];
+};
+
+export async function listRecipeCatalogue(
+  search: string = "",
+  limit: number = 50,
+): Promise<CatalogueRecipeSummary[]> {
+  const { data, error } = await supabase.rpc("list_recipe_catalogue", {
+    p_search: search,
+    p_limit: limit,
+  });
+  if (error) throw error;
+  return (data ?? []) as CatalogueRecipeSummary[];
+}
+
+export async function getRecipe(recipeId: string): Promise<CatalogueRecipe | null> {
+  const { data, error } = await supabase.rpc("get_recipe", {
+    p_recipe_id: recipeId,
+  });
+  if (error) throw error;
+  const rows = (data ?? []) as Array<CatalogueRecipe & {
+    ingredients: Array<MealRecipeIngredient & { quantity: number | string }>;
+  }>;
+  if (rows.length === 0) return null;
+  const r = rows[0];
+  return {
+    ...r,
+    ingredients: r.ingredients.map((i) => ({
+      ...i,
+      quantity: typeof i.quantity === "string" ? Number(i.quantity) : i.quantity,
+    })),
+  };
+}
+
+// Eager-copy a catalogue recipe into a meals tool. Returns the new
+// event_tool_meal_recipe_id. The parent_recipe_id link is set server-side.
+// targetServings: how many people the cloned recipe should feed in the
+// destination tool. Null → inherits the source recipe's servings.
+export async function cloneRecipeToEventTool(
+  recipeId: string,
+  toolId: string,
+  targetServings: number | null = null,
+): Promise<string> {
+  const { data, error } = await supabase.rpc("clone_recipe_to_event_tool", {
+    p_recipe_id: recipeId,
+    p_tool_id: toolId,
+    p_target_servings: targetServings,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
+// Eager-copy a trip recipe back into the user's personal catalogue
+// (visibility='private'). Returns the new recipe_id.
+export async function saveEventToolRecipeToCatalogue(
+  eventToolRecipeId: string,
+): Promise<string> {
+  const { data, error } = await supabase.rpc(
+    "save_event_tool_recipe_to_catalogue",
+    { p_event_tool_recipe_id: eventToolRecipeId },
+  );
+  if (error) throw error;
+  return data as string;
 }

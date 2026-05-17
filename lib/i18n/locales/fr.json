@@ -680,6 +680,25 @@
       "recipes": "Recettes",
       "shopping": "Courses"
     },
+    "addMenu": {
+      "title": "Ajouter une recette",
+      "createFromScratch": "Créer de zéro",
+      "fromCatalogue": "Depuis le catalogue"
+    },
+    "catalogue": {
+      "title": "Catalogue de recettes",
+      "search": "Rechercher…",
+      "empty": "Aucune recette dans le catalogue",
+      "addToTool": "Ajouter à mon outil",
+      "addToToolConfirm": "Ajouter « {{title}} » à ton outil ?",
+      "added": "Ajoutée à ton outil",
+      "private": "Privée",
+      "public": "Publique",
+      "shared": "Partagée"
+    },
+    "saveToCatalogue": "Enregistrer dans mon catalogue",
+    "saveToCatalogueDone": "Enregistrée dans ton catalogue",
+    "savingToCatalogue": "Enregistrement…",
     "shopping": {
       "empty": "Ajoute des recettes avec des ingrédients pour voir la liste"
     },
@@ -689,6 +708,11 @@
       "champignons": "Champignons",
       "viande": "Viande",
       "poisson": "Poisson",
+      "crustaces": "Crustacés & fruits de mer",
+      "cereales": "Céréales",
+      "feculents": "Féculents",
+      "legumineuses": "Légumineuses",
+      "graines": "Graines",
       "custom": "Texte libre",
       "cremerie": "Crémerie",
       "epicerie_salee": "Épicerie salée",

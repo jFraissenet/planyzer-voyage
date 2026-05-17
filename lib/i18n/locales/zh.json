@@ -667,6 +667,25 @@
       "recipes": "食谱",
       "shopping": "购物清单"
     },
+    "addMenu": {
+      "title": "添加食谱",
+      "createFromScratch": "从零开始",
+      "fromCatalogue": "从目录中选择"
+    },
+    "catalogue": {
+      "title": "食谱目录",
+      "search": "搜索…",
+      "empty": "目录里还没有食谱",
+      "addToTool": "添加到我的工具",
+      "addToToolConfirm": "将「{{title}}」加入你的工具？",
+      "added": "已加入你的工具",
+      "private": "私有",
+      "public": "公开",
+      "shared": "已共享"
+    },
+    "saveToCatalogue": "保存到我的目录",
+    "saveToCatalogueDone": "已保存到你的目录",
+    "savingToCatalogue": "保存中…",
     "shopping": {
       "empty": "添加带有配料的食谱后会显示在这里"
     },
@@ -676,6 +695,11 @@
       "champignons": "蘑菇",
       "viande": "肉类",
       "poisson": "鱼类",
+      "crustaces": "海鲜",
+      "cereales": "谷物",
+      "feculents": "面食与淀粉",
+      "legumineuses": "豆类",
+      "graines": "种子",
       "custom": "自定义",
       "cremerie": "乳制品",
       "epicerie_salee": "杂货（咸）",

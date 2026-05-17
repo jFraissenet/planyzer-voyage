@@ -680,6 +680,25 @@
       "recipes": "Recetas",
       "shopping": "Lista de la compra"
     },
+    "addMenu": {
+      "title": "Añadir una receta",
+      "createFromScratch": "Crear desde cero",
+      "fromCatalogue": "Desde el catálogo"
+    },
+    "catalogue": {
+      "title": "Catálogo de recetas",
+      "search": "Buscar…",
+      "empty": "No hay recetas en el catálogo",
+      "addToTool": "Añadir a mi herramienta",
+      "addToToolConfirm": "¿Añadir «{{title}}» a tu herramienta?",
+      "added": "Añadida a tu herramienta",
+      "private": "Privada",
+      "public": "Pública",
+      "shared": "Compartida"
+    },
+    "saveToCatalogue": "Guardar en mi catálogo",
+    "saveToCatalogueDone": "Guardada en tu catálogo",
+    "savingToCatalogue": "Guardando…",
     "shopping": {
       "empty": "Añade recetas con ingredientes para ver la lista"
     },
@@ -689,6 +708,11 @@
       "champignons": "Setas",
       "viande": "Carne",
       "poisson": "Pescado",
+      "crustaces": "Mariscos",
+      "cereales": "Cereales",
+      "feculents": "Pastas y féculas",
+      "legumineuses": "Legumbres",
+      "graines": "Semillas",
       "custom": "Texto libre",
       "cremerie": "Lácteos",
       "epicerie_salee": "Despensa (salada)",

@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
 import {
   deleteEventToolMealRecipe,
+  roundToQuarter,
   upsertEventToolMealRecipe,
   type MealRecipe,
   type MealRecipeInput,
@@ -61,8 +62,11 @@ function emptyDraftIngredient(): DraftIngredient {
   };
 }
 
+// Stored quantities are per-serving; the form shows totals for the current
+// servings, so we multiply on load (and divide back on save).
 function fromExistingIngredients(
   source: MealRecipe["ingredients"] | undefined,
+  servings: number,
 ): DraftIngredient[] {
   if (!source) return [];
   return source.map((i) => ({
@@ -70,7 +74,7 @@ function fromExistingIngredients(
     catalog_id: i.catalog_id,
     catalog_name: i.catalog_name,
     custom_name: i.custom_name,
-    quantity: String(i.quantity),
+    quantity: String(roundToQuarter(i.quantity * servings)),
     unit: i.unit,
   }));
 }
@@ -104,6 +108,10 @@ export function RecipeEditModal({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  // Tracks the last valid (>0) servings the form has seen, so we keep scaling
+  // correctly even when the user clears the input mid-edit (transient "" or
+  // "0" states must not break the ratio).
+  const lastValidServingsRef = useRef<number>(4);
 
   useEffect(() => {
     if (!visible) return;
@@ -122,7 +130,11 @@ export function RecipeEditModal({
       existing?.calories != null ? String(existing.calories) : "",
     );
     setServings(String(existing?.servings ?? 4));
-    setIngredients(fromExistingIngredients(existing?.ingredients));
+    const initialServings = existing?.servings ?? 4;
+    lastValidServingsRef.current = initialServings;
+    setIngredients(
+      fromExistingIngredients(existing?.ingredients, initialServings),
+    );
     setSteps(fromExistingSteps(existing?.steps));
     setError(null);
     setBusy(false);
@@ -178,6 +190,9 @@ export function RecipeEditModal({
       setError(t("meals.errorTitleRequired"));
       return null;
     }
+    const serv = servings.trim() === "" ? 4 : Number(servings);
+    const safeServings = Number.isFinite(serv) && serv > 0 ? serv : 4;
+    // Form holds totals for the current servings; storage is per-serving.
     const cleanIngredients = [];
     for (const i of ingredients) {
       const qty = Number(i.quantity.replace(",", "."));
@@ -189,7 +204,7 @@ export function RecipeEditModal({
       cleanIngredients.push({
         catalog_id: i.catalog_id,
         custom_name: i.catalog_id ? null : (i.custom_name ?? "").trim(),
-        quantity: qty,
+        quantity: qty / safeServings,
         unit: i.unit,
       });
     }
@@ -204,7 +219,6 @@ export function RecipeEditModal({
       return Number.isFinite(n) && n >= 0 ? n : null;
     };
     const cal = calories.trim() === "" ? null : Number(calories);
-    const serv = servings.trim() === "" ? 4 : Number(servings);
 
     return {
       title: titleTrim,
@@ -213,10 +227,39 @@ export function RecipeEditModal({
       time_cook_minutes: parseMin(timeCook),
       time_rest_minutes: parseMin(timeRest),
       calories: Number.isFinite(cal as number) ? (cal as number) : null,
-      servings: Number.isFinite(serv) && serv > 0 ? serv : 4,
+      servings: safeServings,
       ingredients: cleanIngredients,
       steps: cleanSteps,
     };
+  };
+
+  // When the user changes the servings count, rescale all ingredient totals
+  // by the same ratio. Quarter-rounded so we never display 1.86. The user can
+  // still edit individual quantities afterward — those overrides stick.
+  //
+  // We compare against `lastValidServingsRef`, NOT the current servings state,
+  // because intermediate edits (typing "" between "12" and "5") would otherwise
+  // poison the ratio with prev=0 and break subsequent scaling.
+  const handleServingsChange = (next: string) => {
+    const newServ = Number(next);
+    if (Number.isFinite(newServ) && newServ > 0) {
+      const prev = lastValidServingsRef.current;
+      if (prev > 0 && newServ !== prev) {
+        const ratio = newServ / prev;
+        setIngredients((items) =>
+          items.map((i) => {
+            const oldQty = Number(i.quantity.replace(",", "."));
+            if (!Number.isFinite(oldQty) || oldQty <= 0) return i;
+            return {
+              ...i,
+              quantity: String(roundToQuarter(oldQty * ratio)),
+            };
+          }),
+        );
+      }
+      lastValidServingsRef.current = newServ;
+    }
+    setServings(next);
   };
 
   const save = async () => {
@@ -357,7 +400,7 @@ export function RecipeEditModal({
               <TimeRow
                 label={t("meals.servingsLabel")}
                 value={servings}
-                onChangeText={setServings}
+                onChangeText={handleServingsChange}
                 placeholder="4"
                 required
               />

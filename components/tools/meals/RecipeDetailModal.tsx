@@ -1,8 +1,14 @@
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Modal, Pressable, ScrollView, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { Avatar, Text } from "@/components/ui";
-import { totalTimeMinutes, type MealRecipe } from "@/lib/meals";
+import {
+  formatQuantity,
+  saveEventToolRecipeToCatalogue,
+  totalTimeMinutes,
+  type MealRecipe,
+} from "@/lib/meals";
 import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
@@ -37,7 +43,27 @@ export function RecipeDetailModal({
   onEdit,
 }: Props) {
   const { t } = useTranslation();
+  const [saving, setSaving] = useState(false);
+  const [savedMessage, setSavedMessage] = useState<string | null>(null);
   if (!recipe) return null;
+
+  const handleSaveToCatalogue = async () => {
+    if (saving) return;
+    setSaving(true);
+    setSavedMessage(null);
+    try {
+      await saveEventToolRecipeToCatalogue(recipe.recipe_id);
+      setSavedMessage(t("meals.saveToCatalogueDone"));
+      // Auto-clear the success message after a few seconds so it doesn't
+      // linger forever in the modal.
+      setTimeout(() => setSavedMessage(null), 3500);
+    } catch {
+      // Surface a generic error via the same slot — keeps the surface small.
+      setSavedMessage(t("common.error"));
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <Modal
@@ -182,7 +208,8 @@ export function RecipeDetailModal({
                         fontWeight: "600",
                       }}
                     >
-                      {i.quantity} {t(`meals.units.${i.unit}`)}
+                      {formatQuantity(i.quantity * recipe.servings)}{" "}
+                      {t(`meals.units.${i.unit}`)}
                     </Text>
                   </View>
                 ))
@@ -235,12 +262,42 @@ export function RecipeDetailModal({
               </>
             ) : null}
 
-            {canEdit ? (
+            <View className="mt-5" style={{ gap: 8 }}>
+              {canEdit ? (
+                <Pressable
+                  onPress={onEdit}
+                  className="items-center justify-center py-2.5 rounded-lg"
+                  style={{ backgroundColor: theme.primarySoft }}
+                >
+                  <Text
+                    style={{
+                      color: theme.primary,
+                      fontWeight: "700",
+                      fontSize: 13,
+                    }}
+                  >
+                    {t("meals.editTitle")}
+                  </Text>
+                </Pressable>
+              ) : null}
+
               <Pressable
-                onPress={onEdit}
-                className="mt-5 items-center justify-center py-2.5 rounded-lg"
-                style={{ backgroundColor: theme.primarySoft }}
+                onPress={saving ? undefined : handleSaveToCatalogue}
+                disabled={saving}
+                className="flex-row items-center justify-center py-2.5 rounded-lg active:opacity-70"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderWidth: 1,
+                  borderColor: "#E8E3DB",
+                  gap: 6,
+                  opacity: saving ? 0.5 : 1,
+                }}
               >
+                {saving ? (
+                  <ActivityIndicator size="small" color={theme.primary} />
+                ) : (
+                  <Ionicons name="bookmark-outline" size={14} color={theme.primary} />
+                )}
                 <Text
                   style={{
                     color: theme.primary,
@@ -248,10 +305,22 @@ export function RecipeDetailModal({
                     fontSize: 13,
                   }}
                 >
-                  {t("meals.editTitle")}
+                  {saving
+                    ? t("meals.savingToCatalogue")
+                    : t("meals.saveToCatalogue")}
                 </Text>
               </Pressable>
-            ) : null}
+
+              {savedMessage ? (
+                <Text
+                  variant="caption"
+                  className="text-center"
+                  style={{ color: theme.primary, fontSize: 12 }}
+                >
+                  {savedMessage}
+                </Text>
+              ) : null}
+            </View>
           </ScrollView>
         </Pressable>
       </Pressable>

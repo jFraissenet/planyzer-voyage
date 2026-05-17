@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { FAB, Text } from "@/components/ui";
+import { Text } from "@/components/ui";
 import {
   listEventToolMealRecipes,
   type MealRecipe,
@@ -9,6 +10,7 @@ import {
 import { useSession } from "@/lib/useSession";
 import { AggregatedIngredients } from "./AggregatedIngredients";
 import { RecipeCard } from "./RecipeCard";
+import { RecipeCataloguePicker } from "./RecipeCataloguePicker";
 import { RecipeDetailModal } from "./RecipeDetailModal";
 import { RecipeEditModal } from "./RecipeEditModal";
 import { ToolShell, type ToolProps } from "../ToolShell";
@@ -26,6 +28,8 @@ export function MealsTool(props: ToolProps) {
   const [editing, setEditing] = useState<MealRecipe | null>(null);
   const [openDetail, setOpenDetail] = useState<MealRecipe | null>(null);
   const [tab, setTab] = useState<MealsTab>("recipes");
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const [pickingCatalogue, setPickingCatalogue] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -54,7 +58,7 @@ export function MealsTool(props: ToolProps) {
   return (
     <>
       <ToolShell {...props}>
-        <View className="flex-row mb-4" style={{ gap: 8 }}>
+        <View className="flex-row mb-3" style={{ gap: 8 }}>
           <TabButton
             label={t("meals.tabs.recipes")}
             active={tab === "recipes"}
@@ -66,6 +70,23 @@ export function MealsTool(props: ToolProps) {
             onPress={() => setTab("shopping")}
           />
         </View>
+
+        {tab === "recipes" ? (
+          <Pressable
+            onPress={() => setAddMenuOpen(true)}
+            accessibilityLabel={t("meals.addMenu.title")}
+            className="flex-row items-center justify-center mb-4 py-3 rounded-lg active:opacity-80"
+            style={{
+              backgroundColor: theme.primary,
+              gap: 6,
+            }}
+          >
+            <Ionicons name="add" size={18} color="#FFFFFF" />
+            <Text style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 14 }}>
+              {t("meals.addMenu.title")}
+            </Text>
+          </Pressable>
+        ) : null}
 
         {tab === "recipes" ? (
           recipes.length === 0 ? (
@@ -90,13 +111,25 @@ export function MealsTool(props: ToolProps) {
         )}
       </ToolShell>
 
-      {tab === "recipes" ? (
-        <FAB
-          icon="add"
-          onPress={() => setCreating(true)}
-          accessibilityLabel={t("meals.add")}
-        />
-      ) : null}
+      <AddMenu
+        visible={addMenuOpen}
+        onClose={() => setAddMenuOpen(false)}
+        onCreate={() => {
+          setAddMenuOpen(false);
+          setCreating(true);
+        }}
+        onPickFromCatalogue={() => {
+          setAddMenuOpen(false);
+          setPickingCatalogue(true);
+        }}
+      />
+
+      <RecipeCataloguePicker
+        visible={pickingCatalogue}
+        toolId={props.tool.event_tool_id}
+        onClose={() => setPickingCatalogue(false)}
+        onAdded={load}
+      />
 
       <RecipeEditModal
         mode="create"
@@ -170,5 +203,91 @@ function TabButton({
         {label}
       </Text>
     </Pressable>
+  );
+}
+
+// Bottom-sheet action menu offering the two creation paths. Surfaced when
+// the user taps the FAB so they pick "from scratch" vs "from catalogue"
+// without polluting the recipe form.
+function AddMenu({
+  visible,
+  onClose,
+  onCreate,
+  onPickFromCatalogue,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onCreate: () => void;
+  onPickFromCatalogue: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <Pressable
+        className="flex-1 justify-end"
+        style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+        onPress={onClose}
+      >
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          className="bg-surface rounded-t-2xl"
+          style={{ paddingBottom: 24 }}
+        >
+          <View
+            className="px-5 pt-5 pb-3"
+            style={{ borderBottomWidth: 1, borderBottomColor: "#F2EDE4" }}
+          >
+            <Text variant="label" style={{ fontSize: 15, fontWeight: "700" }}>
+              {t("meals.addMenu.title")}
+            </Text>
+          </View>
+          <Pressable
+            onPress={onCreate}
+            className="flex-row items-center px-5 py-4 active:opacity-70"
+            style={{ gap: 12 }}
+          >
+            <View
+              className="rounded-full items-center justify-center"
+              style={{
+                width: 36,
+                height: 36,
+                backgroundColor: theme.primarySoft,
+              }}
+            >
+              <Ionicons name="create-outline" size={18} color={theme.primary} />
+            </View>
+            <Text style={{ flex: 1, fontSize: 15, color: "#1A1A1A" }}>
+              {t("meals.addMenu.createFromScratch")}
+            </Text>
+            <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
+          </Pressable>
+          <Pressable
+            onPress={onPickFromCatalogue}
+            className="flex-row items-center px-5 py-4 active:opacity-70"
+            style={{ gap: 12 }}
+          >
+            <View
+              className="rounded-full items-center justify-center"
+              style={{
+                width: 36,
+                height: 36,
+                backgroundColor: theme.primarySoft,
+              }}
+            >
+              <Ionicons name="book-outline" size={18} color={theme.primary} />
+            </View>
+            <Text style={{ flex: 1, fontSize: 15, color: "#1A1A1A" }}>
+              {t("meals.addMenu.fromCatalogue")}
+            </Text>
+            <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
+          </Pressable>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }

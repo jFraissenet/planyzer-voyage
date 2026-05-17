@@ -3,7 +3,12 @@ import { View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { Text } from "@/components/ui";
-import type { IngredientType, MealRecipe, MealUnit } from "@/lib/meals";
+import {
+  formatQuantity,
+  type IngredientType,
+  type MealRecipe,
+  type MealUnit,
+} from "@/lib/meals";
 import { theme } from "@/lib/theme";
 
 // Groups all recipe ingredients into one flat shopping list, summed per
@@ -32,22 +37,21 @@ const GROUP_ORDER: AggGroup[] = [
   "champignons",
   "viande",
   "poisson",
+  "crustaces",
   "cremerie",
   "boulangerie",
-  "boissons",
+  "cereales",
+  "feculents",
+  "legumineuses",
+  "graines",
   "epicerie_salee",
   "epicerie_sucree",
   "condiments_epices",
+  "boissons",
   "surgele",
   "frais_traiteur",
   "custom",
 ];
-
-function formatQuantity(q: number): string {
-  // Round to 2 decimals, drop trailing zeros.
-  const rounded = Math.round(q * 100) / 100;
-  return Number.isInteger(rounded) ? String(rounded) : String(rounded);
-}
 
 export function AggregatedIngredients({
   recipes,
@@ -59,15 +63,18 @@ export function AggregatedIngredients({
   const grouped = useMemo(() => {
     const items = new Map<string, AggItem>();
     for (const r of recipes) {
+      // Per-serving × recipe.servings = total for this recipe's contribution.
+      const servings = r.servings > 0 ? r.servings : 1;
       for (const ing of r.ingredients) {
         const normalized = ing.custom_name?.trim().toLowerCase() ?? null;
         const idKey =
           ing.catalog_id ?? (normalized ? `custom:${normalized}` : null);
         if (!idKey) continue;
         const key = `${idKey}|${ing.unit}`;
+        const contribution = ing.quantity * servings;
         const existing = items.get(key);
         if (existing) {
-          existing.quantity += ing.quantity;
+          existing.quantity += contribution;
         } else {
           items.set(key, {
             key,
@@ -77,7 +84,7 @@ export function AggregatedIngredients({
               ? (ing.catalog_type ?? "custom")
               : "custom",
             unit: ing.unit,
-            quantity: ing.quantity,
+            quantity: contribution,
           });
         }
       }

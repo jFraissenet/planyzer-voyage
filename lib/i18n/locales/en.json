@@ -680,6 +680,25 @@
       "recipes": "Recipes",
       "shopping": "Shopping list"
     },
+    "addMenu": {
+      "title": "Add a recipe",
+      "createFromScratch": "Create from scratch",
+      "fromCatalogue": "From the catalogue"
+    },
+    "catalogue": {
+      "title": "Recipe catalogue",
+      "search": "Search…",
+      "empty": "No recipes in the catalogue",
+      "addToTool": "Add to my tool",
+      "addToToolConfirm": "Add “{{title}}” to your tool?",
+      "added": "Added to your tool",
+      "private": "Private",
+      "public": "Public",
+      "shared": "Shared"
+    },
+    "saveToCatalogue": "Save to my catalogue",
+    "saveToCatalogueDone": "Saved to your catalogue",
+    "savingToCatalogue": "Saving…",
     "shopping": {
       "empty": "Add recipes with ingredients to see the shopping list"
     },
@@ -689,6 +708,11 @@
       "champignons": "Mushrooms",
       "viande": "Meat",
       "poisson": "Fish",
+      "crustaces": "Seafood",
+      "cereales": "Grains",
+      "feculents": "Starches & pasta",
+      "legumineuses": "Pulses",
+      "graines": "Seeds",
       "custom": "Free text",
       "cremerie": "Dairy",
       "epicerie_salee": "Pantry (savory)",
