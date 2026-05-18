@@ -78,7 +78,7 @@ export function ScreenHeader({
   return (
     <View
       style={{
-        backgroundColor: "#FEF3C7",
+        backgroundColor: "#FBBF24",
         paddingTop: insets.top + 16,
         paddingBottom: 20,
         paddingHorizontal: 16,

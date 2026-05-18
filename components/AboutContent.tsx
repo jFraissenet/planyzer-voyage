@@ -39,6 +39,7 @@ const TOOLS: { code: string; icon: string }[] = [
   { code: "notes", icon: "📝" },
   { code: "car_sharing", icon: "🚗" },
   { code: "proposals", icon: "🗳️" },
+  { code: "meals", icon: "🍽️" },
 ];
 
 export function AboutContent() {

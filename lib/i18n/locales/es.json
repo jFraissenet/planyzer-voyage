@@ -16,7 +16,7 @@
     },
     "login": {
       "title": "Planyzer",
-      "subtitle": "Organiza tus viajes fácilmente",
+      "subtitle": "Organiza tus eventos, en equipo.",
       "emailLabel": "Correo electrónico",
       "emailPlaceholder": "tu@email.com",
       "passwordLabel": "Contraseña",
@@ -31,7 +31,7 @@
     },
     "signup": {
       "title": "Crear una cuenta",
-      "subtitle": "Únete a Planyzer",
+      "subtitle": "Organiza tus eventos, en equipo.",
       "fullNameLabel": "Nombre completo",
       "fullNamePlaceholder": "Juan Pérez",
       "emailLabel": "Correo electrónico",
@@ -192,11 +192,11 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Organiza tus eventos, en equipo.",
-    "description": "Una cena, un finde, un viaje entre amigos… y acabas saltando entre Splitwise, un grupo de WhatsApp, dos Google Docs y tres apps de coche compartido. Planyzer lo reúne todo en un mismo sitio: creas el evento, invitas a los tuyos, añades las herramientas que de verdad necesitas. Una sola app, cero jaleo.",
+    "description": "Una cena, un finde, un viaje entre amigos… y acabas saltando entre Splitwise, un Doodle, Google Docs, un sitio de recetas y tres apps de coche compartido. Planyzer lo reúne todo en un mismo sitio: creas el evento, invitas a los tuyos, añades las herramientas que de verdad necesitas. Una sola app, cero jaleo.",
     "feature1Title": "Eventos",
     "feature1Body": "Una página por salida, con sus fechas y participantes.",
     "feature2Title": "Herramientas modulares",
-    "feature2Body": "Añade sobre la marcha lo que necesitéis: dinero, notas, coche compartido.",
+    "feature2Body": "Añade sobre la marcha lo que necesitéis: encuestas, comidas, dinero, notas, coche compartido.",
     "feature3Title": "Compartir a medida",
     "feature3Body": "Algunas herramientas para todos, otras reservadas a un subgrupo.",
     "toolsSection": "Las herramientas",
@@ -214,7 +214,7 @@
         "body": "Organizad los trayectos juntos: quién va con quién, a qué hora y cuántas plazas quedan libres."
       },
       "proposals": {
-        "title": "Encuestas y propuestas",
+        "title": "Encuesta",
         "body": "Lanza una encuesta o un tablero de ideas: proponed opciones, recoged votos y decidid juntos."
       },
       "meals": {

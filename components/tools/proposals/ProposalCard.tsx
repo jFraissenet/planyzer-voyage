@@ -98,6 +98,9 @@ type Props = {
   isToolAdmin: boolean;
   isClosed?: boolean;
   voteStyle: VoteStyle;
+  // When false, the comments expander and inline comment list are hidden so
+  // the card stays compact. Useful for the "text" mode (rapid yes/no polls).
+  showComments?: boolean;
   onSetVote: (proposalId: string, value: VoteValue) => Promise<void>;
   onClearVote: (proposalId: string) => Promise<void>;
   onShowVoters: (proposalId: string, focus: VoteValue | null) => void;
@@ -113,6 +116,7 @@ export function ProposalCard({
   isToolAdmin,
   isClosed = false,
   voteStyle,
+  showComments = true,
   onSetVote,
   onClearVote,
   onShowVoters,
@@ -338,35 +342,37 @@ export function ProposalCard({
           />
         </View>
 
-        <Pressable
-          onPress={() => setExpanded((v) => !v)}
-          hitSlop={4}
-          className="flex-row items-center justify-center py-1.5"
-          style={{ gap: 5 }}
-        >
-          <Ionicons
-            name={expanded ? "chevron-up" : "chatbubble-outline"}
-            size={13}
-            color={theme.primary}
-          />
-          <Text
-            style={{
-              color: theme.primary,
-              fontSize: 12,
-              fontWeight: "600",
-            }}
+        {showComments ? (
+          <Pressable
+            onPress={() => setExpanded((v) => !v)}
+            hitSlop={4}
+            className="flex-row items-center justify-center py-1.5"
+            style={{ gap: 5 }}
           >
-            {expanded
-              ? t("proposals.hideComments")
-              : proposal.comments_count > 0
-                ? t("proposals.showCommentsCount", {
-                    count: proposal.comments_count,
-                  })
-                : t("proposals.addComment")}
-          </Text>
-        </Pressable>
+            <Ionicons
+              name={expanded ? "chevron-up" : "chatbubble-outline"}
+              size={13}
+              color={theme.primary}
+            />
+            <Text
+              style={{
+                color: theme.primary,
+                fontSize: 12,
+                fontWeight: "600",
+              }}
+            >
+              {expanded
+                ? t("proposals.hideComments")
+                : proposal.comments_count > 0
+                  ? t("proposals.showCommentsCount", {
+                      count: proposal.comments_count,
+                    })
+                  : t("proposals.addComment")}
+            </Text>
+          </Pressable>
+        ) : null}
 
-        {expanded ? (
+        {showComments && expanded ? (
           <View style={{ gap: 10 }}>
             {comments.length === 0 ? (
               <Text

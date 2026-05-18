@@ -474,6 +474,7 @@ export function ProposalsTool(props: ToolProps) {
                 isToolAdmin={props.isToolAdmin || isManager}
                 isClosed={isClosed}
                 voteStyle={activeVoteStyle}
+                showComments={activeMode.id !== "text"}
                 onSetVote={setVote}
                 onClearVote={clearVote}
                 onShowVoters={(proposalId, focus) =>

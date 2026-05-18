@@ -1,8 +1,14 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import { Link } from "expo-router";
 import { useTranslation, Trans } from "react-i18next";
-import { Button, Input, Text } from "@/components/ui";
+import { Button, Input, ScreenHeader, Text } from "@/components/ui";
 import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signUpWithEmail } from "@/lib/auth";
 
@@ -43,10 +49,18 @@ export default function SignupScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-background"
     >
-      <View className="flex-1 justify-center px-6">
+      <ScreenHeader
+        title={t("auth.signup.title")}
+        subtitle={t("auth.signup.subtitle")}
+        showLogo
+      />
+      <ScrollView
+        contentContainerStyle={{ padding: 24, paddingBottom: 32 }}
+        keyboardShouldPersistTaps="handled"
+      >
         {confirmationSent ? (
           <View className="gap-4">
-            <Text variant="h1" className="text-center mb-2">
+            <Text variant="h2" className="text-center mb-2">
               {t("auth.signup.confirmationTitle")}
             </Text>
             <Text variant="caption" className="text-center">
@@ -68,13 +82,6 @@ export default function SignupScreen() {
           </View>
         ) : (
           <>
-            <Text variant="h1" className="text-center mb-2">
-              {t("auth.signup.title")}
-            </Text>
-            <Text variant="caption" className="text-center mb-10">
-              {t("auth.signup.subtitle")}
-            </Text>
-
             <View className="gap-4">
               <Input
                 label={t("auth.signup.fullNameLabel")}
@@ -135,7 +142,7 @@ export default function SignupScreen() {
             </View>
           </>
         )}
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

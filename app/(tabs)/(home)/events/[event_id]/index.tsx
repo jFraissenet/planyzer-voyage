@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Modal,
@@ -544,6 +544,23 @@ export default function EventDetailScreen() {
 
   const isAdmin = myRole === "admin";
   const canAddTools = isAdmin || myRole === "member";
+
+  // Auto-open the invite popup the first time an admin lands on an event
+  // that has nobody else yet (≤ 1 participant = just them). One-shot per
+  // mount so closing the popup doesn't bounce it back open.
+  const autoInvitedRef = useRef(false);
+  useEffect(() => {
+    if (
+      !loading
+      && event
+      && isAdmin
+      && participants.length <= 1
+      && !autoInvitedRef.current
+    ) {
+      autoInvitedRef.current = true;
+      setInviteOpen(true);
+    }
+  }, [loading, event, isAdmin, participants.length]);
 
   return (
     <View className="flex-1 bg-background">

@@ -16,7 +16,7 @@
     },
     "login": {
       "title": "Planyzer",
-      "subtitle": "Plan your trips with ease",
+      "subtitle": "Plan your events, together.",
       "emailLabel": "Email",
       "emailPlaceholder": "your@email.com",
       "passwordLabel": "Password",
@@ -31,7 +31,7 @@
     },
     "signup": {
       "title": "Create an account",
-      "subtitle": "Join Planyzer",
+      "subtitle": "Plan your events, together.",
       "fullNameLabel": "Full name",
       "fullNamePlaceholder": "John Doe",
       "emailLabel": "Email",
@@ -192,11 +192,11 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Plan your events, together.",
-    "description": "A dinner, a weekend away, a trip with friends… and suddenly you're juggling Splitwise, a WhatsApp group, two Google Docs and three carpool apps. Planyzer brings it all under one roof: create the event, invite your people, add the tools you actually need. One app, zero chaos.",
+    "description": "A dinner, a weekend away, a trip with friends… and suddenly you're juggling Splitwise, a Doodle, Google Docs, a recipe site and three carpool apps. Planyzer brings it all under one roof: create the event, invite your people, add the tools you actually need. One app, zero chaos.",
     "feature1Title": "Events",
     "feature1Body": "One page per outing, with its dates and participants.",
     "feature2Title": "Modular tools",
-    "feature2Body": "Add whatever you need along the way: money, notes, carpool.",
+    "feature2Body": "Add whatever you need along the way: polls, meals, money, notes, carpool.",
     "feature3Title": "Controlled sharing",
     "feature3Body": "Some tools visible to everyone, others reserved for a subgroup.",
     "toolsSection": "The tools",
@@ -214,7 +214,7 @@
         "body": "Plan rides together: who goes with whom, at what time, and how many seats are left."
       },
       "proposals": {
-        "title": "Polls & proposals",
+        "title": "Poll",
         "body": "Run a poll or idea board: suggest options, collect votes, and decide together."
       },
       "meals": {

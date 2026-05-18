@@ -16,7 +16,7 @@
     },
     "login": {
       "title": "Planyzer",
-      "subtitle": "轻松规划您的旅行",
+      "subtitle": "团队合作，轻松组织活动。",
       "emailLabel": "电子邮箱",
       "emailPlaceholder": "your@email.com",
       "passwordLabel": "密码",
@@ -31,7 +31,7 @@
     },
     "signup": {
       "title": "创建账户",
-      "subtitle": "加入 Planyzer",
+      "subtitle": "团队合作，轻松组织活动。",
       "fullNameLabel": "全名",
       "fullNamePlaceholder": "张三",
       "emailLabel": "电子邮箱",
@@ -192,11 +192,11 @@
   "about": {
     "title": "Planyzer",
     "tagline": "团队合作，轻松组织活动。",
-    "description": "一次聚餐、一场周末出游、一趟好友旅行……你却要在记账 App、微信群、两份 Google 文档和三个拼车应用之间来回切换。Planyzer 把这些都集中到一个地方：创建活动、邀请朋友、按需添加你真正需要的工具。一个应用，告别混乱。",
+    "description": "一次聚餐、一场周末出游、一趟好友旅行……你却要在记账 App、Doodle 投票、Google 文档、菜谱网站和三个拼车应用之间来回切换。Planyzer 把这些都集中到一个地方：创建活动、邀请朋友、按需添加你真正需要的工具。一个应用，告别混乱。",
     "feature1Title": "活动",
     "feature1Body": "每次出行一个页面，包含日期和参与者。",
     "feature2Title": "模块化工具",
-    "feature2Body": "随时添加你需要的工具：账务、笔记、拼车。",
+    "feature2Body": "随时添加你需要的工具：投票、餐食、账务、笔记、拼车。",
     "feature3Title": "可控分享",
     "feature3Body": "部分工具所有人可见，其他仅限指定小组。",
     "toolsSection": "可用工具",
@@ -214,7 +214,7 @@
         "body": "一起安排行程：谁和谁同车、几点出发、还剩几个座位。"
       },
       "proposals": {
-        "title": "投票与提议",
+        "title": "投票",
         "body": "发起投票或点子板：提出选项、收集投票、一起拍板。"
       },
       "meals": {

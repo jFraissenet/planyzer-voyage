@@ -16,7 +16,7 @@
     },
     "login": {
       "title": "Planyzer",
-      "subtitle": "Organisez vos voyages simplement",
+      "subtitle": "Organise tes événements, en équipe.",
       "emailLabel": "Email",
       "emailPlaceholder": "votre@email.com",
       "passwordLabel": "Mot de passe",
@@ -31,7 +31,7 @@
     },
     "signup": {
       "title": "Créer un compte",
-      "subtitle": "Rejoignez Planyzer",
+      "subtitle": "Organise tes événements, en équipe.",
       "fullNameLabel": "Nom complet",
       "fullNamePlaceholder": "Jean Dupont",
       "emailLabel": "Email",
@@ -192,11 +192,11 @@
   "about": {
     "title": "Planyzer",
     "tagline": "Organise tes événements, en équipe.",
-    "description": "Une soirée, un weekend, un voyage entre amis… et te voilà à jongler entre Tricount, un groupe WhatsApp, deux Google Docs et trois apps de covoiturage. Planyzer regroupe tout au même endroit : tu crées l'événement, tu invites tes proches, tu ajoutes les outils dont vous avez besoin. Une seule app, zéro éparpillement.",
+    "description": "Une soirée, un weekend, un voyage entre amis… et te voilà à jongler entre Tricount, un Doodle, des Google Docs, Marmiton et trois apps de covoiturage. Planyzer regroupe tout au même endroit : tu crées l'événement, tu invites tes proches, tu ajoutes les outils dont vous avez besoin. Une seule app, zéro éparpillement.",
     "feature1Title": "Événements",
     "feature1Body": "Une page par sortie, avec ses dates et ses participants.",
     "feature2Title": "Outils modulaires",
-    "feature2Body": "Ajoute au fil de l'eau ce dont vous avez besoin : comptes, notes, covoiturage.",
+    "feature2Body": "Ajoute au fil de l'eau ce dont vous avez besoin : sondages, repas, comptes, notes, covoiturage.",
     "feature3Title": "Partage choisi",
     "feature3Body": "Certains outils visibles par tous, d'autres réservés à un sous-groupe.",
     "toolsSection": "Les outils",
@@ -214,7 +214,7 @@
         "body": "Organise les trajets ensemble : qui part avec qui, à quelle heure, et combien de places libres il reste."
       },
       "proposals": {
-        "title": "Sondages & propositions",
+        "title": "Sondage",
         "body": "Lance un sondage ou une boîte à idées : propose des options, collectez les votes et tranchez ensemble."
       },
       "meals": {

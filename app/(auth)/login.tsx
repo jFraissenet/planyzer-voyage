@@ -13,8 +13,17 @@ import { SocialLoginButtons } from "@/components/SocialLoginButtons";
 import { signInWithEmail } from "@/lib/auth";
 import { theme } from "@/lib/theme";
 
+// Available languages mirror what the profile screen exposes; kept inline
+// here so the auth flow stays self-contained.
+const LANGUAGES = [
+  { code: "fr", label: "Français" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "zh", label: "中文" },
+];
+
 export default function LoginScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -47,6 +56,7 @@ export default function LoginScreen() {
       <ScreenHeader
         title={t("auth.login.title")}
         subtitle={t("auth.login.subtitle")}
+        showLogo
       />
       <ScrollView
         contentContainerStyle={{ padding: 24, paddingBottom: 32 }}
@@ -108,6 +118,35 @@ export default function LoginScreen() {
               </Text>
             </Pressable>
           </Link>
+        </View>
+
+        {/* Inline language picker so a user can switch UI language before
+            even logging in — useful when the auto-detected locale is wrong. */}
+        <View
+          className="flex-row justify-center flex-wrap mt-10"
+          style={{ gap: 16 }}
+        >
+          {LANGUAGES.map((lang) => {
+            const selected = i18n.language === lang.code;
+            return (
+              <Pressable
+                key={lang.code}
+                onPress={() => i18n.changeLanguage(lang.code)}
+                hitSlop={6}
+                className="active:opacity-70"
+              >
+                <Text
+                  style={{
+                    color: selected ? theme.primary : "#9CA3AF",
+                    fontSize: 13,
+                    fontWeight: selected ? "700" : "500",
+                  }}
+                >
+                  {lang.label}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
