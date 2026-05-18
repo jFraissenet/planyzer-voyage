@@ -143,14 +143,16 @@
         "meals": "Nombre para tus comidas",
         "money": "Título del seguimiento de gastos",
         "notes": "Título de las notas",
-        "car_sharing": "Nombre del coche compartido"
+        "car_sharing": "Nombre del coche compartido",
+        "planning": "Título de la agenda"
       },
       "namePlaceholderByType": {
         "proposals": "¿A dónde vamos de vacaciones?",
         "meals": "Comidas del viaje",
         "money": "Gastos del viaje",
         "notes": "Ideas y tareas",
-        "car_sharing": "Trayecto ida y vuelta"
+        "car_sharing": "Trayecto ida y vuelta",
+        "planning": "Agenda del viaje"
       },
       "visibilityLabel": "Visibilidad",
       "visibilityAll": "Todos los miembros",
@@ -220,6 +222,10 @@
       "meals": {
         "title": "Comidas",
         "body": "Guarda las recetas del viaje y sus ingredientes: la lista de la compra se monta sola."
+      },
+      "planning": {
+        "title": "Agenda",
+        "body": "El calendario del viaje: añade momentos y vincúlalos con las comidas, los trayectos o las personas."
       }
     }
   },
@@ -228,7 +234,8 @@
     "notes": { "name": "Notas" },
     "car_sharing": { "name": "Compartir coche" },
     "proposals": { "name": "Encuesta" },
-    "meals": { "name": "Comidas" }
+    "meals": { "name": "Comidas" },
+    "planning": { "name": "Agenda" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participante",
@@ -634,6 +641,50 @@
     "invalidToken": "Este enlace ya no es válido",
     "joinError": "No se pudo unir, inténtalo de nuevo",
     "backHome": "Volver al inicio"
+  },
+  "planning": {
+    "add": "Nuevo momento",
+    "empty": "Aún no hay momentos planificados",
+    "viewList": "Lista",
+    "viewCalendar": "Calendario",
+    "viewDays": "Días",
+    "daysCountLabel": "Días:",
+    "tapDayHint": "Toca un día para ver lo planeado",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este momento?",
+    "cancel": "Cancelar",
+    "createTitle": "Nuevo momento",
+    "editTitle": "Editar momento",
+    "titleLabel": "Título",
+    "titlePlaceholder": "Ej. Aperitivo en casa de Marc",
+    "descriptionLabel": "Descripción",
+    "descriptionPlaceholder": "Opcional",
+    "locationLabel": "Lugar",
+    "locationPlaceholder": "Dirección o nombre del sitio",
+    "startsAtLabel": "Inicio",
+    "endsAtLabel": "Fin",
+    "hasTimeLabel": "Con una hora concreta",
+    "allDay": "Todo el día",
+    "participantsSection": "Personas",
+    "participantsEmpty": "Nadie",
+    "selectAll": "Todo el mundo",
+    "deselectAll": "Nadie",
+    "linksSection": "Enlaces a otras herramientas",
+    "linksEmpty": "Sin enlaces",
+    "addLink": "Añadir un enlace",
+    "linkPickerTitle": "Vincular a una herramienta",
+    "linkPickerToolStep": "Elige una herramienta",
+    "linkPickerItemStep": "Elige un elemento",
+    "linkPickerAllOfTool": "Toda la herramienta «{{name}}»",
+    "linkPickerNoTools": "No hay herramientas compatibles en este evento",
+    "linkPickerNoItems": "Aún no hay elementos en esta herramienta",
+    "errorTitleRequired": "El título es obligatorio",
+    "errorEndBeforeStart": "El fin debe ser posterior al inicio",
+    "errorStartRequired": "Elige una fecha de inicio",
+    "scheduledBadge": "Planificado",
+    "byAuthor": "por {{name}}"
   },
   "meals": {
     "add": "Nueva receta",

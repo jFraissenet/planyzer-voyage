@@ -143,14 +143,16 @@
         "meals": "Name for your meals",
         "money": "Expense tracker title",
         "notes": "Notes title",
-        "car_sharing": "Car-sharing name"
+        "car_sharing": "Car-sharing name",
+        "planning": "Schedule title"
       },
       "namePlaceholderByType": {
         "proposals": "Where are we going on holiday?",
         "meals": "Trip meals",
         "money": "Trip expenses",
         "notes": "Ideas & to-dos",
-        "car_sharing": "Round trip"
+        "car_sharing": "Round trip",
+        "planning": "Trip schedule"
       },
       "visibilityLabel": "Visibility",
       "visibilityAll": "All members",
@@ -220,6 +222,10 @@
       "meals": {
         "title": "Meals",
         "body": "Save your trip's recipes, list their ingredients, and let the shopping list build itself."
+      },
+      "planning": {
+        "title": "Schedule",
+        "body": "The trip's calendar: add moments and link them to meals, rides, or people."
       }
     }
   },
@@ -228,7 +234,8 @@
     "notes": { "name": "Notes" },
     "car_sharing": { "name": "Carpool" },
     "proposals": { "name": "Poll" },
-    "meals": { "name": "Meals" }
+    "meals": { "name": "Meals" },
+    "planning": { "name": "Schedule" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",
@@ -634,6 +641,50 @@
     "invalidToken": "This link is no longer valid",
     "joinError": "Could not join, try again",
     "backHome": "Back to home"
+  },
+  "planning": {
+    "add": "New moment",
+    "empty": "No moments scheduled yet",
+    "viewList": "List",
+    "viewCalendar": "Calendar",
+    "viewDays": "Days",
+    "daysCountLabel": "Days:",
+    "tapDayHint": "Tap a day to see what's planned",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this moment?",
+    "cancel": "Cancel",
+    "createTitle": "New moment",
+    "editTitle": "Edit moment",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g. Drinks at Marc's",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional",
+    "locationLabel": "Location",
+    "locationPlaceholder": "Address or place name",
+    "startsAtLabel": "Starts",
+    "endsAtLabel": "Ends",
+    "hasTimeLabel": "With a specific time",
+    "allDay": "All day",
+    "participantsSection": "People",
+    "participantsEmpty": "Nobody",
+    "selectAll": "Everyone",
+    "deselectAll": "Nobody",
+    "linksSection": "Links to other tools",
+    "linksEmpty": "No links",
+    "addLink": "Add a link",
+    "linkPickerTitle": "Link to a tool",
+    "linkPickerToolStep": "Pick a tool",
+    "linkPickerItemStep": "Pick an item",
+    "linkPickerAllOfTool": "All of “{{name}}”",
+    "linkPickerNoTools": "No compatible tools in this event",
+    "linkPickerNoItems": "No items in this tool yet",
+    "errorTitleRequired": "Title is required",
+    "errorEndBeforeStart": "End date must be after start",
+    "errorStartRequired": "Pick a start date",
+    "scheduledBadge": "Scheduled",
+    "byAuthor": "by {{name}}"
   },
   "meals": {
     "add": "New recipe",

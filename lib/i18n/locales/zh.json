@@ -143,14 +143,16 @@
         "meals": "为你的餐食取个名字",
         "money": "费用追踪标题",
         "notes": "笔记标题",
-        "car_sharing": "拼车名称"
+        "car_sharing": "拼车名称",
+        "planning": "行程表标题"
       },
       "namePlaceholderByType": {
         "proposals": "我们去哪里度假？",
         "meals": "旅行餐食",
         "money": "旅行费用",
         "notes": "想法与待办",
-        "car_sharing": "往返行程"
+        "car_sharing": "往返行程",
+        "planning": "旅行行程表"
       },
       "visibilityLabel": "可见性",
       "visibilityAll": "所有成员",
@@ -220,6 +222,10 @@
       "meals": {
         "title": "餐食",
         "body": "记下旅行的食谱与配料，购物清单自动生成。"
+      },
+      "planning": {
+        "title": "行程表",
+        "body": "旅行的日历：添加时刻，并把它们与餐食、行程或人员关联起来。"
       }
     }
   },
@@ -228,7 +234,8 @@
     "notes": { "name": "笔记" },
     "car_sharing": { "name": "拼车" },
     "proposals": { "name": "投票" },
-    "meals": { "name": "餐食" }
+    "meals": { "name": "餐食" },
+    "planning": { "name": "行程表" }
   },
   "toolDetail": {
     "participants_other": "{{count}} 名参与者",
@@ -621,6 +628,50 @@
     "invalidToken": "该链接已失效",
     "joinError": "加入失败,请重试",
     "backHome": "返回首页"
+  },
+  "planning": {
+    "add": "新建时刻",
+    "empty": "还没有安排任何时刻",
+    "viewList": "列表",
+    "viewCalendar": "日历",
+    "viewDays": "天数",
+    "daysCountLabel": "天数：",
+    "tapDayHint": "点击某天查看安排",
+    "save": "保存",
+    "saving": "保存中…",
+    "delete": "删除",
+    "deleteConfirm": "要删除这个时刻吗？",
+    "cancel": "取消",
+    "createTitle": "新建时刻",
+    "editTitle": "编辑时刻",
+    "titleLabel": "标题",
+    "titlePlaceholder": "例如：在马克家小酌",
+    "descriptionLabel": "描述",
+    "descriptionPlaceholder": "可选",
+    "locationLabel": "地点",
+    "locationPlaceholder": "地址或地点名称",
+    "startsAtLabel": "开始",
+    "endsAtLabel": "结束",
+    "hasTimeLabel": "指定具体时间",
+    "allDay": "全天",
+    "participantsSection": "人员",
+    "participantsEmpty": "无人",
+    "selectAll": "所有人",
+    "deselectAll": "无人",
+    "linksSection": "关联到其他工具",
+    "linksEmpty": "暂无关联",
+    "addLink": "添加关联",
+    "linkPickerTitle": "关联到工具",
+    "linkPickerToolStep": "选择一个工具",
+    "linkPickerItemStep": "选择一项内容",
+    "linkPickerAllOfTool": "整个工具「{{name}}」",
+    "linkPickerNoTools": "此活动中没有可用的工具",
+    "linkPickerNoItems": "此工具中暂无内容",
+    "errorTitleRequired": "标题为必填项",
+    "errorEndBeforeStart": "结束时间必须晚于开始时间",
+    "errorStartRequired": "请选择开始日期",
+    "scheduledBadge": "已安排",
+    "byAuthor": "由 {{name}}"
   },
   "meals": {
     "add": "新建食谱",
