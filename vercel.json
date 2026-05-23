@@ -4,6 +4,6 @@
   "framework": null,
   "rewrites": [
     { "source": "/e/:token", "destination": "/api/og/:token" },
-    { "source": "/((?!api/).*)", "destination": "/" }
+    { "source": "/((?!api/|confidentialite|cgu).*)", "destination": "/" }
   ]
 }
