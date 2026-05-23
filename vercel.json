@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build:web",
+  "buildCommand": "npm run build:web && cp -r public/. dist/",
   "outputDirectory": "dist",
   "framework": null,
   "cleanUrls": true,
