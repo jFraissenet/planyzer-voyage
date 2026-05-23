@@ -2,8 +2,11 @@
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "framework": null,
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/e/:token", "destination": "/api/og/:token" },
+    { "source": "/confidentialite", "destination": "/confidentialite.html" },
+    { "source": "/cgu", "destination": "/cgu.html" },
     { "source": "/((?!api/|confidentialite|cgu).*)", "destination": "/" }
   ]
 }
