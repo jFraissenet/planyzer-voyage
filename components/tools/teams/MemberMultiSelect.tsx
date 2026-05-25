@@ -40,10 +40,6 @@ export function MemberMultiSelect({
   const [query, setQuery] = useState("");
 
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const selected = useMemo(
-    () => participants.filter((p) => selectedSet.has(p.user_id)),
-    [participants, selectedSet],
-  );
 
   const filtered = useMemo(() => {
     const q = normalize(query);
@@ -52,7 +48,7 @@ export function MemberMultiSelect({
   }, [participants, query]);
 
   const allSelected =
-    participants.length > 0 && selected.length === participants.length;
+    participants.length > 0 && selectedIds.length === participants.length;
 
   const toggle = (userId: string) => {
     if (selectedSet.has(userId)) {
@@ -71,7 +67,7 @@ export function MemberMultiSelect({
     <View style={{ gap: 8 }}>
       <View className="flex-row items-center justify-between">
         <Text variant="label">
-          {t("teams.membersSelected", { count: selected.length })}
+          {t("teams.membersSelected", { count: selectedIds.length })}
         </Text>
         {participants.length > 0 ? (
           <Pressable
@@ -91,39 +87,6 @@ export function MemberMultiSelect({
           </Pressable>
         ) : null}
       </View>
-
-      {selected.length > 0 ? (
-        <View className="flex-row flex-wrap" style={{ gap: 6 }}>
-          {selected.map((p) => (
-            <Pressable
-              key={p.user_id}
-              onPress={() => toggle(p.user_id)}
-              hitSlop={4}
-              className="flex-row items-center px-2 py-1 rounded-full active:opacity-70"
-              style={{
-                backgroundColor: theme.primary,
-                gap: 6,
-              }}
-            >
-              <Avatar
-                src={p.avatar_url ?? undefined}
-                initials={initialsOf(p.full_name)}
-                size="xs"
-              />
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontSize: 12,
-                  fontWeight: "700",
-                }}
-              >
-                {p.full_name ?? "?"}
-              </Text>
-              <Ionicons name="close" size={12} color="#FFFFFF" />
-            </Pressable>
-          ))}
-        </View>
-      ) : null}
 
       {participants.length === 0 ? (
         <Text variant="caption" style={{ fontSize: 12 }}>
