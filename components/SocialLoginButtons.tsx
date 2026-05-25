@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Button, Separator, Text } from "@/components/ui";
-import { useGoogleAuth } from "@/lib/providers";
+import { Separator, Text } from "@/components/ui";
+import { GoogleAuthButton } from "./GoogleAuthButton";
 
 interface Props {
   onError: (message: string) => void;
@@ -10,19 +9,6 @@ interface Props {
 
 export function SocialLoginButtons({ onError }: Props) {
   const { t } = useTranslation();
-  const google = useGoogleAuth();
-  const [loading, setLoading] = useState(false);
-
-  async function handleProvider(signIn: () => Promise<void>) {
-    setLoading(true);
-    try {
-      await signIn();
-    } catch (e: any) {
-      onError(e.message ?? t("auth.social.errorGeneric"));
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <View>
@@ -33,12 +19,7 @@ export function SocialLoginButtons({ onError }: Props) {
       </View>
 
       <View className="gap-3">
-        <Button
-          label={google.label}
-          variant="outline"
-          disabled={loading || google.loading}
-          onPress={() => handleProvider(google.signIn)}
-        />
+        <GoogleAuthButton onError={onError} />
       </View>
     </View>
   );
