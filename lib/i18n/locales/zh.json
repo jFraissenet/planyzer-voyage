@@ -144,7 +144,8 @@
         "money": "费用追踪标题",
         "notes": "笔记标题",
         "car_sharing": "拼车名称",
-        "planning": "行程表标题"
+        "planning": "行程表标题",
+        "teams": "团队工具名称"
       },
       "namePlaceholderByType": {
         "proposals": "我们去哪里度假？",
@@ -152,7 +153,8 @@
         "money": "旅行费用",
         "notes": "想法与待办",
         "car_sharing": "往返行程",
-        "planning": "旅行行程表"
+        "planning": "旅行行程表",
+        "teams": "旅行团队"
       },
       "visibilityLabel": "可见性",
       "visibilityAll": "所有成员",
@@ -226,6 +228,10 @@
       "planning": {
         "title": "行程表",
         "body": "旅行的日历：添加时刻，并把它们与餐食、行程或人员关联起来。"
+      },
+      "teams": {
+        "title": "团队",
+        "body": "创建人员小组——厨房、洗碗、比赛队伍……可在多个行程表中重复使用。"
       }
     }
   },
@@ -235,7 +241,8 @@
     "car_sharing": { "name": "拼车" },
     "proposals": { "name": "投票" },
     "meals": { "name": "餐食" },
-    "planning": { "name": "行程表" }
+    "planning": { "name": "行程表" },
+    "teams": { "name": "团队" }
   },
   "toolDetail": {
     "participants_other": "{{count}} 名参与者",
@@ -672,6 +679,37 @@
     "errorStartRequired": "请选择开始日期",
     "scheduledBadge": "已安排",
     "byAuthor": "由 {{name}}"
+  },
+  "teams": {
+    "add": "新建团队",
+    "empty": "暂无团队 — 创建第一个吧！",
+    "save": "保存",
+    "saving": "保存中…",
+    "delete": "删除",
+    "deleteConfirm": "删除该团队？",
+    "cancel": "取消",
+    "createTitle": "新建团队",
+    "editTitle": "编辑团队",
+    "nameLabel": "名称",
+    "namePlaceholder": "例如 厨房组",
+    "typeLabel": "类型(可选)",
+    "typePlaceholder": "例如 工作、比赛…",
+    "colorLabel": "颜色",
+    "hasTimeLabel": "指定具体时间",
+    "startsAtLabel": "开始",
+    "endsAtLabel": "结束",
+    "membersSection": "成员",
+    "membersEmpty": "无可添加的参与者",
+    "selectAll": "全部",
+    "deselectAll": "无",
+    "planningsSection": "关联的行程表",
+    "planningsHint": "团队将作为时段出现在所选行程表中（需要设置日期）。",
+    "planningsEmpty": "本活动中暂无行程表",
+    "linkedCount_one": "{{count}} 个行程表",
+    "linkedCount_other": "{{count}} 个行程表",
+    "errorNameRequired": "名称为必填项",
+    "errorEndBeforeStart": "结束时间必须晚于开始时间",
+    "errorPlanningRequiresDate": "要关联行程表，请至少设置开始日期"
   },
   "meals": {
     "add": "新建食谱",

@@ -144,7 +144,8 @@
         "money": "Título del seguimiento de gastos",
         "notes": "Título de las notas",
         "car_sharing": "Nombre del coche compartido",
-        "planning": "Título de la agenda"
+        "planning": "Título de la agenda",
+        "teams": "Nombre de la herramienta de equipos"
       },
       "namePlaceholderByType": {
         "proposals": "¿A dónde vamos de vacaciones?",
@@ -152,7 +153,8 @@
         "money": "Gastos del viaje",
         "notes": "Ideas y tareas",
         "car_sharing": "Trayecto ida y vuelta",
-        "planning": "Agenda del viaje"
+        "planning": "Agenda del viaje",
+        "teams": "Equipos del viaje"
       },
       "visibilityLabel": "Visibilidad",
       "visibilityAll": "Todos los miembros",
@@ -226,6 +228,10 @@
       "planning": {
         "title": "Agenda",
         "body": "El calendario del viaje: añade momentos y vincúlalos con las comidas, los trayectos o las personas."
+      },
+      "teams": {
+        "title": "Equipos",
+        "body": "Crea grupos de personas — cocina, fregado, equipo del torneo… — reutilizables en tus agendas."
       }
     }
   },
@@ -235,7 +241,8 @@
     "car_sharing": { "name": "Compartir coche" },
     "proposals": { "name": "Encuesta" },
     "meals": { "name": "Comidas" },
-    "planning": { "name": "Agenda" }
+    "planning": { "name": "Agenda" },
+    "teams": { "name": "Equipos" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participante",
@@ -685,6 +692,37 @@
     "errorStartRequired": "Elige una fecha de inicio",
     "scheduledBadge": "Planificado",
     "byAuthor": "por {{name}}"
+  },
+  "teams": {
+    "add": "Nuevo equipo",
+    "empty": "Sin equipos — ¡crea el primero!",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este equipo?",
+    "cancel": "Cancelar",
+    "createTitle": "Nuevo equipo",
+    "editTitle": "Editar equipo",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Ej. Equipo de cocina",
+    "typeLabel": "Tipo (opcional)",
+    "typePlaceholder": "Ej. staff, torneo…",
+    "colorLabel": "Color",
+    "hasTimeLabel": "Con hora específica",
+    "startsAtLabel": "Inicio",
+    "endsAtLabel": "Fin",
+    "membersSection": "Miembros",
+    "membersEmpty": "No hay participantes para añadir",
+    "selectAll": "Todos",
+    "deselectAll": "Nadie",
+    "planningsSection": "Agendas vinculadas",
+    "planningsHint": "El equipo aparecerá como un bloque en las agendas seleccionadas (requiere fechas).",
+    "planningsEmpty": "No hay ninguna agenda en este evento",
+    "linkedCount_one": "{{count}} agenda",
+    "linkedCount_other": "{{count}} agendas",
+    "errorNameRequired": "El nombre es obligatorio",
+    "errorEndBeforeStart": "El fin debe ser posterior al inicio",
+    "errorPlanningRequiresDate": "Para vincular una agenda, añade al menos una fecha de inicio"
   },
   "meals": {
     "add": "Nueva receta",

@@ -144,7 +144,8 @@
         "money": "Expense tracker title",
         "notes": "Notes title",
         "car_sharing": "Car-sharing name",
-        "planning": "Schedule title"
+        "planning": "Schedule title",
+        "teams": "Teams tool name"
       },
       "namePlaceholderByType": {
         "proposals": "Where are we going on holiday?",
@@ -152,7 +153,8 @@
         "money": "Trip expenses",
         "notes": "Ideas & to-dos",
         "car_sharing": "Round trip",
-        "planning": "Trip schedule"
+        "planning": "Trip schedule",
+        "teams": "Trip teams"
       },
       "visibilityLabel": "Visibility",
       "visibilityAll": "All members",
@@ -226,6 +228,10 @@
       "planning": {
         "title": "Schedule",
         "body": "The trip's calendar: add moments and link them to meals, rides, or people."
+      },
+      "teams": {
+        "title": "Teams",
+        "body": "Create groups of people — cooking, washing-up, tournament team… — reusable across your schedules."
       }
     }
   },
@@ -235,7 +241,8 @@
     "car_sharing": { "name": "Carpool" },
     "proposals": { "name": "Poll" },
     "meals": { "name": "Meals" },
-    "planning": { "name": "Schedule" }
+    "planning": { "name": "Schedule" },
+    "teams": { "name": "Teams" }
   },
   "toolDetail": {
     "participants_one": "{{count}} participant",
@@ -685,6 +692,37 @@
     "errorStartRequired": "Pick a start date",
     "scheduledBadge": "Scheduled",
     "byAuthor": "by {{name}}"
+  },
+  "teams": {
+    "add": "New team",
+    "empty": "No teams yet — create the first one!",
+    "save": "Save",
+    "saving": "Saving…",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this team?",
+    "cancel": "Cancel",
+    "createTitle": "New team",
+    "editTitle": "Edit team",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Kitchen crew",
+    "typeLabel": "Type (optional)",
+    "typePlaceholder": "e.g. staff, tournament…",
+    "colorLabel": "Color",
+    "hasTimeLabel": "With a specific time",
+    "startsAtLabel": "Start",
+    "endsAtLabel": "End",
+    "membersSection": "Members",
+    "membersEmpty": "No participants to add",
+    "selectAll": "Everyone",
+    "deselectAll": "Nobody",
+    "planningsSection": "Linked schedules",
+    "planningsHint": "The team will appear as a slot in the selected schedules (requires dates).",
+    "planningsEmpty": "No schedule in this event",
+    "linkedCount_one": "{{count}} schedule",
+    "linkedCount_other": "{{count}} schedules",
+    "errorNameRequired": "Name is required",
+    "errorEndBeforeStart": "End must be after start",
+    "errorPlanningRequiresDate": "To link a schedule, set at least a start date"
   },
   "meals": {
     "add": "New recipe",

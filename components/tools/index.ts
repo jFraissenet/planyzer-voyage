@@ -5,11 +5,12 @@ import { MoneyTool } from "./MoneyTool";
 import { NotesTool } from "./NotesTool";
 import { PlanningTool } from "./planning/PlanningTool";
 import { ProposalsTool } from "./proposals/ProposalsTool";
+import { TeamsTool } from "./teams/TeamsTool";
 import type { ToolProps } from "./ToolShell";
 
 export { ToolShell } from "./ToolShell";
 export type { ToolProps } from "./ToolShell";
-export { MoneyTool, NotesTool, CarSharingTool, ProposalsTool, MealsTool, PlanningTool };
+export { MoneyTool, NotesTool, CarSharingTool, ProposalsTool, MealsTool, PlanningTool, TeamsTool };
 
 const TOOL_COMPONENTS: Record<string, ComponentType<ToolProps>> = {
   money: MoneyTool,
@@ -18,6 +19,7 @@ const TOOL_COMPONENTS: Record<string, ComponentType<ToolProps>> = {
   proposals: ProposalsTool,
   meals: MealsTool,
   planning: PlanningTool,
+  teams: TeamsTool,
 };
 
 export function getToolComponent(
