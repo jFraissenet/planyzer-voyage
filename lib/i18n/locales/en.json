@@ -721,8 +721,18 @@
     "linkedCount_one": "{{count}} schedule",
     "linkedCount_other": "{{count}} schedules",
     "errorNameRequired": "Name is required",
+    "errorMembersRequired": "Add at least one member",
     "errorEndBeforeStart": "End must be after start",
-    "errorPlanningRequiresDate": "To link a schedule, set at least a start date"
+    "errorPlanningRequiresDate": "To link a schedule, set at least a start date",
+    "edit": "Edit",
+    "whenSection": "When",
+    "noPlanningLinked": "No schedule linked",
+    "membersSelected_one": "Member ({{count}})",
+    "membersSelected_other": "Members ({{count}})",
+    "searchMembersPlaceholder": "Search…",
+    "searchEmpty": "No results",
+    "yourTeam": "Your team",
+    "yourTeamBadge": "You are in this team"
   },
   "meals": {
     "add": "New recipe",

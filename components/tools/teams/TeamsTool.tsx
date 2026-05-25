@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
@@ -7,9 +7,12 @@ import {
   listEventToolTeams,
   type EventToolTeam,
 } from "@/lib/teams";
+import { useSession } from "@/lib/useSession";
 import { theme } from "@/lib/theme";
 import { ToolShell, type ToolProps } from "../ToolShell";
 import { EditTeamModal } from "./EditTeamModal";
+import { TeamDetailModal } from "./TeamDetailModal";
+import { TeamMembersListModal } from "./TeamMembersListModal";
 
 function formatRange(team: EventToolTeam, locale: string): string | null {
   if (!team.starts_at) return null;
@@ -37,25 +40,67 @@ function formatRange(team: EventToolTeam, locale: string): string | null {
 function TeamCard({
   team,
   locale,
-  onPress,
+  canEdit,
+  youAreIn,
+  onOpen,
+  onEdit,
+  onMembersPress,
 }: {
   team: EventToolTeam;
   locale: string;
-  onPress: () => void;
+  canEdit: boolean;
+  youAreIn: boolean;
+  onOpen: () => void;
+  onEdit: () => void;
+  onMembersPress: () => void;
 }) {
   const { t } = useTranslation();
   const range = formatRange(team, locale);
   const plannings = team.planning_tool_ids.length;
   return (
-    <Pressable
-      onPress={onPress}
-      className="active:opacity-70 mb-3 rounded-2xl p-4"
-      style={{
-        backgroundColor: "#FFFFFF",
-        borderWidth: 1,
-        borderColor: "#E8E3DB",
-      }}
-    >
+    <View className="relative mb-3">
+      {youAreIn ? (
+        <View
+          accessibilityLabel={t("teams.yourTeamBadge")}
+          style={{
+            position: "absolute",
+            top: -8,
+            left: 10,
+            zIndex: 10,
+            paddingHorizontal: 7,
+            paddingVertical: 2,
+            borderRadius: 8,
+            backgroundColor: theme.primary,
+            borderWidth: 1.5,
+            borderColor: "#FFFFFF",
+            shadowColor: theme.primary,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.35,
+            shadowRadius: 4,
+            elevation: 3,
+          }}
+        >
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 11,
+              fontWeight: "700",
+              letterSpacing: 0.4,
+            }}
+          >
+            {t("teams.yourTeam").toUpperCase()}
+          </Text>
+        </View>
+      ) : null}
+      <Pressable
+        onPress={onOpen}
+        className="active:opacity-70 rounded-2xl p-4"
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderWidth: 1,
+          borderColor: "#E8E3DB",
+        }}
+      >
       <View className="flex-row items-center mb-2" style={{ gap: 10 }}>
         <View
           style={{
@@ -82,26 +127,46 @@ function TeamCard({
             </Text>
           ) : null}
         </View>
-        <Ionicons name="chevron-forward" size={16} color="#A3A3A3" />
+        {canEdit ? (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            hitSlop={8}
+            className="items-center justify-center"
+            style={{ width: 32, height: 32 }}
+          >
+            <Ionicons name="pencil" size={16} color={theme.primary} />
+          </Pressable>
+        ) : null}
       </View>
 
       <View className="flex-row items-center flex-wrap" style={{ gap: 8 }}>
-        <AvatarStack
-          participants={team.members.map((m) => ({
-            id: m.user_id,
-            full_name: m.full_name,
-            avatar_url: m.avatar_url,
-          }))}
-          maxMobile={5}
-          maxDesktop={8}
-        />
+        {team.members.length > 0 ? (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              onMembersPress();
+            }}
+            hitSlop={4}
+            className="active:opacity-70"
+          >
+            <AvatarStack
+              participants={team.members.map((m) => ({
+                id: m.user_id,
+                full_name: m.full_name,
+                avatar_url: m.avatar_url,
+              }))}
+              maxMobile={5}
+              maxDesktop={8}
+            />
+          </Pressable>
+        ) : null}
         {range ? (
           <View
             className="flex-row items-center px-2 py-0.5 rounded-full"
-            style={{
-              backgroundColor: "#F3F0FA",
-              gap: 4,
-            }}
+            style={{ backgroundColor: "#F3F0FA", gap: 4 }}
           >
             <Ionicons name="time-outline" size={11} color="#6B7280" />
             <Text style={{ fontSize: 11, color: "#6B7280" }}>{range}</Text>
@@ -110,10 +175,7 @@ function TeamCard({
         {plannings > 0 ? (
           <View
             className="flex-row items-center px-2 py-0.5 rounded-full"
-            style={{
-              backgroundColor: theme.primarySoft,
-              gap: 4,
-            }}
+            style={{ backgroundColor: theme.primarySoft, gap: 4 }}
           >
             <Ionicons
               name="calendar-outline"
@@ -132,16 +194,21 @@ function TeamCard({
           </View>
         ) : null}
       </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
 
 export function TeamsTool(props: ToolProps) {
   const { t, i18n } = useTranslation();
+  const { session } = useSession();
+  const currentUserId = session?.user?.id ?? "";
 
   const [teams, setTeams] = useState<EventToolTeam[]>([]);
   const [creating, setCreating] = useState(false);
+  const [detail, setDetail] = useState<EventToolTeam | null>(null);
   const [editing, setEditing] = useState<EventToolTeam | null>(null);
+  const [membersOf, setMembersOf] = useState<EventToolTeam | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -156,15 +223,30 @@ export function TeamsTool(props: ToolProps) {
     load();
   }, [load]);
 
-  const handleSaved = () => {
+  // Keep detail/editing in sync with the latest data after a save.
+  useEffect(() => {
+    if (detail) {
+      const fresh = teams.find((tt) => tt.team_id === detail.team_id);
+      if (fresh && fresh !== detail) setDetail(fresh);
+    }
+  }, [teams, detail]);
+
+  const handleSaved = async () => {
     setCreating(false);
     setEditing(null);
-    void load();
+    await load();
+  };
+
+  const handleEditFromDetail = () => {
+    if (!detail) return;
+    setEditing(detail);
+    setDetail(null);
   };
 
   const eventId = props.tool.event_tool_event_id;
 
-  const sorted = useMemo(() => teams, [teams]);
+  const canEditTeam = (team: EventToolTeam): boolean =>
+    team.author_id === currentUserId || props.isToolAdmin;
 
   return (
     <>
@@ -184,7 +266,7 @@ export function TeamsTool(props: ToolProps) {
           </Pressable>
         </View>
 
-        {sorted.length === 0 ? (
+        {teams.length === 0 ? (
           <View className="py-10 items-center">
             <Ionicons
               name="people-outline"
@@ -197,16 +279,29 @@ export function TeamsTool(props: ToolProps) {
             </Text>
           </View>
         ) : (
-          sorted.map((team) => (
+          teams.map((team) => (
             <TeamCard
               key={team.team_id}
               team={team}
               locale={i18n.language}
-              onPress={() => setEditing(team)}
+              canEdit={canEditTeam(team)}
+              youAreIn={team.members.some((m) => m.user_id === currentUserId)}
+              onOpen={() => setDetail(team)}
+              onEdit={() => setEditing(team)}
+              onMembersPress={() => setMembersOf(team)}
             />
           ))
         )}
       </ToolShell>
+
+      <TeamDetailModal
+        visible={!!detail}
+        team={detail}
+        eventId={eventId}
+        canEdit={detail ? canEditTeam(detail) : false}
+        onClose={() => setDetail(null)}
+        onEdit={handleEditFromDetail}
+      />
 
       <EditTeamModal
         mode="create"
@@ -225,6 +320,13 @@ export function TeamsTool(props: ToolProps) {
         existing={editing ?? undefined}
         onClose={() => setEditing(null)}
         onSaved={handleSaved}
+      />
+
+      <TeamMembersListModal
+        visible={!!membersOf}
+        title={membersOf?.name ?? ""}
+        members={membersOf?.members ?? []}
+        onClose={() => setMembersOf(null)}
       />
     </>
   );

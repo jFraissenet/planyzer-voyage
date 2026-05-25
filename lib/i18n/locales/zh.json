@@ -708,8 +708,18 @@
     "linkedCount_one": "{{count}} 个行程表",
     "linkedCount_other": "{{count}} 个行程表",
     "errorNameRequired": "名称为必填项",
+    "errorMembersRequired": "至少添加一名成员",
     "errorEndBeforeStart": "结束时间必须晚于开始时间",
-    "errorPlanningRequiresDate": "要关联行程表，请至少设置开始日期"
+    "errorPlanningRequiresDate": "要关联行程表，请至少设置开始日期",
+    "edit": "编辑",
+    "whenSection": "时间",
+    "noPlanningLinked": "未关联行程表",
+    "membersSelected_one": "成员 ({{count}})",
+    "membersSelected_other": "成员 ({{count}})",
+    "searchMembersPlaceholder": "搜索…",
+    "searchEmpty": "无结果",
+    "yourTeam": "你的团队",
+    "yourTeamBadge": "你在该团队中"
   },
   "meals": {
     "add": "新建食谱",

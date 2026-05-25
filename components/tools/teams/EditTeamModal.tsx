@@ -10,7 +10,6 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import {
-  Avatar,
   Button,
   DateTimeInput,
   Input,
@@ -30,6 +29,7 @@ import {
   localInputToIso,
 } from "../proposals/dateHelpers";
 import { ColorPicker } from "./ColorPicker";
+import { MemberMultiSelect } from "./MemberMultiSelect";
 
 type Mode = "create" | "edit";
 
@@ -42,17 +42,6 @@ type Props = {
   onClose: () => void;
   onSaved: () => void;
 };
-
-function initialsOf(name: string | null): string {
-  if (!name) return "?";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .filter(Boolean)
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 export function EditTeamModal({
   mode,
@@ -102,23 +91,6 @@ export function EditTeamModal({
       .catch(() => setPlanningTools([]));
   }, [visible, existing, eventId]);
 
-  const allMembersSelected =
-    eventParticipants.length > 0 &&
-    memberIds.length === eventParticipants.length;
-
-  const toggleMember = (userId: string) => {
-    setMemberIds((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId],
-    );
-  };
-
-  const toggleAllMembers = () => {
-    if (allMembersSelected) setMemberIds([]);
-    else setMemberIds(eventParticipants.map((p) => p.user_id));
-  };
-
   const togglePlanning = (id: string) => {
     setPlanningIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
@@ -129,6 +101,10 @@ export function EditTeamModal({
     const nameTrim = name.trim();
     if (!nameTrim) {
       setError(t("teams.errorNameRequired"));
+      return;
+    }
+    if (memberIds.length === 0) {
+      setError(t("teams.errorMembersRequired"));
       return;
     }
     const startIso = localInputToIso(startsAt);
@@ -242,6 +218,13 @@ export function EditTeamModal({
               required
             />
 
+            {/* Members — primary element, sits right under the name */}
+            <MemberMultiSelect
+              participants={eventParticipants}
+              selectedIds={memberIds}
+              onChange={setMemberIds}
+            />
+
             <Input
               label={t("teams.typeLabel")}
               placeholder={t("teams.typePlaceholder")}
@@ -293,100 +276,18 @@ export function EditTeamModal({
               </View>
             </Pressable>
 
-            <View className="flex-row" style={{ gap: 8 }}>
-              <View className="flex-1">
-                <DateTimeInput
-                  label={t("teams.startsAtLabel")}
-                  value={startsAt}
-                  onChange={setStartsAt}
-                  mode={hasTime ? "datetime" : "date"}
-                />
-              </View>
-              <View className="flex-1">
-                <DateTimeInput
-                  label={t("teams.endsAtLabel")}
-                  value={endsAt}
-                  onChange={setEndsAt}
-                  mode={hasTime ? "datetime" : "date"}
-                />
-              </View>
-            </View>
-
-            <View
-              style={{
-                height: 1,
-                backgroundColor: "#F2EDE4",
-                marginVertical: 4,
-              }}
+            <DateTimeInput
+              label={t("teams.startsAtLabel")}
+              value={startsAt}
+              onChange={setStartsAt}
+              mode={hasTime ? "datetime" : "date"}
             />
-
-            {/* Members */}
-            <View style={{ gap: 8 }}>
-              <View className="flex-row items-center justify-between">
-                <Text variant="label">{t("teams.membersSection")}</Text>
-                {eventParticipants.length > 0 ? (
-                  <Pressable
-                    onPress={toggleAllMembers}
-                    hitSlop={6}
-                    className="active:opacity-70"
-                  >
-                    <Text
-                      style={{
-                        color: theme.primary,
-                        fontSize: 12,
-                        fontWeight: "600",
-                      }}
-                    >
-                      {allMembersSelected
-                        ? t("teams.deselectAll")
-                        : t("teams.selectAll")}
-                    </Text>
-                  </Pressable>
-                ) : null}
-              </View>
-              {eventParticipants.length === 0 ? (
-                <Text variant="caption" style={{ fontSize: 12 }}>
-                  {t("teams.membersEmpty")}
-                </Text>
-              ) : (
-                <View className="flex-row flex-wrap" style={{ gap: 8 }}>
-                  {eventParticipants.map((p) => {
-                    const selected = memberIds.includes(p.user_id);
-                    return (
-                      <Pressable
-                        key={p.user_id}
-                        onPress={() => toggleMember(p.user_id)}
-                        hitSlop={4}
-                        className="flex-row items-center px-2 py-1 rounded-full active:opacity-70"
-                        style={{
-                          backgroundColor: selected
-                            ? theme.primary
-                            : "#F3F0FA",
-                          borderWidth: 1,
-                          borderColor: selected ? theme.primary : "#E8E3DB",
-                          gap: 6,
-                        }}
-                      >
-                        <Avatar
-                          src={p.avatar_url ?? undefined}
-                          initials={initialsOf(p.full_name)}
-                          size="xs"
-                        />
-                        <Text
-                          style={{
-                            color: selected ? "#FFFFFF" : "#1A1A1A",
-                            fontSize: 12,
-                            fontWeight: selected ? "700" : "500",
-                          }}
-                        >
-                          {p.full_name ?? "?"}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              )}
-            </View>
+            <DateTimeInput
+              label={t("teams.endsAtLabel")}
+              value={endsAt}
+              onChange={setEndsAt}
+              mode={hasTime ? "datetime" : "date"}
+            />
 
             <View
               style={{
@@ -457,7 +358,7 @@ export function EditTeamModal({
               size="lg"
               label={busy ? t("teams.saving") : t("teams.save")}
               onPress={save}
-              disabled={busy || !name.trim()}
+              disabled={busy || !name.trim() || memberIds.length === 0}
             />
             <Button
               variant="ghost"

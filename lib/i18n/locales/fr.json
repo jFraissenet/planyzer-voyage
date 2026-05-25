@@ -721,8 +721,18 @@
     "linkedCount_one": "{{count}} planning",
     "linkedCount_other": "{{count}} plannings",
     "errorNameRequired": "Le nom est requis",
+    "errorMembersRequired": "Ajoute au moins un membre",
     "errorEndBeforeStart": "La fin doit être après le début",
-    "errorPlanningRequiresDate": "Pour lier un planning, ajoute au moins une date de début"
+    "errorPlanningRequiresDate": "Pour lier un planning, ajoute au moins une date de début",
+    "edit": "Modifier",
+    "whenSection": "Quand",
+    "noPlanningLinked": "Aucun planning lié",
+    "membersSelected_one": "Membre ({{count}})",
+    "membersSelected_other": "Membres ({{count}})",
+    "searchMembersPlaceholder": "Rechercher…",
+    "searchEmpty": "Aucun résultat",
+    "yourTeam": "Votre équipe",
+    "yourTeamBadge": "Vous êtes dans cette équipe"
   },
   "meals": {
     "add": "Nouvelle recette",

@@ -721,8 +721,18 @@
     "linkedCount_one": "{{count}} agenda",
     "linkedCount_other": "{{count}} agendas",
     "errorNameRequired": "El nombre es obligatorio",
+    "errorMembersRequired": "Añade al menos un miembro",
     "errorEndBeforeStart": "El fin debe ser posterior al inicio",
-    "errorPlanningRequiresDate": "Para vincular una agenda, añade al menos una fecha de inicio"
+    "errorPlanningRequiresDate": "Para vincular una agenda, añade al menos una fecha de inicio",
+    "edit": "Editar",
+    "whenSection": "Cuándo",
+    "noPlanningLinked": "Ninguna agenda vinculada",
+    "membersSelected_one": "Miembro ({{count}})",
+    "membersSelected_other": "Miembros ({{count}})",
+    "searchMembersPlaceholder": "Buscar…",
+    "searchEmpty": "Sin resultados",
+    "yourTeam": "Tu equipo",
+    "yourTeamBadge": "Estás en este equipo"
   },
   "meals": {
     "add": "Nueva receta",
