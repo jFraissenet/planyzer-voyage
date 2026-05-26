@@ -37,6 +37,11 @@ import {
   listParticipants,
   listToolTypes,
 } from "@/lib/events";
+import {
+  listMyEventTeams,
+  setEventToolTeamsAccess,
+  type MyEventTeam,
+} from "@/lib/teams";
 import { useIsMobile } from "@/lib/responsive";
 import { useSession } from "@/lib/useSession";
 import { theme } from "@/lib/theme";
@@ -95,7 +100,7 @@ function ToolCard({
   const typeLabel = t(`tools.${tool.event_tool_type_code}.name`, {
     defaultValue: tool.event_tool_type_code,
   });
-  const isRestricted = tool.event_tool_visibility === "restricted";
+  const isRestricted = tool.event_tool_visibility !== "all";
   return (
     <Card className="mb-3 overflow-hidden p-0">
       <Pressable
@@ -181,11 +186,16 @@ function NewToolModal({
   const [selectedType, setSelectedType] = useState<ToolType | null>(null);
   const [name, setName] = useState("");
   const [nameAutoFilled, setNameAutoFilled] = useState(true);
-  const [visibility, setVisibility] = useState<"all" | "restricted">("all");
+  const [visibility, setVisibility] = useState<"all" | "restricted" | "teams">(
+    "all",
+  );
+  const [myTeams, setMyTeams] = useState<MyEventTeam[]>([]);
+  const [selectedTeamIds, setSelectedTeamIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{
     type?: string;
     name?: string;
+    teams?: string;
     form?: string;
   }>({});
 
@@ -195,10 +205,29 @@ function NewToolModal({
       setName("");
       setNameAutoFilled(true);
       setVisibility("all");
+      setSelectedTeamIds([]);
       setErrors({});
       setSubmitting(false);
+      return;
     }
-  }, [visible]);
+    (async () => {
+      try {
+        const mine = await listMyEventTeams(eventId);
+        setMyTeams(mine);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("listMyEventTeams failed:", err);
+      }
+    })();
+  }, [visible, eventId]);
+
+  const toggleTeam = (teamId: string) => {
+    setSelectedTeamIds((prev) =>
+      prev.includes(teamId)
+        ? prev.filter((id) => id !== teamId)
+        : [...prev, teamId],
+    );
+  };
 
   const selectType = (tt: ToolType) => {
     setSelectedType(tt);
@@ -229,6 +258,9 @@ function NewToolModal({
     const next: typeof errors = {};
     if (!selectedType) next.type = t("events.newTool.errorTypeRequired");
     if (!name.trim()) next.name = t("events.newTool.errorNameRequired");
+    if (visibility === "teams" && selectedTeamIds.length === 0) {
+      next.teams = t("events.newTool.visibilityTeamsRequired");
+    }
     if (Object.keys(next).length > 0) {
       setErrors(next);
       return;
@@ -242,6 +274,9 @@ function NewToolModal({
         event_tool_name: name.trim(),
         event_tool_visibility: visibility,
       });
+      if (visibility === "teams") {
+        await setEventToolTeamsAccess(created.event_tool_id, selectedTeamIds);
+      }
       onCreated(created);
       onClose();
     } catch (err) {
@@ -350,33 +385,92 @@ function NewToolModal({
             {t("events.newTool.visibilityLabel")}
           </Text>
           <View className="gap-2 mb-4">
-            {(["all", "restricted"] as const).map((v) => {
+            {(["all", "restricted", "teams"] as const).map((v) => {
               const selected = visibility === v;
+              const labelKey =
+                v === "all"
+                  ? "events.newTool.visibilityAll"
+                  : v === "restricted"
+                    ? "events.newTool.visibilityRestricted"
+                    : "events.newTool.visibilityTeams";
+              const hintKey =
+                v === "all"
+                  ? "events.newTool.visibilityAllHint"
+                  : v === "restricted"
+                    ? "events.newTool.visibilityRestrictedHint"
+                    : "events.newTool.visibilityTeamsHint";
               return (
-                <Pressable
-                  key={v}
-                  onPress={() => setVisibility(v)}
-                  className={`p-3 rounded-lg border ${
-                    selected
-                      ? "border-primary bg-primary/10"
-                      : "border-border bg-surface"
-                  }`}
-                >
-                  <Text variant="label">
-                    {t(
-                      v === "all"
-                        ? "events.newTool.visibilityAll"
-                        : "events.newTool.visibilityRestricted",
-                    )}
-                  </Text>
-                  <Text variant="caption" className="mt-1">
-                    {t(
-                      v === "all"
-                        ? "events.newTool.visibilityAllHint"
-                        : "events.newTool.visibilityRestrictedHint",
-                    )}
-                  </Text>
-                </Pressable>
+                <View key={v}>
+                  <Pressable
+                    onPress={() => setVisibility(v)}
+                    className={`p-3 rounded-lg border ${
+                      selected
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-surface"
+                    }`}
+                  >
+                    <Text variant="label">{t(labelKey)}</Text>
+                    <Text variant="caption" className="mt-1">
+                      {t(hintKey)}
+                    </Text>
+                  </Pressable>
+                  {v === "teams" && selected ? (
+                    <View className="mt-2 ml-2">
+                      {myTeams.length === 0 ? (
+                        <Text variant="caption">
+                          {t("events.newTool.visibilityTeamsEmpty")}
+                        </Text>
+                      ) : (
+                        <View className="gap-1.5">
+                          {myTeams.map((tm) => {
+                            const picked = selectedTeamIds.includes(
+                              tm.team_id,
+                            );
+                            return (
+                              <Pressable
+                                key={tm.team_id}
+                                onPress={() => toggleTeam(tm.team_id)}
+                                className={`flex-row items-center p-2 rounded-lg border ${
+                                  picked
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border bg-surface"
+                                }`}
+                              >
+                                <View
+                                  style={{
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: 7,
+                                    backgroundColor: tm.color,
+                                    marginRight: 8,
+                                  }}
+                                />
+                                <Text variant="label" className="flex-1">
+                                  {tm.name}
+                                </Text>
+                                <Text
+                                  style={{
+                                    color: picked
+                                      ? theme.primary
+                                      : theme.sectionLabel,
+                                    fontWeight: "700",
+                                  }}
+                                >
+                                  {picked ? "✓" : ""}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+                      )}
+                      {errors.teams ? (
+                        <Text className="text-error text-sm mt-2">
+                          {errors.teams}
+                        </Text>
+                      ) : null}
+                    </View>
+                  ) : null}
+                </View>
               );
             })}
           </View>

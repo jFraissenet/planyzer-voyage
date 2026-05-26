@@ -2,11 +2,13 @@ import { Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { AvatarStack, ScreenHeader, Text } from "@/components/ui";
 import type { EventTool, ToolParticipant } from "@/lib/events";
+import type { MyEventTeam } from "@/lib/teams";
 import { theme } from "@/lib/theme";
 
 export type ToolProps = {
   tool: EventTool;
   participants: ToolParticipant[];
+  accessTeams?: MyEventTeam[];
   onBack: () => void;
   isToolAdmin: boolean;
   onManageMembers: () => void;
@@ -16,6 +18,7 @@ export type ToolProps = {
 export function ToolShell({
   tool,
   participants,
+  accessTeams = [],
   onBack,
   isToolAdmin,
   onManageMembers,
@@ -31,6 +34,8 @@ export function ToolShell({
     defaultValue: tool.event_tool_type_code,
   });
   const isRestricted = tool.event_tool_visibility === "restricted";
+  const isTeams = tool.event_tool_visibility === "teams";
+  const isPublic = tool.event_tool_visibility === "all";
   const canManage = isToolAdmin && isRestricted;
   const showWarning = canManage && participants.length <= 1;
 
@@ -62,7 +67,7 @@ export function ToolShell({
             }))}
             onPress={canManage ? onManageMembers : undefined}
           />
-          {!isRestricted ? (
+          {isPublic ? (
             <View
               className="px-2.5 py-1 rounded-full"
               style={{ backgroundColor: theme.primarySoft }}
@@ -78,6 +83,34 @@ export function ToolShell({
               </Text>
             </View>
           ) : null}
+          {isTeams
+            ? accessTeams.map((tm) => (
+                <View
+                  key={tm.team_id}
+                  className="flex-row items-center px-2.5 py-1 rounded-full"
+                  style={{ backgroundColor: `${tm.color}22` }}
+                >
+                  <View
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: tm.color,
+                      marginRight: 6,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: tm.color,
+                      fontWeight: "700",
+                      fontSize: 12,
+                    }}
+                  >
+                    {tm.name}
+                  </Text>
+                </View>
+              ))
+            : null}
           {canManage ? (
             <Pressable
               onPress={onManageMembers}

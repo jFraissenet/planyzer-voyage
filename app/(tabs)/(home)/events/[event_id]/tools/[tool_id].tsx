@@ -13,6 +13,10 @@ import {
   type EventTool,
   type ToolParticipant,
 } from "@/lib/events";
+import {
+  getEventToolTeamsAccess,
+  type MyEventTeam,
+} from "@/lib/teams";
 import { useSession } from "@/lib/useSession";
 
 export default function ToolDetailScreen() {
@@ -31,6 +35,7 @@ export default function ToolDetailScreen() {
 
   const [tool, setTool] = useState<EventTool | null>(null);
   const [participants, setParticipants] = useState<ToolParticipant[]>([]);
+  const [accessTeams, setAccessTeams] = useState<MyEventTeam[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [membersOpen, setMembersOpen] = useState(false);
@@ -46,6 +51,17 @@ export default function ToolDetailScreen() {
     }
   }, [tool]);
 
+  const loadToolBundle = useCallback(async (t2: EventTool) => {
+    const [list, admin, teams] = await Promise.all([
+      getToolParticipants(t2),
+      isToolAdminApi(t2.event_tool_id),
+      t2.event_tool_visibility === "teams"
+        ? getEventToolTeamsAccess(t2.event_tool_id)
+        : Promise.resolve([] as MyEventTeam[]),
+    ]);
+    return { list, admin, teams };
+  }, []);
+
   useEffect(() => {
     if (!tool_id) return;
     let active = true;
@@ -56,13 +72,11 @@ export default function ToolDetailScreen() {
         if (!active) return;
         setTool(fetched);
         if (fetched) {
-          const [list, admin] = await Promise.all([
-            getToolParticipants(fetched),
-            isToolAdminApi(fetched.event_tool_id),
-          ]);
+          const { list, admin, teams } = await loadToolBundle(fetched);
           if (active) {
             setParticipants(list);
             setIsAdmin(admin);
+            setAccessTeams(teams);
           }
         }
       } catch {
@@ -74,7 +88,7 @@ export default function ToolDetailScreen() {
     return () => {
       active = false;
     };
-  }, [tool_id]);
+  }, [tool_id, loadToolBundle]);
 
   if (loading) {
     return (
@@ -115,6 +129,7 @@ export default function ToolDetailScreen() {
       <Component
         tool={tool}
         participants={participants}
+        accessTeams={accessTeams}
         onBack={goBack}
         isToolAdmin={isAdmin}
         onManageMembers={() => setMembersOpen(true)}
@@ -134,10 +149,14 @@ export default function ToolDetailScreen() {
         onClose={() => setEditOpen(false)}
         onSaved={() => {
           setEditOpen(false);
-          // Refetch tool to get updated name/visibility
           void (async () => {
             const updated = await getEventTool(tool.event_tool_id);
-            if (updated) setTool(updated);
+            if (!updated) return;
+            setTool(updated);
+            const { list, admin, teams } = await loadToolBundle(updated);
+            setParticipants(list);
+            setIsAdmin(admin);
+            setAccessTeams(teams);
           })();
         }}
         onDeleted={() => {

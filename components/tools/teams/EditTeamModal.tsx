@@ -62,6 +62,7 @@ export function EditTeamModal({
   const [endsAt, setEndsAt] = useState("");
   const [memberIds, setMemberIds] = useState<string[]>([]);
   const [planningIds, setPlanningIds] = useState<string[]>([]);
+  const [maxMembers, setMaxMembers] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -80,6 +81,9 @@ export function EditTeamModal({
     setEndsAt(isoToLocalInput(existing?.ends_at ?? null));
     setMemberIds(existing?.members.map((m) => m.user_id) ?? []);
     setPlanningIds(existing?.planning_tool_ids ?? []);
+    setMaxMembers(
+      existing?.max_members != null ? String(existing.max_members) : "",
+    );
     setError(null);
     setBusy(false);
 
@@ -121,6 +125,19 @@ export function EditTeamModal({
       setError(t("teams.errorPlanningRequiresDate"));
       return;
     }
+    let maxParsed: number | null = null;
+    if (maxMembers.trim()) {
+      const n = parseInt(maxMembers.trim(), 10);
+      if (Number.isNaN(n) || n < 1) {
+        setError(t("teams.errorMaxTooLow"));
+        return;
+      }
+      if (n < memberIds.length) {
+        setError(t("teams.errorMaxTooLow"));
+        return;
+      }
+      maxParsed = n;
+    }
     setError(null);
     setBusy(true);
     try {
@@ -135,10 +152,19 @@ export function EditTeamModal({
         has_time: hasTime,
         member_ids: memberIds,
         planning_tool_ids: planningIds,
+        max_members: maxParsed,
       });
       onSaved();
-    } catch {
-      setError(t("common.error"));
+    } catch (err) {
+      const msg =
+        err && typeof err === "object" && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "";
+      setError(
+        msg.includes("team_full")
+          ? t("teams.errorTeamFull")
+          : t("common.error"),
+      );
     } finally {
       setBusy(false);
     }
@@ -230,6 +256,14 @@ export function EditTeamModal({
               placeholder={t("teams.typePlaceholder")}
               value={type}
               onChangeText={setType}
+            />
+
+            <Input
+              label={t("teams.maxMembersLabel")}
+              placeholder={t("teams.maxMembersPlaceholder")}
+              value={maxMembers}
+              onChangeText={(v) => setMaxMembers(v.replace(/[^0-9]/g, ""))}
+              keyboardType="number-pad"
             />
 
             <View style={{ gap: 8 }}>

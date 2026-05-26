@@ -168,7 +168,7 @@ export type EventTool = {
   event_tool_event_id: string;
   event_tool_type_code: string;
   event_tool_name: string;
-  event_tool_visibility: "all" | "restricted";
+  event_tool_visibility: "all" | "restricted" | "teams";
   event_tool_settings: Record<string, unknown>;
   event_tool_created_by: string | null;
   event_tool_created_at: string;
@@ -196,6 +196,10 @@ export async function getToolParticipantCount(
     if (error) throw error;
     return count ?? 0;
   }
+  if (tool.event_tool_visibility === "teams") {
+    const list = await getToolParticipants(tool);
+    return list.length;
+  }
   const { count, error } = await supabase
     .from("event_tool_members")
     .select("*", { count: "exact", head: true })
@@ -221,6 +225,14 @@ export async function getToolParticipants(
       avatar_url: p.avatar_url,
     }));
   }
+  if (tool.event_tool_visibility === "teams") {
+    const { data, error } = await supabase.rpc(
+      "get_event_tool_effective_members",
+      { p_tool_id: tool.event_tool_id },
+    );
+    if (error) throw error;
+    return (data ?? []) as ToolParticipant[];
+  }
   const list = await listToolMembers(tool.event_tool_id);
   return list.map((m) => ({
     user_id: m.user_id,
@@ -242,7 +254,7 @@ export async function listEventTools(eventId: string): Promise<EventTool[]> {
 export type ToolType = {
   tool_type_code: string;
   tool_type_icon: string | null;
-  tool_type_default_visibility: "all" | "restricted";
+  tool_type_default_visibility: "all" | "restricted" | "teams";
   tool_type_is_active: boolean;
 };
 
@@ -413,7 +425,7 @@ export async function updateEventTool(
   toolId: string,
   input: {
     event_tool_name?: string;
-    event_tool_visibility?: "all" | "restricted";
+    event_tool_visibility?: "all" | "restricted" | "teams";
   },
 ): Promise<void> {
   const patch: Record<string, unknown> = {};
@@ -506,7 +518,7 @@ export async function createEventTool(input: {
   event_tool_event_id: string;
   event_tool_type_code: string;
   event_tool_name: string;
-  event_tool_visibility: "all" | "restricted";
+  event_tool_visibility: "all" | "restricted" | "teams";
 }): Promise<EventTool> {
   const { error: insertError } = await supabase
     .from("event_tools")

@@ -4,7 +4,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { AvatarStack, Text } from "@/components/ui";
 import {
+  claimTeamResponsable,
+  joinEventToolTeam,
+  leaveEventToolTeam,
   listEventToolTeams,
+  releaseTeamResponsable,
   type EventToolTeam,
 } from "@/lib/teams";
 import { useSession } from "@/lib/useSession";
@@ -42,21 +46,36 @@ function TeamCard({
   locale,
   canEdit,
   youAreIn,
+  currentUserId,
   onOpen,
   onEdit,
   onMembersPress,
+  onJoin,
+  onLeave,
+  onClaim,
+  onRelease,
 }: {
   team: EventToolTeam;
   locale: string;
   canEdit: boolean;
   youAreIn: boolean;
+  currentUserId: string;
   onOpen: () => void;
   onEdit: () => void;
   onMembersPress: () => void;
+  onJoin: () => void;
+  onLeave: () => void;
+  onClaim: () => void;
+  onRelease: () => void;
 }) {
   const { t } = useTranslation();
   const range = formatRange(team, locale);
   const plannings = team.planning_tool_ids.length;
+  const isFull =
+    team.max_members != null && team.members.length >= team.max_members;
+  const isResponsable =
+    !!team.responsable_id && team.responsable_id === currentUserId;
+  const hasResponsable = !!team.responsable_id;
   return (
     <View className="relative mb-3">
       {youAreIn ? (
@@ -193,6 +212,131 @@ function TeamCard({
             </Text>
           </View>
         ) : null}
+        {team.max_members != null ? (
+          <View
+            className="flex-row items-center px-2 py-0.5 rounded-full"
+            style={{
+              backgroundColor: isFull ? "#FEE2E2" : "#F3F0FA",
+              gap: 4,
+            }}
+          >
+            <Ionicons
+              name="people-outline"
+              size={11}
+              color={isFull ? "#991B1B" : "#6B7280"}
+            />
+            <Text
+              style={{
+                fontSize: 11,
+                color: isFull ? "#991B1B" : "#6B7280",
+                fontWeight: isFull ? "700" : "500",
+              }}
+            >
+              {isFull
+                ? t("teams.placesFull")
+                : t("teams.places", {
+                    count: team.members.length,
+                    max: team.max_members,
+                  })}
+            </Text>
+          </View>
+        ) : null}
+        {team.responsable_full_name ? (
+          <View
+            className="flex-row items-center px-2 py-0.5 rounded-full"
+            style={{ backgroundColor: "#FEF3C7", gap: 4 }}
+          >
+            <Text style={{ fontSize: 11 }}>👑</Text>
+            <Text
+              style={{
+                fontSize: 11,
+                color: "#92400E",
+                fontWeight: "700",
+              }}
+              numberOfLines={1}
+            >
+              {team.responsable_full_name}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+
+      <View
+        className="flex-row items-center mt-3"
+        style={{ gap: 8, flexWrap: "wrap" }}
+      >
+        {youAreIn ? (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              onLeave();
+            }}
+            className="px-3 py-1.5 rounded-full active:opacity-70"
+            style={{ backgroundColor: "#F3F4F6" }}
+          >
+            <Text
+              style={{ color: "#374151", fontSize: 12, fontWeight: "700" }}
+            >
+              {t("teams.leave")}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              if (!isFull) onJoin();
+            }}
+            disabled={isFull}
+            className="px-3 py-1.5 rounded-full active:opacity-70"
+            style={{
+              backgroundColor: isFull ? "#E5E7EB" : theme.primary,
+              opacity: isFull ? 0.6 : 1,
+            }}
+          >
+            <Text
+              style={{
+                color: isFull ? "#6B7280" : "#FFFFFF",
+                fontSize: 12,
+                fontWeight: "700",
+              }}
+            >
+              {isFull ? t("teams.placesFull") : t("teams.join")}
+            </Text>
+          </Pressable>
+        )}
+        {youAreIn && !hasResponsable ? (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              onClaim();
+            }}
+            className="flex-row items-center px-3 py-1.5 rounded-full active:opacity-70"
+            style={{ backgroundColor: "#FEF3C7", gap: 4 }}
+          >
+            <Text style={{ fontSize: 12 }}>👑</Text>
+            <Text
+              style={{ color: "#92400E", fontSize: 12, fontWeight: "700" }}
+            >
+              {t("teams.claimResponsable")}
+            </Text>
+          </Pressable>
+        ) : null}
+        {isResponsable ? (
+          <Pressable
+            onPress={(e) => {
+              e.stopPropagation();
+              onRelease();
+            }}
+            className="px-3 py-1.5 rounded-full active:opacity-70"
+            style={{ backgroundColor: "#F3F4F6" }}
+          >
+            <Text
+              style={{ color: "#374151", fontSize: 12, fontWeight: "700" }}
+            >
+              {t("teams.releaseResponsable")}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
       </Pressable>
     </View>
@@ -286,9 +430,46 @@ export function TeamsTool(props: ToolProps) {
               locale={i18n.language}
               canEdit={canEditTeam(team)}
               youAreIn={team.members.some((m) => m.user_id === currentUserId)}
+              currentUserId={currentUserId}
               onOpen={() => setDetail(team)}
               onEdit={() => setEditing(team)}
               onMembersPress={() => setMembersOf(team)}
+              onJoin={async () => {
+                try {
+                  await joinEventToolTeam(team.team_id);
+                  await load();
+                } catch (err) {
+                  // eslint-disable-next-line no-console
+                  console.error("join team failed:", err);
+                }
+              }}
+              onLeave={async () => {
+                try {
+                  await leaveEventToolTeam(team.team_id);
+                  await load();
+                } catch (err) {
+                  // eslint-disable-next-line no-console
+                  console.error("leave team failed:", err);
+                }
+              }}
+              onClaim={async () => {
+                try {
+                  await claimTeamResponsable(team.team_id);
+                  await load();
+                } catch (err) {
+                  // eslint-disable-next-line no-console
+                  console.error("claim responsable failed:", err);
+                }
+              }}
+              onRelease={async () => {
+                try {
+                  await releaseTeamResponsable(team.team_id);
+                  await load();
+                } catch (err) {
+                  // eslint-disable-next-line no-console
+                  console.error("release responsable failed:", err);
+                }
+              }}
             />
           ))
         )}

@@ -3,7 +3,15 @@ import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-nativ
 import { useTranslation } from "react-i18next";
 import { Button, Input, Text } from "@/components/ui";
 import { deleteEventTool, updateEventTool, type EventTool } from "@/lib/events";
+import {
+  getEventToolTeamsAccess,
+  listMyEventTeams,
+  setEventToolTeamsAccess,
+  type MyEventTeam,
+} from "@/lib/teams";
 import { theme } from "@/lib/theme";
+
+type Visibility = "all" | "restricted" | "teams";
 
 function SectionLabel({ children }: { children: string }) {
   return (
@@ -39,10 +47,12 @@ export function EditToolModal({
 }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
-  const [visibility, setVisibility] = useState<"all" | "restricted">("all");
+  const [visibility, setVisibility] = useState<Visibility>("all");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [myTeams, setMyTeams] = useState<MyEventTeam[]>([]);
+  const [selectedTeamIds, setSelectedTeamIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (visible && tool) {
@@ -51,8 +61,34 @@ export function EditToolModal({
       setError(null);
       setBusy(false);
       setDeleting(false);
+      setSelectedTeamIds([]);
+      setMyTeams([]);
+      // Lazy-load my teams + the tool's current team access set.
+      (async () => {
+        try {
+          const [mine, current] = await Promise.all([
+            listMyEventTeams(tool.event_tool_event_id),
+            tool.event_tool_visibility === "teams"
+              ? getEventToolTeamsAccess(tool.event_tool_id)
+              : Promise.resolve([] as MyEventTeam[]),
+          ]);
+          setMyTeams(mine);
+          setSelectedTeamIds(current.map((t2) => t2.team_id));
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error("load teams for tool failed:", err);
+        }
+      })();
     }
   }, [visible, tool]);
+
+  const toggleTeam = (teamId: string) => {
+    setSelectedTeamIds((prev) =>
+      prev.includes(teamId)
+        ? prev.filter((id) => id !== teamId)
+        : [...prev, teamId],
+    );
+  };
 
   const doDelete = async () => {
     if (!tool) return;
@@ -96,6 +132,10 @@ export function EditToolModal({
       setError(t("events.newTool.errorNameRequired"));
       return;
     }
+    if (visibility === "teams" && selectedTeamIds.length === 0) {
+      setError(t("events.newTool.visibilityTeamsRequired"));
+      return;
+    }
     setError(null);
     setBusy(true);
     try {
@@ -103,6 +143,9 @@ export function EditToolModal({
         event_tool_name: name.trim(),
         event_tool_visibility: visibility,
       });
+      if (visibility === "teams") {
+        await setEventToolTeamsAccess(tool.event_tool_id, selectedTeamIds);
+      }
       onSaved();
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -174,33 +217,87 @@ export function EditToolModal({
 
             <SectionLabel>{t("events.newTool.visibilityLabel")}</SectionLabel>
             <View className="gap-2 mb-5">
-              {(["all", "restricted"] as const).map((v) => {
+              {(["all", "restricted", "teams"] as const).map((v) => {
                 const selected = visibility === v;
+                const labelKey =
+                  v === "all"
+                    ? "events.newTool.visibilityAll"
+                    : v === "restricted"
+                      ? "events.newTool.visibilityRestricted"
+                      : "events.newTool.visibilityTeams";
+                const hintKey =
+                  v === "all"
+                    ? "events.newTool.visibilityAllHint"
+                    : v === "restricted"
+                      ? "events.newTool.visibilityRestrictedHint"
+                      : "events.newTool.visibilityTeamsHint";
                 return (
-                  <Pressable
-                    key={v}
-                    onPress={() => setVisibility(v)}
-                    className={`p-3 rounded-lg border ${
-                      selected
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-surface"
-                    }`}
-                  >
-                    <Text variant="label">
-                      {t(
-                        v === "all"
-                          ? "events.newTool.visibilityAll"
-                          : "events.newTool.visibilityRestricted",
-                      )}
-                    </Text>
-                    <Text variant="caption" className="mt-1">
-                      {t(
-                        v === "all"
-                          ? "events.newTool.visibilityAllHint"
-                          : "events.newTool.visibilityRestrictedHint",
-                      )}
-                    </Text>
-                  </Pressable>
+                  <View key={v}>
+                    <Pressable
+                      onPress={() => setVisibility(v)}
+                      className={`p-3 rounded-lg border ${
+                        selected
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-surface"
+                      }`}
+                    >
+                      <Text variant="label">{t(labelKey)}</Text>
+                      <Text variant="caption" className="mt-1">
+                        {t(hintKey)}
+                      </Text>
+                    </Pressable>
+                    {v === "teams" && selected ? (
+                      <View className="mt-2 ml-2">
+                        {myTeams.length === 0 ? (
+                          <Text variant="caption">
+                            {t("events.newTool.visibilityTeamsEmpty")}
+                          </Text>
+                        ) : (
+                          <View className="gap-1.5">
+                            {myTeams.map((tm) => {
+                              const picked = selectedTeamIds.includes(
+                                tm.team_id,
+                              );
+                              return (
+                                <Pressable
+                                  key={tm.team_id}
+                                  onPress={() => toggleTeam(tm.team_id)}
+                                  className={`flex-row items-center p-2 rounded-lg border ${
+                                    picked
+                                      ? "border-primary bg-primary/5"
+                                      : "border-border bg-surface"
+                                  }`}
+                                >
+                                  <View
+                                    style={{
+                                      width: 14,
+                                      height: 14,
+                                      borderRadius: 7,
+                                      backgroundColor: tm.color,
+                                      marginRight: 8,
+                                    }}
+                                  />
+                                  <Text variant="label" className="flex-1">
+                                    {tm.name}
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      color: picked
+                                        ? theme.primary
+                                        : theme.sectionLabel,
+                                      fontWeight: "700",
+                                    }}
+                                  >
+                                    {picked ? "✓" : ""}
+                                  </Text>
+                                </Pressable>
+                              );
+                            })}
+                          </View>
+                        )}
+                      </View>
+                    ) : null}
+                  </View>
                 );
               })}
             </View>
