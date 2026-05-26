@@ -7,13 +7,15 @@ export type PlanningLinkKind =
   | "meal_recipe"
   | "carpool_vehicle"
   | "proposal"
-  | "note";
+  | "note"
+  | "team";
 
 export const PLANNING_LINKABLE_TOOL_TYPES = [
   "meals",
   "car_sharing",
   "proposals",
   "notes",
+  "teams",
 ] as const;
 export type PlanningLinkableToolType =
   (typeof PLANNING_LINKABLE_TOOL_TYPES)[number];
@@ -33,6 +35,8 @@ export function itemKindForToolType(
       return "proposal";
     case "notes":
       return "note";
+    case "teams":
+      return "team";
     default:
       return null;
   }

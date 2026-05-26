@@ -45,6 +45,8 @@ function linkIcon(
       return "ballot-outline" as React.ComponentProps<typeof Ionicons>["name"];
     case "notes":
       return "document-text-outline";
+    case "teams":
+      return "people-outline";
     default:
       return "link-outline";
   }

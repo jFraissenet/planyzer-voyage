@@ -13,6 +13,7 @@ import { listVehicles } from "@/lib/carpool";
 import { listEventTools, type EventTool } from "@/lib/events";
 import { listEventToolMealRecipes } from "@/lib/meals";
 import { listEventToolNotes } from "@/lib/notes";
+import { listEventToolTeams } from "@/lib/teams";
 import {
   itemKindForToolType,
   PLANNING_LINKABLE_TOOL_TYPES,
@@ -69,6 +70,10 @@ async function fetchItems(tool: EventTool): Promise<Item[]> {
         id: n.note_id,
         label: n.text.length > 60 ? n.text.slice(0, 60) + "…" : n.text,
       }));
+    }
+    case "teams": {
+      const list = await listEventToolTeams(tool.event_tool_id);
+      return list.map((tm) => ({ id: tm.team_id, label: tm.name }));
     }
     default:
       return [];

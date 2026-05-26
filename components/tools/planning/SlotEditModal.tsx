@@ -17,7 +17,9 @@ import {
   type PlanningSlot,
   type PlanningSlotInput,
 } from "@/lib/planning";
+import { listEventToolTeams } from "@/lib/teams";
 import { isoToLocalInput, localInputToIso } from "../proposals/dateHelpers";
+import { MemberMultiSelect } from "../teams/MemberMultiSelect";
 import { LinkPicker, type PickedLink } from "./LinkPicker";
 import { theme } from "@/lib/theme";
 
@@ -158,6 +160,30 @@ export function SlotEditModal({
     }
     setLinks((prev) => [...prev, pick]);
     setLinkPickerOpen(false);
+
+    // Linking to a team (whole-tool or specific team) sets the slot
+    // participants to exactly the team's members — replaces any previous
+    // selection so an empty team leaves an empty list.
+    if (pick.target_tool_type_code === "teams") {
+      void (async () => {
+        try {
+          const teams = await listEventToolTeams(pick.target_tool_id);
+          const memberIds =
+            pick.kind === "team" && pick.target_id
+              ? (teams.find((tm) => tm.team_id === pick.target_id)?.members ?? [])
+                  .map((m) => m.user_id)
+              : Array.from(
+                  new Set(
+                    teams.flatMap((tm) => tm.members.map((m) => m.user_id)),
+                  ),
+                );
+          setParticipantIds(memberIds);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error("set team members failed:", err);
+        }
+      })();
+    }
   };
 
   const removeLink = (index: number) => {
@@ -376,74 +402,11 @@ export function SlotEditModal({
             />
 
             {/* Participants */}
-            <View style={{ gap: 8 }}>
-              <View
-                className="flex-row items-center justify-between"
-              >
-                <Text variant="label">{t("planning.participantsSection")}</Text>
-                {eventParticipants.length > 0 ? (
-                  <Pressable
-                    onPress={toggleAll}
-                    hitSlop={6}
-                    className="active:opacity-70"
-                  >
-                    <Text
-                      style={{
-                        color: theme.primary,
-                        fontSize: 12,
-                        fontWeight: "600",
-                      }}
-                    >
-                      {allSelected
-                        ? t("planning.deselectAll")
-                        : t("planning.selectAll")}
-                    </Text>
-                  </Pressable>
-                ) : null}
-              </View>
-              {eventParticipants.length === 0 ? (
-                <Text variant="caption" style={{ fontSize: 12 }}>
-                  {t("planning.participantsEmpty")}
-                </Text>
-              ) : (
-                <View className="flex-row flex-wrap" style={{ gap: 8 }}>
-                  {eventParticipants.map((p) => {
-                    const selected = participantIds.includes(p.user_id);
-                    return (
-                      <Pressable
-                        key={p.user_id}
-                        onPress={() => toggleParticipant(p.user_id)}
-                        hitSlop={4}
-                        className="flex-row items-center px-2 py-1 rounded-full active:opacity-70"
-                        style={{
-                          backgroundColor: selected
-                            ? theme.primary
-                            : "#F3F0FA",
-                          borderWidth: 1,
-                          borderColor: selected ? theme.primary : "#E8E3DB",
-                          gap: 6,
-                        }}
-                      >
-                        <Avatar
-                          src={p.avatar_url ?? undefined}
-                          initials={initialsOf(p.full_name)}
-                          size="xs"
-                        />
-                        <Text
-                          style={{
-                            color: selected ? "#FFFFFF" : "#1A1A1A",
-                            fontSize: 12,
-                            fontWeight: selected ? "700" : "500",
-                          }}
-                        >
-                          {p.full_name ?? "?"}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              )}
-            </View>
+            <MemberMultiSelect
+              participants={eventParticipants}
+              selectedIds={participantIds}
+              onChange={setParticipantIds}
+            />
 
             <View
               style={{
