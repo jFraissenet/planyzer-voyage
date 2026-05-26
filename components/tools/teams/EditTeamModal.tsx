@@ -107,10 +107,6 @@ export function EditTeamModal({
       setError(t("teams.errorNameRequired"));
       return;
     }
-    if (memberIds.length === 0) {
-      setError(t("teams.errorMembersRequired"));
-      return;
-    }
     const startIso = localInputToIso(startsAt);
     const endIso = localInputToIso(endsAt);
     if (
@@ -392,7 +388,7 @@ export function EditTeamModal({
               size="lg"
               label={busy ? t("teams.saving") : t("teams.save")}
               onPress={save}
-              disabled={busy || !name.trim() || memberIds.length === 0}
+              disabled={busy || !name.trim()}
             />
             <Button
               variant="ghost"

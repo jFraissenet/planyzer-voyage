@@ -117,34 +117,37 @@ export function DateTimeInput({
           onRequestClose={closeIos}
         >
           <Pressable
-            className="flex-1 bg-black/40 items-center justify-center px-6"
+            className="flex-1 bg-black/40 items-center justify-center px-3"
             onPress={closeIos}
           >
             <Pressable
               onPress={(e) => e.stopPropagation()}
-              className="w-full max-w-sm bg-background rounded-xl p-4"
+              className="w-full bg-background rounded-xl p-3"
+              style={{ maxWidth: 360 }}
             >
-              <DateTimePicker
-                value={iosDraft}
-                mode={isDateOnly ? "date" : "datetime"}
-                display="inline"
-                onChange={(_e, sel) => {
-                  if (sel) {
-                    if (isDateOnly) {
-                      const d = new Date(
-                        sel.getFullYear(),
-                        sel.getMonth(),
-                        sel.getDate(),
-                        0,
-                        0,
-                      );
-                      setIosDraft(d);
-                    } else {
-                      setIosDraft(sel);
+              <View style={{ alignSelf: "center" }}>
+                <DateTimePicker
+                  value={iosDraft}
+                  mode={isDateOnly ? "date" : "datetime"}
+                  display="spinner"
+                  onChange={(_e, sel) => {
+                    if (sel) {
+                      if (isDateOnly) {
+                        const d = new Date(
+                          sel.getFullYear(),
+                          sel.getMonth(),
+                          sel.getDate(),
+                          0,
+                          0,
+                        );
+                        setIosDraft(d);
+                      } else {
+                        setIosDraft(sel);
+                      }
                     }
-                  }
-                }}
-              />
+                  }}
+                />
+              </View>
               <View className="flex-row gap-2 mt-2">
                 <View className="flex-1">
                   <Button
