@@ -12,6 +12,7 @@ import {
   type Expense,
   type Settlement,
 } from "@/lib/expenses";
+import { RibModal } from "./RibModal";
 import { firstName, initialsOf, TransferArrow, useIsMobile } from "./shared";
 import { theme } from "@/lib/theme";
 
@@ -35,6 +36,7 @@ export function BreakdownTab({
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(members.map((m) => m.user_id)),
   );
+  const [ribFor, setRibFor] = useState<EffectiveMember | null>(null);
 
   const memberById = useMemo(
     () => new Map(members.map((m) => [m.user_id, m])),
@@ -351,6 +353,23 @@ export function BreakdownTab({
                   >
                     {formatAmount(s.amount)}
                   </Text>
+                  {to ? (
+                    <Pressable
+                      onPress={() => setRibFor(to)}
+                      hitSlop={6}
+                      className="px-3 py-1.5 rounded-full active:opacity-70"
+                      style={{
+                        backgroundColor: "#FEF3C7",
+                      }}
+                    >
+                      <Text
+                        variant="label"
+                        style={{ color: "#92400E", fontWeight: "700" }}
+                      >
+                        {t("money.breakdown.ribButton")}
+                      </Text>
+                    </Pressable>
+                  ) : null}
                   <Pressable
                     onPress={() => onSettle(s.from, s.to, s.amount)}
                     className="px-3 py-1.5 rounded-full"
@@ -412,7 +431,10 @@ export function BreakdownTab({
                     {toName}
                   </Text>
                 </View>
-                <View className="flex-row items-center justify-between">
+                <View
+                  className="flex-row items-center justify-between"
+                  style={{ gap: 6, flexWrap: "wrap" }}
+                >
                   <Text
                     style={{
                       color: "#1A1A1A",
@@ -422,18 +444,38 @@ export function BreakdownTab({
                   >
                     {formatAmount(s.amount)}
                   </Text>
-                  <Pressable
-                    onPress={() => onSettle(s.from, s.to, s.amount)}
-                    className="px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: theme.primarySoft }}
+                  <View
+                    className="flex-row items-center"
+                    style={{ gap: 6 }}
                   >
-                    <Text
-                      variant="label"
-                      style={{ color: theme.primary, fontWeight: "700" }}
+                    {to ? (
+                      <Pressable
+                        onPress={() => setRibFor(to)}
+                        hitSlop={6}
+                        className="px-3 py-1.5 rounded-full active:opacity-70"
+                        style={{ backgroundColor: "#FEF3C7" }}
+                      >
+                        <Text
+                          variant="label"
+                          style={{ color: "#92400E", fontWeight: "700" }}
+                        >
+                          {t("money.breakdown.ribButton")}
+                        </Text>
+                      </Pressable>
+                    ) : null}
+                    <Pressable
+                      onPress={() => onSettle(s.from, s.to, s.amount)}
+                      className="px-3 py-1.5 rounded-full"
+                      style={{ backgroundColor: theme.primarySoft }}
                     >
-                      {t("money.breakdown.settleAction")}
-                    </Text>
-                  </Pressable>
+                      <Text
+                        variant="label"
+                        style={{ color: theme.primary, fontWeight: "700" }}
+                      >
+                        {t("money.breakdown.settleAction")}
+                      </Text>
+                    </Pressable>
+                  </View>
                 </View>
               </View>
             );
@@ -635,6 +677,13 @@ export function BreakdownTab({
           })}
         </Card>
       )}
+
+      <RibModal
+        visible={!!ribFor}
+        userId={ribFor?.user_id ?? null}
+        displayName={ribFor?.full_name ?? null}
+        onClose={() => setRibFor(null)}
+      />
     </View>
   );
 }

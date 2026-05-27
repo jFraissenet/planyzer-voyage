@@ -1,16 +1,21 @@
-import { useState } from "react";
-import { Modal, Pressable, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Modal, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import {
   Avatar,
   Button,
   Card,
+  Input,
   ScreenHeader,
   Separator,
   Text,
 } from "@/components/ui";
 import { useSession } from "@/lib/useSession";
 import { signOut } from "@/lib/auth";
+import {
+  getMyPaymentInfo,
+  updateMyPaymentInfo,
+} from "@/lib/payment";
 import { theme } from "@/lib/theme";
 
 const languages = [
@@ -38,10 +43,55 @@ export default function ProfileScreen() {
         .slice(0, 2)
     : "?";
 
+  const [iban, setIban] = useState("");
+  const [bic, setBic] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+  const [phone, setPhone] = useState("");
+  const [paymentBusy, setPaymentBusy] = useState(false);
+  const [paymentSavedFlash, setPaymentSavedFlash] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const info = await getMyPaymentInfo();
+        if (!active || !info) return;
+        setIban(info.iban ?? "");
+        setBic(info.bic ?? "");
+        setAccountHolder(info.account_holder ?? "");
+        setPhone(info.phone ?? "");
+      } catch {
+        // ignore
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const savePayment = async () => {
+    setPaymentBusy(true);
+    try {
+      await updateMyPaymentInfo({
+        iban: iban.trim() || null,
+        bic: bic.trim() || null,
+        account_holder: accountHolder.trim() || null,
+        phone: phone.trim() || null,
+      });
+      setPaymentSavedFlash(true);
+      setTimeout(() => setPaymentSavedFlash(false), 2000);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("save payment info failed:", err);
+    } finally {
+      setPaymentBusy(false);
+    }
+  };
+
   return (
     <View className="flex-1 bg-background">
       <ScreenHeader title={t("profile.title")} showLogo />
-      <View className="px-6 pt-8">
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 32, paddingBottom: 80 }}>
         <View className="items-center mb-8">
           <Avatar
             src={avatarUrl}
@@ -113,12 +163,64 @@ export default function ProfileScreen() {
         </Pressable>
       </Modal>
 
+      <Card className="mb-6">
+        <Text variant="label" className="mb-1">
+          {t("profile.paymentSection")}
+        </Text>
+        <Text variant="caption" className="mb-3">
+          {t("profile.paymentHint")}
+        </Text>
+        <Input
+          label={t("profile.accountHolderLabel")}
+          placeholder={t("profile.accountHolderPlaceholder")}
+          value={accountHolder}
+          onChangeText={setAccountHolder}
+          className="mb-3"
+        />
+        <Input
+          label={t("profile.phoneLabel")}
+          placeholder={t("profile.phonePlaceholder")}
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+          autoCapitalize="none"
+          className="mb-3"
+        />
+        <Input
+          label={t("profile.ibanLabel")}
+          placeholder={t("profile.ibanPlaceholder")}
+          value={iban}
+          onChangeText={setIban}
+          autoCapitalize="characters"
+          className="mb-3"
+        />
+        <Input
+          label={t("profile.bicLabel")}
+          placeholder={t("profile.bicPlaceholder")}
+          value={bic}
+          onChangeText={setBic}
+          autoCapitalize="characters"
+          className="mb-3"
+        />
+        <Button
+          label={
+            paymentBusy
+              ? t("profile.paymentSaving")
+              : paymentSavedFlash
+                ? t("profile.paymentSaved")
+                : t("profile.paymentSave")
+          }
+          onPress={savePayment}
+          disabled={paymentBusy}
+        />
+      </Card>
+
         <Button
           label={t("profile.logout")}
           variant="outline"
           onPress={() => signOut()}
         />
-      </View>
+      </ScrollView>
     </View>
   );
 }

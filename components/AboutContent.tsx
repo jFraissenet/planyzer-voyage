@@ -35,6 +35,8 @@ function Feature({
 }
 
 const TOOLS: { code: string; icon: string }[] = [
+  { code: "planning", icon: "🗓" },
+  { code: "teams", icon: "👥" },
   { code: "money", icon: "💰" },
   { code: "notes", icon: "📝" },
   { code: "car_sharing", icon: "🚗" },

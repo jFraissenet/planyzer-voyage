@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { AvatarStack, ScreenHeader, Text } from "@/components/ui";
 import type { EventTool, ToolParticipant } from "@/lib/events";
 import type { MyEventTeam } from "@/lib/teams";
 import { theme } from "@/lib/theme";
+import { TeamMembersListModal } from "./teams/TeamMembersListModal";
 
 export type ToolProps = {
   tool: EventTool;
@@ -38,6 +40,9 @@ export function ToolShell({
   const isPublic = tool.event_tool_visibility === "all";
   const canManage = isToolAdmin && isRestricted;
   const showWarning = canManage && participants.length <= 1;
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const openViewer = () => setViewerOpen(true);
+  const handleAvatarPress = canManage ? onManageMembers : openViewer;
 
   return (
     <View className="flex-1 bg-background">
@@ -65,11 +70,12 @@ export function ToolShell({
               full_name: p.full_name,
               avatar_url: p.avatar_url,
             }))}
-            onPress={canManage ? onManageMembers : undefined}
+            onPress={handleAvatarPress}
           />
           {isPublic ? (
-            <View
-              className="px-2.5 py-1 rounded-full"
+            <Pressable
+              onPress={openViewer}
+              className="px-2.5 py-1 rounded-full active:opacity-70"
               style={{ backgroundColor: theme.primarySoft }}
             >
               <Text
@@ -81,13 +87,14 @@ export function ToolShell({
               >
                 🌍 {t("toolDetail.publicInfoTitle")}
               </Text>
-            </View>
+            </Pressable>
           ) : null}
           {isTeams
             ? accessTeams.map((tm) => (
-                <View
+                <Pressable
                   key={tm.team_id}
-                  className="flex-row items-center px-2.5 py-1 rounded-full"
+                  onPress={openViewer}
+                  className="flex-row items-center px-2.5 py-1 rounded-full active:opacity-70"
                   style={{ backgroundColor: `${tm.color}22` }}
                 >
                   <View
@@ -108,7 +115,7 @@ export function ToolShell({
                   >
                     {tm.name}
                   </Text>
-                </View>
+                </Pressable>
               ))
             : null}
           {canManage ? (
@@ -171,6 +178,17 @@ export function ToolShell({
 
         {children}
       </ScrollView>
+
+      <TeamMembersListModal
+        visible={viewerOpen}
+        title={tool.event_tool_name}
+        members={participants.map((p) => ({
+          user_id: p.user_id,
+          full_name: p.full_name,
+          avatar_url: p.avatar_url,
+        }))}
+        onClose={() => setViewerOpen(false)}
+      />
     </View>
   );
 }
