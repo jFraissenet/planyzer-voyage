@@ -8,6 +8,7 @@ import {
   type MealRecipe,
 } from "@/lib/meals";
 import { useSession } from "@/lib/useSession";
+import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { AggregatedIngredients } from "./AggregatedIngredients";
 import { RecipeCard } from "./RecipeCard";
 import { RecipeCataloguePicker } from "./RecipeCataloguePicker";
@@ -229,14 +230,14 @@ function AddMenu({
       onRequestClose={onClose}
     >
       <Pressable
-        className="flex-1 justify-end"
+        className="flex-1 justify-end items-center"
         style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
         onPress={onClose}
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
-          className="bg-surface rounded-t-2xl"
-          style={{ paddingBottom: 24 }}
+          className="bg-surface rounded-t-2xl w-full"
+          style={{ paddingBottom: 24, maxWidth: MAX_CONTENT_WIDTH }}
         >
           <View
             className="px-5 pt-5 pb-3"

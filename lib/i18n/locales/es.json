@@ -91,6 +91,7 @@
       "noTools": "Aún no hay herramientas",
       "addTool": "+ Añadir una herramienta",
       "loading": "Cargando...",
+      "openInMaps": "Cómo llegar",
       "toolsBanner": {
         "title": "Añadir una herramienta",
         "subtitle": "Dinero, notas, coche compartido, encuestas..."
@@ -834,7 +835,11 @@
     "saveToCatalogueDone": "Guardada en tu catálogo",
     "savingToCatalogue": "Guardando…",
     "shopping": {
-      "empty": "Añade recetas con ingredientes para ver la lista"
+      "empty": "Añade recetas con ingredientes para ver la lista",
+      "recipesFilterLabel": "Recetas incluidas",
+      "selectAll": "Seleccionar todo",
+      "deselectAll": "Deseleccionar todo",
+      "noneSelected": "Selecciona al menos una receta"
     },
     "types": {
       "legumes": "Verduras",

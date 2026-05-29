@@ -91,6 +91,7 @@
       "noTools": "No tools yet",
       "addTool": "+ Add a tool",
       "loading": "Loading...",
+      "openInMaps": "Directions",
       "toolsBanner": {
         "title": "Add a tool",
         "subtitle": "Money, notes, carpool, polls..."
@@ -834,7 +835,11 @@
     "saveToCatalogueDone": "Saved to your catalogue",
     "savingToCatalogue": "Saving…",
     "shopping": {
-      "empty": "Add recipes with ingredients to see the shopping list"
+      "empty": "Add recipes with ingredients to see the shopping list",
+      "recipesFilterLabel": "Included recipes",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "noneSelected": "Select at least one recipe"
     },
     "types": {
       "legumes": "Vegetables",

@@ -91,6 +91,7 @@
       "noTools": "暂无工具",
       "addTool": "+ 添加工具",
       "loading": "加载中...",
+      "openInMaps": "导航",
       "toolsBanner": {
         "title": "添加工具",
         "subtitle": "费用、笔记、拼车、投票……"
@@ -821,7 +822,11 @@
     "saveToCatalogueDone": "已保存到你的目录",
     "savingToCatalogue": "保存中…",
     "shopping": {
-      "empty": "添加带有配料的食谱后会显示在这里"
+      "empty": "添加带有配料的食谱后会显示在这里",
+      "recipesFilterLabel": "包含的食谱",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "noneSelected": "请至少选择一个食谱"
     },
     "types": {
       "legumes": "蔬菜",

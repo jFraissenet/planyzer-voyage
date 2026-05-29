@@ -17,6 +17,7 @@ import {
   type CatalogueRecipeSummary,
 } from "@/lib/meals";
 import { useSession } from "@/lib/useSession";
+import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { theme } from "@/lib/theme";
 
 type Props = {
@@ -99,6 +100,7 @@ export function RecipeCataloguePicker({
   };
 
   return (
+    <>
     <Modal
       visible={visible}
       transparent
@@ -106,14 +108,14 @@ export function RecipeCataloguePicker({
       onRequestClose={onClose}
     >
       <Pressable
-        className="flex-1 justify-end"
+        className="flex-1 justify-end items-center"
         style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
         onPress={onClose}
       >
         <Pressable
           onPress={(e) => e.stopPropagation()}
-          className="bg-surface rounded-t-2xl"
-          style={{ height: "92%" }}
+          className="bg-surface rounded-t-2xl w-full"
+          style={{ height: "92%", maxWidth: MAX_CONTENT_WIDTH }}
         >
           {/* Header */}
           <View
@@ -210,6 +212,7 @@ export function RecipeCataloguePicker({
           </ScrollView>
         </Pressable>
       </Pressable>
+    </Modal>
 
       <ImportServingsDialog
         recipe={pendingImport}
@@ -218,7 +221,7 @@ export function RecipeCataloguePicker({
           pendingImport ? handleImport(pendingImport, servings) : undefined
         }
       />
-    </Modal>
+    </>
   );
 }
 

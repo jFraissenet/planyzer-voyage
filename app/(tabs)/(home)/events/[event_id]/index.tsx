@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -44,6 +45,7 @@ import {
 } from "@/lib/teams";
 import { useIsMobile } from "@/lib/responsive";
 import { useSession } from "@/lib/useSession";
+import { buildMapsUrlFromText } from "@/lib/geocoding";
 import { theme } from "@/lib/theme";
 
 function formatDateRange(
@@ -696,6 +698,33 @@ export default function EventDetailScreen() {
                 <Text variant="body" className="flex-1">
                   {event.event_location}
                 </Text>
+                <Pressable
+                  onPress={() => {
+                    const loc = event?.event_location;
+                    if (loc) {
+                      Linking.openURL(buildMapsUrlFromText(loc)).catch(
+                        () => undefined,
+                      );
+                    }
+                  }}
+                  accessibilityLabel={t("events.detail.openInMaps")}
+                  hitSlop={6}
+                  className="flex-row items-center rounded-full active:opacity-70"
+                  style={{
+                    gap: 4,
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    backgroundColor: theme.primarySoft,
+                  }}
+                >
+                  <Ionicons name="navigate" size={13} color={theme.primary} />
+                  <Text
+                    variant="caption"
+                    style={{ color: theme.primary, fontWeight: "700" }}
+                  >
+                    {t("events.detail.openInMaps")}
+                  </Text>
+                </Pressable>
               </View>
             ) : null}
             {event.event_description ? (

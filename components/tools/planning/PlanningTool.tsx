@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import {
   listEventToolPlanningSlots,
   type PlanningSlot,
 } from "@/lib/planning";
+import { getEvent } from "@/lib/events";
 import { useSession } from "@/lib/useSession";
 import { CalendarGrid, localDayKey } from "./CalendarGrid";
 import { DaysView } from "./DaysView";
@@ -77,6 +78,35 @@ export function PlanningTool(props: ToolProps) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // On first mount, focus both the calendar month and the days-view window on
+  // the event's start date (when it has one) instead of today. One-shot so it
+  // doesn't fight the user's navigation on later renders/reloads.
+  const didFocusEventDate = useRef(false);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const ev = await getEvent(props.tool.event_tool_event_id);
+        if (!active || didFocusEventDate.current) return;
+        const startIso = ev?.event_start_date;
+        if (!startIso) return;
+        const start = new Date(startIso);
+        if (Number.isNaN(start.getTime())) return;
+        didFocusEventDate.current = true;
+        const dayStart = new Date(start);
+        dayStart.setHours(0, 0, 0, 0);
+        setCalendarMonth(new Date(start.getFullYear(), start.getMonth(), 1));
+        setSelectedDay(dayStart);
+        setDaysRangeStart(dayStart);
+      } catch {
+        // ignore — keep the default (today) focus
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [props.tool.event_tool_event_id]);
 
   const canEdit = useCallback(
     (s: PlanningSlot): boolean =>

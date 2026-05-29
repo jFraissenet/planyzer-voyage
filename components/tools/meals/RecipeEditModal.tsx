@@ -107,6 +107,10 @@ export function RecipeEditModal({
   const [steps, setSteps] = useState<DraftStep[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Which ingredient's unit picker is expanded (only one at a time). Inline
+  // chip grid rather than an absolute dropdown so it never stacks behind the
+  // search field / following rows.
+  const [openUnitId, setOpenUnitId] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   // Tracks the last valid (>0) servings the form has seen, so we keep scaling
   // correctly even when the user clears the input mid-edit (transient "" or
@@ -138,6 +142,7 @@ export function RecipeEditModal({
     setSteps(fromExistingSteps(existing?.steps));
     setError(null);
     setBusy(false);
+    setOpenUnitId(null);
   }, [visible, existing]);
 
   const addIngredient = (pick: IngredientPick) => {
@@ -476,11 +481,76 @@ export function RecipeEditModal({
                           fontSize: 14,
                         }}
                       />
-                      <UnitDropdown
-                        unit={ing.unit}
-                        onChange={(u) => updateIngredient(ing.id, { unit: u })}
-                      />
+                      <Pressable
+                        onPress={() =>
+                          setOpenUnitId((cur) =>
+                            cur === ing.id ? null : ing.id,
+                          )
+                        }
+                        hitSlop={4}
+                        className="flex-row items-center rounded-lg px-2.5 py-1.5"
+                        style={{
+                          backgroundColor: "#F3F0FA",
+                          borderWidth: 1,
+                          borderColor: "#E8E3DB",
+                          gap: 4,
+                          minWidth: 64,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            color: "#1A1A1A",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {t(`meals.units.${ing.unit}`)}
+                        </Text>
+                        <Ionicons
+                          name={
+                            openUnitId === ing.id
+                              ? "chevron-up"
+                              : "chevron-down"
+                          }
+                          size={12}
+                          color="#6B6B6B"
+                        />
+                      </Pressable>
                     </View>
+                    {openUnitId === ing.id ? (
+                      <View className="flex-row flex-wrap" style={{ gap: 6 }}>
+                        {MEAL_UNITS.map((u) => {
+                          const sel = u === ing.unit;
+                          return (
+                            <Pressable
+                              key={u}
+                              onPress={() => {
+                                updateIngredient(ing.id, { unit: u });
+                                setOpenUnitId(null);
+                              }}
+                              className="rounded-full px-3 py-1.5 active:opacity-70"
+                              style={{
+                                backgroundColor: sel
+                                  ? theme.primary
+                                  : "#F3F0FA",
+                                borderWidth: 1,
+                                borderColor: sel ? theme.primary : "#E8E3DB",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: "600",
+                                  color: sel ? "#FFFFFF" : theme.primaryDeep,
+                                }}
+                              >
+                                {t(`meals.units.${u}`)}
+                              </Text>
+                            </Pressable>
+                          );
+                        })}
+                      </View>
+                    ) : null}
                   </View>
                 ))
               )}
@@ -612,83 +682,6 @@ export function RecipeEditModal({
         </Pressable>
       </Pressable>
     </Modal>
-  );
-}
-
-// Tiny dropdown for picking a unit. Cycles through MEAL_UNITS for now to
-// keep the surface light — we can swap for a proper bottom-sheet picker
-// once we have real recipes to test friction.
-function UnitDropdown({
-  unit,
-  onChange,
-}: {
-  unit: MealUnit;
-  onChange: (u: MealUnit) => void;
-}) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  return (
-    <View style={{ position: "relative" }}>
-      <Pressable
-        onPress={() => setOpen((v) => !v)}
-        hitSlop={4}
-        className="flex-row items-center rounded-lg px-2.5 py-1.5"
-        style={{
-          backgroundColor: "#F3F0FA",
-          borderWidth: 1,
-          borderColor: "#E8E3DB",
-          gap: 4,
-          minWidth: 64,
-        }}
-      >
-        <Text style={{ fontSize: 13, color: "#1A1A1A", fontWeight: "600" }}>
-          {t(`meals.units.${unit}`)}
-        </Text>
-        <Ionicons
-          name={open ? "chevron-up" : "chevron-down"}
-          size={12}
-          color="#6B6B6B"
-        />
-      </Pressable>
-      {open ? (
-        <View
-          className="rounded-lg overflow-hidden"
-          style={{
-            position: "absolute",
-            top: 36,
-            right: 0,
-            backgroundColor: "#FFFFFF",
-            borderWidth: 1,
-            borderColor: "#E8E3DB",
-            zIndex: 50,
-            minWidth: 120,
-            maxHeight: 240,
-          }}
-        >
-          <ScrollView>
-            {MEAL_UNITS.map((u, idx) => (
-              <Pressable
-                key={u}
-                onPress={() => {
-                  onChange(u);
-                  setOpen(false);
-                }}
-                className="px-3 py-2 active:opacity-70"
-                style={
-                  idx > 0
-                    ? { borderTopWidth: 1, borderTopColor: "#F2EDE4" }
-                    : undefined
-                }
-              >
-                <Text style={{ fontSize: 13, color: "#1A1A1A" }}>
-                  {t(`meals.units.${u}`)}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      ) : null}
-    </View>
   );
 }
 
