@@ -357,6 +357,7 @@ export function BreakdownTab({
                     <Pressable
                       onPress={() => setRibFor(to)}
                       hitSlop={6}
+                      nativeID={`rib-button-${to.user_id}`}
                       className="px-3 py-1.5 rounded-full active:opacity-70"
                       style={{
                         backgroundColor: "#FEF3C7",
@@ -452,6 +453,7 @@ export function BreakdownTab({
                       <Pressable
                         onPress={() => setRibFor(to)}
                         hitSlop={6}
+                        nativeID={`rib-button-${to.user_id}`}
                         className="px-3 py-1.5 rounded-full active:opacity-70"
                         style={{ backgroundColor: "#FEF3C7" }}
                       >

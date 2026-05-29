@@ -102,7 +102,10 @@ function ToolCard({
   });
   const isRestricted = tool.event_tool_visibility !== "all";
   return (
-    <Card className="mb-3 overflow-hidden p-0">
+    <Card
+      className="mb-3 overflow-hidden p-0"
+      nativeID={`tool-card-${tool.event_tool_id}`}
+    >
       <Pressable
         onPress={onPress}
         className="flex-row items-center p-1 active:opacity-90"
@@ -724,6 +727,7 @@ export default function EventDetailScreen() {
                 }))}
                 onPress={() => setInviteOpen(true)}
                 className="mr-3"
+                nativeID="event-participants-stack"
               />
               <Pressable
                 onPress={() => setInviteOpen(true)}
@@ -766,6 +770,7 @@ export default function EventDetailScreen() {
                 <Pressable
                   onPress={() => setNewToolOpen(true)}
                   accessibilityLabel={t("events.detail.addTool")}
+                  nativeID="event-add-tool-button"
                   className="items-center justify-center rounded-full active:opacity-70"
                   style={{
                     width: 28,

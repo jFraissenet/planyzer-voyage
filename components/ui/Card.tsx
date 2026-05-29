@@ -52,7 +52,12 @@ export function Card({
   }
 
   return (
-    <View className={classes} style={mergedStyle}>
+    <View
+      className={classes}
+      style={mergedStyle}
+      nativeID={props.nativeID}
+      testID={props.testID}
+    >
       {children}
     </View>
   );

@@ -16,6 +16,7 @@ type Props = {
   maxDesktop?: number;
   onPress?: () => void;
   className?: string;
+  nativeID?: string;
 };
 
 const AVATAR_PX = 32;
@@ -97,6 +98,7 @@ export function AvatarStack({
   maxDesktop = 6,
   onPress,
   className = "",
+  nativeID,
 }: Props) {
   const isMobile = useIsMobile();
   const max = isMobile ? maxMobile : maxDesktop;
@@ -104,7 +106,10 @@ export function AvatarStack({
   const remaining = participants.length - visible.length;
 
   const content = (
-    <View className={`flex-row items-center ${className}`}>
+    <View
+      className={`flex-row items-center ${className}`}
+      nativeID={onPress ? undefined : nativeID}
+    >
       {visible.map((p, idx) => (
         <View
           key={p.id}
@@ -138,7 +143,11 @@ export function AvatarStack({
 
   if (onPress) {
     return (
-      <Pressable onPress={onPress} className="active:opacity-70">
+      <Pressable
+        onPress={onPress}
+        className="active:opacity-70"
+        nativeID={nativeID}
+      >
         {content}
       </Pressable>
     );

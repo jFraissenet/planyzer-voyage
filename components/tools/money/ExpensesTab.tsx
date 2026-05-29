@@ -25,6 +25,7 @@ function ExpenseRow({
       pressable
       onPress={onPress}
       className="mb-3 overflow-hidden p-0"
+      nativeID={`expense-card-${expense.expense_id}`}
     >
       <View className="flex-row p-4 items-start">
         <View

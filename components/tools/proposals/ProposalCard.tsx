@@ -207,7 +207,10 @@ export function ProposalCard({
   };
 
   return (
-    <Card className="mb-3 overflow-hidden p-0">
+    <Card
+      className="mb-3 overflow-hidden p-0"
+      nativeID={`proposal-card-${proposal.proposal_id}`}
+    >
       <Pressable onPress={onOpen} className="active:opacity-90">
         {coverUrl ? (
           <Image

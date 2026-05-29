@@ -14,7 +14,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import { EditEventModal } from "@/components/EditEventModal";
-import { NewEventModal } from "@/components/NewEventModal";
+import { NewEventModal, type DemoEventFill } from "@/components/NewEventModal";
 import { Card, FAB, ScreenHeader, Text } from "@/components/ui";
 import {
   Event,
@@ -25,6 +25,18 @@ import {
 } from "@/lib/events";
 import { useIsMobile } from "@/lib/responsive";
 import { theme } from "@/lib/theme";
+import { useTutorialAction } from "@/lib/tutorials/useTutorialAction";
+
+// Pre-filled values shown when the New Event modal is opened by the tutorial,
+// so the "fill in your event" step looks like a real creation. Module-level
+// so the reference stays stable across renders.
+const DEMO_EVENT_FILL: DemoEventFill = {
+  title: "Anniversaire de Léa 🎂",
+  description: "On fête les 30 ans de Léa ! Apéro, gâteau et bonne humeur.",
+  start: "2026-06-20T19:00",
+  end: "2026-06-20T23:30",
+  location: "Chez Marc, Lyon",
+};
 
 function formatDateRange(
   start: string | null,
@@ -112,6 +124,7 @@ function EventRow({
           ? undefined
           : () => router.push(`/events/${event.event_id}`)
       }
+      nativeID={`event-card-${event.event_id}`}
       className="mb-3 overflow-hidden p-0"
       style={archivedMode ? { backgroundColor: "#FFFBEB" } : undefined}
     >
@@ -271,6 +284,7 @@ export default function EventsScreen() {
   const { t, i18n } = useTranslation();
   const [showArchived, setShowArchived] = useState(false);
   const [newEventOpen, setNewEventOpen] = useState(false);
+  const [newEventDemo, setNewEventDemo] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [mine, setMine] = useState<Event[]>([]);
   const [shared, setShared] = useState<Event[]>([]);
@@ -314,6 +328,26 @@ export default function EventsScreen() {
       setRefreshing(false);
     }
   }, [load]);
+
+  // Tutorial hooks: open the creation form pre-filled, then close it.
+  useTutorialAction("open-new-event", () => {
+    setNewEventDemo(true);
+    setNewEventOpen(true);
+  });
+  useTutorialAction("close-all", () => {
+    setNewEventOpen(false);
+    setNewEventDemo(false);
+  });
+
+  const openNewEvent = useCallback(() => {
+    setNewEventDemo(false);
+    setNewEventOpen(true);
+  }, []);
+
+  const closeNewEvent = useCallback(() => {
+    setNewEventOpen(false);
+    setNewEventDemo(false);
+  }, []);
 
   const showCreateBanner = !loading && mine.length === 0 && !showArchived;
 
@@ -382,8 +416,9 @@ export default function EventsScreen() {
 
           {showCreateBanner ? (
             <Pressable
-              onPress={() => setNewEventOpen(true)}
+              onPress={openNewEvent}
               accessibilityLabel={t("events.newButton")}
+              nativeID="event-create-banner"
               className="active:opacity-90 mb-6 overflow-hidden rounded-2xl"
             >
               <LinearGradient
@@ -463,15 +498,17 @@ export default function EventsScreen() {
       )}
       {!showCreateBanner && !showArchived ? (
         <FAB
-          onPress={() => setNewEventOpen(true)}
+          onPress={openNewEvent}
           accessibilityLabel={t("events.newButton")}
+          nativeID="event-create-fab"
         />
       ) : null}
       <NewEventModal
         visible={newEventOpen}
-        onClose={() => setNewEventOpen(false)}
+        demoFill={newEventDemo ? DEMO_EVENT_FILL : null}
+        onClose={closeNewEvent}
         onCreated={() => {
-          setNewEventOpen(false);
+          closeNewEvent();
           load();
         }}
       />

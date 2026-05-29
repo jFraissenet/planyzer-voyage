@@ -39,14 +39,27 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
+export type DemoEventFill = {
+  title: string;
+  description: string;
+  start: string;
+  end: string;
+  location: string;
+};
+
 export function NewEventModal({
   visible,
   onClose,
   onCreated,
+  demoFill,
 }: {
   visible: boolean;
   onClose: () => void;
   onCreated: () => void;
+  // When set (tutorial mode), the form opens pre-filled with these values
+  // and the details section expanded, so the step can showcase a realistic
+  // creation flow. Submitting still works normally.
+  demoFill?: DemoEventFill | null;
 }) {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
@@ -73,8 +86,15 @@ export function NewEventModal({
       setDetailsOpen(false);
       setErrors({});
       setSubmitting(false);
+    } else if (demoFill) {
+      setTitle(demoFill.title);
+      setDescription(demoFill.description);
+      setStart(demoFill.start);
+      setEnd(demoFill.end);
+      setLocation(demoFill.location);
+      setDetailsOpen(true);
     }
-  }, [visible]);
+  }, [visible, demoFill]);
 
   const handleSubmit = async () => {
     const next: typeof errors = {};
@@ -156,6 +176,7 @@ export function NewEventModal({
                 value={title}
                 onChangeText={setTitle}
                 error={errors.title}
+                nativeID="new-event-title"
                 autoFocus
                 required
               />
@@ -226,6 +247,7 @@ export function NewEventModal({
               <Button
                 variant="cta"
                 size="lg"
+                nativeID="new-event-submit"
                 label={
                   submitting
                     ? t("events.new.submitting")

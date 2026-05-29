@@ -16,6 +16,7 @@ import {
   getMyPaymentInfo,
   updateMyPaymentInfo,
 } from "@/lib/payment";
+import { useTutorial } from "@/lib/tutorials/TutorialContext";
 import { theme } from "@/lib/theme";
 
 const languages = [
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const [langOpen, setLangOpen] = useState(false);
   const { session } = useSession();
+  const { openPrompt } = useTutorial();
   const currentLang =
     languages.find((l) => l.code === i18n.language) ?? languages[1];
   const user = session?.user;
@@ -214,6 +216,13 @@ export default function ProfileScreen() {
           disabled={paymentBusy}
         />
       </Card>
+
+        <Button
+          label="Revoir le tutoriel"
+          variant="outline"
+          onPress={openPrompt}
+          className="mb-3"
+        />
 
         <Button
           label={t("profile.logout")}

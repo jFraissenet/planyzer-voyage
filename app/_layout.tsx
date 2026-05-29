@@ -10,9 +10,11 @@ import {
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ToastProvider } from "@/components/ui";
+import { TutorialOrchestrator } from "@/components/tutorial/TutorialOrchestrator";
 import { consumePendingInvite } from "@/lib/pendingInvite";
 import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { SessionProvider, useSession } from "@/lib/useSession";
+import { TutorialProvider } from "@/lib/tutorials/TutorialContext";
 
 function WebFrame({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
@@ -82,6 +84,7 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="invite/[token]" />
       </Stack>
+      <TutorialOrchestrator />
     </WebFrame>
   );
 }
@@ -89,10 +92,12 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <SessionProvider>
-      <ToastProvider>
-        <StatusBar style="dark" />
-        <RootLayoutNav />
-      </ToastProvider>
+      <TutorialProvider>
+        <ToastProvider>
+          <StatusBar style="dark" />
+          <RootLayoutNav />
+        </ToastProvider>
+      </TutorialProvider>
     </SessionProvider>
   );
 }

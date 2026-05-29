@@ -11,6 +11,7 @@ import {
   type Settlement,
 } from "@/lib/expenses";
 import { useSession } from "@/lib/useSession";
+import { useTutorialAction } from "@/lib/tutorials/useTutorialAction";
 import { BreakdownTab } from "./money/BreakdownTab";
 import { ExpenseEditModal } from "./money/ExpenseEditModal";
 import { ExpensesTab } from "./money/ExpensesTab";
@@ -102,6 +103,25 @@ export function MoneyTool(props: ToolProps) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Tutorial hooks.
+  useTutorialAction("set-money-tab", (action) => {
+    setTab(action.tab);
+  });
+  useTutorialAction("open-edit-expense", (action) => {
+    const expense = expenses.find((e) => e.expense_id === action.expenseId);
+    if (expense) {
+      setTab("expenses");
+      setEditing(expense);
+      setCreating(false);
+      setSettle(null);
+    }
+  });
+  useTutorialAction("close-all", () => {
+    setEditing(null);
+    setCreating(false);
+    setSettle(null);
+  });
 
   const memberById = new Map(members.map((m) => [m.user_id, m]));
 

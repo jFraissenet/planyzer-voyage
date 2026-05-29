@@ -12,6 +12,7 @@ interface Props {
   icon?: IconName;
   label?: string;
   accessibilityLabel?: string;
+  nativeID?: string;
 }
 
 export function FAB({
@@ -19,6 +20,7 @@ export function FAB({
   icon = "add",
   label,
   accessibilityLabel,
+  nativeID,
 }: Props) {
   const isMobile = useIsMobile();
   const size = isMobile ? 64 : 76;
@@ -29,6 +31,7 @@ export function FAB({
       <Pressable
         onPress={onPress}
         accessibilityLabel={accessibilityLabel ?? label ?? "Add"}
+        nativeID={nativeID}
         style={{ borderRadius: radius }}
       >
         {({ pressed }) => (

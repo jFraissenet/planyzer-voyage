@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AvatarStack, ScreenHeader, Text } from "@/components/ui";
 import type { EventTool, ToolParticipant } from "@/lib/events";
 import type { MyEventTeam } from "@/lib/teams";
+import { useTutorial } from "@/lib/tutorials/TutorialContext";
 import { theme } from "@/lib/theme";
 import { TeamMembersListModal } from "./teams/TeamMembersListModal";
 
@@ -43,6 +44,7 @@ export function ToolShell({
   const [viewerOpen, setViewerOpen] = useState(false);
   const openViewer = () => setViewerOpen(true);
   const handleAvatarPress = canManage ? onManageMembers : openViewer;
+  const { openPrompt } = useTutorial();
 
   return (
     <View className="flex-1 bg-background">
@@ -52,6 +54,9 @@ export function ToolShell({
         onBack={onBack}
         onTitlePress={isToolAdmin && onEdit ? onEdit : undefined}
         actionLabel={t("events.editTool.action")}
+        onSecondaryAction={openPrompt}
+        secondaryActionIcon="help-circle-outline"
+        secondaryActionLabel="Tutoriel"
       />
       <ScrollView
         contentContainerStyle={{

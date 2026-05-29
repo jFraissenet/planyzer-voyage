@@ -11,6 +11,7 @@ import {
   releaseTeamResponsable,
   type EventToolTeam,
 } from "@/lib/teams";
+import { useTutorialAction } from "@/lib/tutorials/useTutorialAction";
 import { useSession } from "@/lib/useSession";
 import { theme } from "@/lib/theme";
 import { ToolShell, type ToolProps } from "../ToolShell";
@@ -77,7 +78,10 @@ function TeamCard({
     !!team.responsable_id && team.responsable_id === currentUserId;
   const hasResponsable = !!team.responsable_id;
   return (
-    <View className="relative mb-3">
+    <View
+      className="relative mb-3"
+      nativeID={`team-card-${team.team_id}`}
+    >
       {youAreIn ? (
         <View
           accessibilityLabel={t("teams.yourTeamBadge")}
@@ -391,6 +395,23 @@ export function TeamsTool(props: ToolProps) {
 
   const canEditTeam = (team: EventToolTeam): boolean =>
     team.author_id === currentUserId || props.isToolAdmin;
+
+  // Tutorial hooks — let the engine open / close the team edit modal.
+  useTutorialAction("open-edit-team", (action) => {
+    const team = teams.find((tt) => tt.team_id === action.teamId);
+    if (team) {
+      setEditing(team);
+      setDetail(null);
+      setCreating(false);
+      setMembersOf(null);
+    }
+  });
+  useTutorialAction("close-all", () => {
+    setEditing(null);
+    setDetail(null);
+    setCreating(false);
+    setMembersOf(null);
+  });
 
   return (
     <>
