@@ -51,6 +51,7 @@ export function EditTeamModal({
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
+  const [description, setDescription] = useState("");
   const [color, setColor] = useState("#10B981");
   const [hasTime, setHasTime] = useState(true);
   const [startsAt, setStartsAt] = useState("");
@@ -70,6 +71,7 @@ export function EditTeamModal({
     if (!visible) return;
     setName(existing?.name ?? "");
     setType(existing?.type ?? "");
+    setDescription(existing?.description ?? "");
     setColor(existing?.color ?? "#10B981");
     setHasTime(existing?.has_time ?? true);
     setStartsAt(isoToLocalInput(existing?.starts_at ?? null));
@@ -137,6 +139,7 @@ export function EditTeamModal({
         tool_id: toolId,
         name: nameTrim,
         type: type.trim() ? type.trim() : null,
+        description: description.trim() ? description.trim() : null,
         color,
         starts_at: startIso,
         ends_at: endIso,
@@ -240,6 +243,16 @@ export function EditTeamModal({
               placeholder={t("teams.typePlaceholder")}
               value={type}
               onChangeText={setType}
+            />
+
+            <Input
+              label={t("teams.descriptionLabel")}
+              placeholder={t("teams.descriptionPlaceholder")}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              style={{ minHeight: 72, textAlignVertical: "top" }}
             />
 
             <Input

@@ -124,6 +124,8 @@
     "editTool": {
       "title": "Editar herramienta",
       "subtitle": "Cambia el nombre o la visibilidad",
+      "descriptionLabel": "Descripción (opcional)",
+      "descriptionPlaceholder": "Ej. para qué sirve esta herramienta…",
       "memberBadgeLabel": "Etiqueta del distintivo «miembro»",
       "action": "Editar",
       "save": "Guardar",
@@ -718,6 +720,8 @@
     "namePlaceholder": "Ej. Equipo de cocina",
     "typeLabel": "Tipo (opcional)",
     "typePlaceholder": "Ej. staff, torneo…",
+    "descriptionLabel": "Descripción (opcional)",
+    "descriptionPlaceholder": "Ej. info, instrucciones, detalles…",
     "colorLabel": "Color",
     "hasTimeLabel": "Con hora específica",
     "startsAtLabel": "Inicio",

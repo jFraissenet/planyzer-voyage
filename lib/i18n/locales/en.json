@@ -124,6 +124,8 @@
     "editTool": {
       "title": "Edit tool",
       "subtitle": "Change the name or visibility",
+      "descriptionLabel": "Description (optional)",
+      "descriptionPlaceholder": "e.g. what this tool is for…",
       "memberBadgeLabel": "\"Member\" badge label",
       "action": "Edit",
       "save": "Save",
@@ -718,6 +720,8 @@
     "namePlaceholder": "e.g. Kitchen crew",
     "typeLabel": "Type (optional)",
     "typePlaceholder": "e.g. staff, tournament…",
+    "descriptionLabel": "Description (optional)",
+    "descriptionPlaceholder": "e.g. info, instructions, details…",
     "colorLabel": "Color",
     "hasTimeLabel": "With a specific time",
     "startsAtLabel": "Start",

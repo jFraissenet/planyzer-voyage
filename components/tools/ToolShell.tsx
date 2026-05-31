@@ -42,6 +42,10 @@ export function ToolShell({
   const isRestricted = tool.event_tool_visibility === "restricted";
   const isTeams = tool.event_tool_visibility === "teams";
   const isPublic = tool.event_tool_visibility === "all";
+  const description =
+    typeof tool.event_tool_settings?.description === "string"
+      ? (tool.event_tool_settings.description as string).trim()
+      : "";
   const canManage = isToolAdmin && isRestricted;
   const showWarning = canManage && participants.length <= 1;
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -141,6 +145,16 @@ export function ToolShell({
           ) : null}
           {headerActions}
         </View>
+
+        {description ? (
+          <Text
+            variant="body"
+            className="mb-6"
+            style={{ fontSize: 14, color: "#4B4B4B", lineHeight: 20 }}
+          >
+            {description}
+          </Text>
+        ) : null}
 
         {showWarning ? (
           <View

@@ -10,6 +10,7 @@ export type EventToolTeam = {
   team_id: string;
   name: string;
   type: string | null;
+  description: string | null;
   color: string;
   starts_at: string | null;
   ends_at: string | null;
@@ -47,6 +48,7 @@ export type UpsertTeamInput = {
   tool_id: string;
   name: string;
   type: string | null;
+  description: string | null;
   color: string;
   starts_at: string | null;
   ends_at: string | null;
@@ -64,6 +66,7 @@ export async function upsertEventToolTeam(
     p_tool_id: input.tool_id,
     p_name: input.name,
     p_type: input.type ?? "",
+    p_description: input.description ?? "",
     p_color: input.color,
     p_starts_at: input.starts_at,
     p_ends_at: input.ends_at,

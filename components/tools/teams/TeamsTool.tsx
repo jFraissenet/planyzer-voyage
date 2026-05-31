@@ -264,6 +264,16 @@ function TeamCard({
         ) : null}
       </View>
 
+      {team.description ? (
+        <Text
+          variant="body"
+          className="mt-3"
+          style={{ fontSize: 13, color: "#4B4B4B", lineHeight: 18 }}
+        >
+          {team.description}
+        </Text>
+      ) : null}
+
       <View
         className="flex-row items-center mt-3"
         style={{ gap: 8, flexWrap: "wrap" }}

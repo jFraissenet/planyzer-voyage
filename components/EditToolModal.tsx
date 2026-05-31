@@ -49,6 +49,9 @@ export function EditToolModal({
   const confirm = useConfirm();
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState<Visibility>("all");
+  // Optional tool-level description, shown at the top of the tool under the
+  // participants (stored in event_tool_settings.description).
+  const [description, setDescription] = useState("");
   // Teams tool only: custom text for the "you're a member" badge shown on
   // joined cards (e.g. "Votre chambre", "Votre équipe cuisine").
   const [memberBadgeLabel, setMemberBadgeLabel] = useState("");
@@ -62,6 +65,11 @@ export function EditToolModal({
     if (visible && tool) {
       setName(tool.event_tool_name);
       setVisibility(tool.event_tool_visibility);
+      setDescription(
+        typeof tool.event_tool_settings?.description === "string"
+          ? (tool.event_tool_settings.description as string)
+          : "",
+      );
       setMemberBadgeLabel(
         typeof tool.event_tool_settings?.member_badge_label === "string"
           ? (tool.event_tool_settings.member_badge_label as string)
@@ -141,19 +149,17 @@ export function EditToolModal({
     setError(null);
     setBusy(true);
     try {
-      const settingsPatch =
-        tool.event_tool_type_code === "teams"
-          ? {
-              event_tool_settings: {
-                ...tool.event_tool_settings,
-                member_badge_label: memberBadgeLabel.trim() || null,
-              },
-            }
-          : {};
+      const mergedSettings: Record<string, unknown> = {
+        ...tool.event_tool_settings,
+        description: description.trim() || null,
+      };
+      if (tool.event_tool_type_code === "teams") {
+        mergedSettings.member_badge_label = memberBadgeLabel.trim() || null;
+      }
       await updateEventTool(tool.event_tool_id, {
         event_tool_name: name.trim(),
         event_tool_visibility: visibility,
-        ...settingsPatch,
+        event_tool_settings: mergedSettings,
       });
       if (visibility === "teams") {
         await setEventToolTeamsAccess(tool.event_tool_id, selectedTeamIds);
@@ -225,6 +231,17 @@ export function EditToolModal({
               autoFocus
               className="mb-5"
               required
+            />
+
+            <Input
+              label={t("events.editTool.descriptionLabel")}
+              placeholder={t("events.editTool.descriptionPlaceholder")}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              className="mb-5"
+              style={{ minHeight: 72, textAlignVertical: "top" }}
             />
 
             {tool?.event_tool_type_code === "teams" ? (
