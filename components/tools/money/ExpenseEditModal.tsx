@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   TextInput,
   View,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Avatar, Button, Input, Text } from "@/components/ui";
+import { Avatar, Button, Input, Text, useConfirm } from "@/components/ui";
 import {
   computeExpenseShares,
   createExpense,
@@ -75,6 +73,7 @@ export function ExpenseEditModal({
   onSaved,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const isEdit = !!existing;
 
   const [label, setLabel] = useState("");
@@ -205,22 +204,15 @@ export function ExpenseEditModal({
     (existing.creator_id === currentUserId ||
       existing.paid_by === currentUserId);
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!existing) return;
-    const msg = t("money.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("money.cancel"), style: "cancel" },
-      {
-        text: t("money.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("money.deleteConfirm"),
+      confirmLabel: t("money.delete"),
+      cancelLabel: t("money.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {

@@ -686,46 +686,34 @@ export default function EventDetailScreen() {
           />
           <ScrollView contentContainerStyle={{ paddingBottom: 120, paddingTop: 20 }}>
             {event.event_location ? (
-              <View
-                className="px-3 mb-3 flex-row items-center"
+              <Pressable
+                onPress={() => {
+                  const loc = event?.event_location;
+                  if (loc) {
+                    Linking.openURL(buildMapsUrlFromText(loc)).catch(
+                      () => undefined,
+                    );
+                  }
+                }}
+                accessibilityLabel={t("events.detail.openInMaps")}
+                hitSlop={6}
+                className="px-3 mb-3 flex-row items-center active:opacity-60"
                 style={{ gap: 6 }}
               >
-                <Ionicons
-                  name="location-outline"
-                  size={16}
-                  color={theme.sectionLabel}
-                />
-                <Text variant="body" className="flex-1">
-                  {event.event_location}
-                </Text>
-                <Pressable
-                  onPress={() => {
-                    const loc = event?.event_location;
-                    if (loc) {
-                      Linking.openURL(buildMapsUrlFromText(loc)).catch(
-                        () => undefined,
-                      );
-                    }
-                  }}
-                  accessibilityLabel={t("events.detail.openInMaps")}
-                  hitSlop={6}
-                  className="flex-row items-center rounded-full active:opacity-70"
+                <Ionicons name="location" size={15} color={theme.primary} />
+                <Text
+                  numberOfLines={1}
                   style={{
-                    gap: 4,
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    backgroundColor: theme.primarySoft,
+                    flex: 1,
+                    color: theme.primary,
+                    fontWeight: "600",
+                    textDecorationLine: "underline",
                   }}
                 >
-                  <Ionicons name="navigate" size={13} color={theme.primary} />
-                  <Text
-                    variant="caption"
-                    style={{ color: theme.primary, fontWeight: "700" }}
-                  >
-                    {t("events.detail.openInMaps")}
-                  </Text>
-                </Pressable>
-              </View>
+                  {event.event_location}
+                </Text>
+                <Ionicons name="open-outline" size={14} color={theme.primary} />
+              </Pressable>
             ) : null}
             {event.event_description ? (
               <View className="px-3 mb-6">

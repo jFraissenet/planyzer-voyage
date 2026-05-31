@@ -23,6 +23,7 @@ import { SeatLayoutPreview } from "./carpool/SeatLayout";
 import { VehicleDetailModal } from "./carpool/VehicleDetailModal";
 import { VehicleEditModal } from "./carpool/VehicleEditModal";
 import { ToolShell, type ToolProps } from "./ToolShell";
+import { ToolEmptyBanner } from "./ToolEmptyBanner";
 import { theme } from "@/lib/theme";
 
 function initialsOf(name: string | null): string {
@@ -386,9 +387,11 @@ export function CarSharingTool(props: ToolProps) {
     <>
       <ToolShell {...props}>
         {vehicles.length === 0 ? (
-          <View className="py-10 items-center">
-            <Text variant="caption">{t("carpool.empty")}</Text>
-          </View>
+          <ToolEmptyBanner
+            title={t("carpool.addVehicle")}
+            subtitle={t("carpool.empty")}
+            onPress={() => setCreating(true)}
+          />
         ) : (
           vehicles.map((v) => (
             <VehicleCard
@@ -405,11 +408,13 @@ export function CarSharingTool(props: ToolProps) {
         )}
       </ToolShell>
 
-      <FAB
-        icon="add"
-        onPress={() => setCreating(true)}
-        accessibilityLabel={t("carpool.addVehicle")}
-      />
+      {vehicles.length > 0 ? (
+        <FAB
+          icon="add"
+          onPress={() => setCreating(true)}
+          accessibilityLabel={t("carpool.addVehicle")}
+        />
+      ) : null}
 
       <VehicleEditModal
         mode="create"

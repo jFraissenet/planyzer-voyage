@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   Linking,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   View,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Avatar, Button, Input, Text, useToast } from "@/components/ui";
+import { Avatar, Button, Input, Text, useConfirm, useToast } from "@/components/ui";
 import {
   addSeatLabel,
   addSeatUser,
@@ -80,6 +78,7 @@ export function VehicleDetailModal({
 }: Props) {
   const { t } = useTranslation();
   const { show: showToast } = useToast();
+  const confirm = useConfirm();
   const isMobile = useIsMobile();
   const titlePencilSize = isMobile ? 14 : 18;
   const journeyIconSize = isMobile ? 11 : 14;
@@ -144,8 +143,7 @@ export function VehicleDetailModal({
     confirmRemoveSeat(seat.seat_index);
   };
 
-  const confirmRemoveSeat = (seatIndex: number) => {
-    const msg = t("carpool.removeSeatConfirm");
+  const confirmRemoveSeat = async (seatIndex: number) => {
     const run = async () => {
       setBusy(true);
       try {
@@ -159,19 +157,13 @@ export function VehicleDetailModal({
         setBusy(false);
       }
     };
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void run();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("carpool.cancel"), style: "cancel" },
-      {
-        text: t("carpool.removeSeat"),
-        style: "destructive",
-        onPress: () => void run(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("carpool.removeSeatConfirm"),
+      confirmLabel: t("carpool.removeSeat"),
+      cancelLabel: t("carpool.cancel"),
+      destructive: true,
+    });
+    if (ok) void run();
   };
 
   const handleSeatConflict = async () => {
@@ -233,8 +225,7 @@ export function VehicleDetailModal({
     }
   };
 
-  const confirmDeleteVehicle = () => {
-    const msg = t("carpool.deleteConfirm");
+  const confirmDeleteVehicle = async () => {
     const run = async () => {
       setBusy(true);
       try {
@@ -244,19 +235,13 @@ export function VehicleDetailModal({
         setBusy(false);
       }
     };
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void run();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("carpool.cancel"), style: "cancel" },
-      {
-        text: t("carpool.delete"),
-        style: "destructive",
-        onPress: () => void run(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("carpool.deleteConfirm"),
+      confirmLabel: t("carpool.delete"),
+      cancelLabel: t("carpool.cancel"),
+      destructive: true,
+    });
+    if (ok) void run();
   };
 
   const departureDate = formatDate(vehicle.departure_date, locale);

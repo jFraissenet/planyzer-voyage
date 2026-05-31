@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Modal, Pressable, ScrollView, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,6 +7,7 @@ import {
   DateTimeInput,
   Input,
   Text,
+  useConfirm,
 } from "@/components/ui";
 import { listParticipants, type ParticipantEntry } from "@/lib/events";
 import {
@@ -53,6 +47,7 @@ export function EditTeamModal({
   onSaved,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -166,22 +161,15 @@ export function EditTeamModal({
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!existing) return;
-    const msg = t("teams.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("teams.cancel"), style: "cancel" },
-      {
-        text: t("teams.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("teams.deleteConfirm"),
+      confirmLabel: t("teams.delete"),
+      cancelLabel: t("teams.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {

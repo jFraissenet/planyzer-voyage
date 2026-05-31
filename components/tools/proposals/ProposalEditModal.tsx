@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   Image,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   TextInput,
@@ -11,7 +9,14 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { AddressInput, Button, DateTimeInput, Input, Text } from "@/components/ui";
+import {
+  AddressInput,
+  Button,
+  DateTimeInput,
+  Input,
+  Text,
+  useConfirm,
+} from "@/components/ui";
 import {
   createEventToolProposal,
   deleteEventToolProposal,
@@ -127,6 +132,7 @@ export function ProposalEditModal({
   const isPlace = proposalMode === "place";
   const isGift = proposalMode === "gift";
   const { t } = useTranslation();
+  const confirm = useConfirm();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -350,22 +356,15 @@ export function ProposalEditModal({
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!existing || mode !== "edit") return;
-    const msg = t("proposals.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("proposals.cancel"), style: "cancel" },
-      {
-        text: t("proposals.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("proposals.deleteConfirm"),
+      confirmLabel: t("proposals.delete"),
+      cancelLabel: t("proposals.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {

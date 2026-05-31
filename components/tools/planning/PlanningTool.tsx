@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Text } from "@/components/ui";
+import { FAB, Text } from "@/components/ui";
 import {
   listEventToolPlanningSlots,
   type PlanningSlot,
@@ -173,7 +173,7 @@ export function PlanningTool(props: ToolProps) {
   return (
     <>
       <ToolShell {...props}>
-        {/* View toggle + add, all on one compact row of icons. */}
+        {/* View toggle row. Creating a slot is the floating + button. */}
         <View
           className="flex-row items-center mb-4"
           style={{ gap: 8 }}
@@ -205,19 +205,6 @@ export function PlanningTool(props: ToolProps) {
               onPress={() => setView("list")}
             />
           </View>
-          <View style={{ flex: 1 }} />
-          <Pressable
-            onPress={handleAddPress}
-            accessibilityLabel={t("planning.add")}
-            className="rounded-full items-center justify-center active:opacity-80"
-            style={{
-              width: 36,
-              height: 36,
-              backgroundColor: theme.primary,
-            }}
-          >
-            <Ionicons name="add" size={20} color="#FFFFFF" />
-          </Pressable>
         </View>
 
         {view === "days" ? (
@@ -357,6 +344,12 @@ export function PlanningTool(props: ToolProps) {
           </>
         )}
       </ToolShell>
+
+      <FAB
+        icon="add"
+        onPress={handleAddPress}
+        accessibilityLabel={t("planning.add")}
+      />
 
       <SlotEditModal
         mode="create"

@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Modal, Pressable, ScrollView, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { AddressInput, Avatar, Button, DateTimeInput, Input, Text } from "@/components/ui";
+import {
+  AddressInput,
+  Avatar,
+  Button,
+  DateTimeInput,
+  Input,
+  Text,
+  useConfirm,
+} from "@/components/ui";
 import { listParticipants, type ParticipantEntry } from "@/lib/events";
 import {
   deleteEventToolPlanningSlot,
@@ -73,6 +74,7 @@ export function SlotEditModal({
   onSaved,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -242,22 +244,15 @@ export function SlotEditModal({
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!existing) return;
-    const msg = t("planning.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("planning.cancel"), style: "cancel" },
-      {
-        text: t("planning.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("planning.deleteConfirm"),
+      confirmLabel: t("planning.delete"),
+      cancelLabel: t("planning.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {
@@ -373,24 +368,20 @@ export function SlotEditModal({
               </View>
             </Pressable>
 
-            <View className="flex-row" style={{ gap: 8 }}>
-              <View className="flex-1">
-                <DateTimeInput
-                  label={t("planning.startsAtLabel")}
-                  value={startsAt}
-                  onChange={setStartsAt}
-                  mode={hasTime ? "datetime" : "date"}
-                  required
-                />
-              </View>
-              <View className="flex-1">
-                <DateTimeInput
-                  label={t("planning.endsAtLabel")}
-                  value={endsAt}
-                  onChange={setEndsAt}
-                  mode={hasTime ? "datetime" : "date"}
-                />
-              </View>
+            <View style={{ gap: 12 }}>
+              <DateTimeInput
+                label={t("planning.startsAtLabel")}
+                value={startsAt}
+                onChange={setStartsAt}
+                mode={hasTime ? "datetime" : "date"}
+                required
+              />
+              <DateTimeInput
+                label={t("planning.endsAtLabel")}
+                value={endsAt}
+                onChange={setEndsAt}
+                mode={hasTime ? "datetime" : "date"}
+              />
             </View>
 
             <View

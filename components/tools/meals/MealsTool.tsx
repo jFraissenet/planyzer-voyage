@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Modal, Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Text } from "@/components/ui";
+import { FAB, Text } from "@/components/ui";
 import {
   listEventToolMealRecipes,
   type MealRecipe,
@@ -15,6 +15,7 @@ import { RecipeCataloguePicker } from "./RecipeCataloguePicker";
 import { RecipeDetailModal } from "./RecipeDetailModal";
 import { RecipeEditModal } from "./RecipeEditModal";
 import { ToolShell, type ToolProps } from "../ToolShell";
+import { ToolEmptyBanner } from "../ToolEmptyBanner";
 import { theme } from "@/lib/theme";
 
 type MealsTab = "recipes" | "shopping";
@@ -73,29 +74,12 @@ export function MealsTool(props: ToolProps) {
         </View>
 
         {tab === "recipes" ? (
-          <Pressable
-            onPress={() => setAddMenuOpen(true)}
-            accessibilityLabel={t("meals.addMenu.title")}
-            className="flex-row items-center justify-center mb-4 py-3 rounded-lg active:opacity-80"
-            style={{
-              backgroundColor: theme.primary,
-              gap: 6,
-            }}
-          >
-            <Ionicons name="add" size={18} color="#FFFFFF" />
-            <Text style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 14 }}>
-              {t("meals.addMenu.title")}
-            </Text>
-          </Pressable>
-        ) : null}
-
-        {tab === "recipes" ? (
           recipes.length === 0 ? (
-            <View className="py-10 items-center">
-              <Text variant="caption" className="text-center">
-                {t("meals.empty")}
-              </Text>
-            </View>
+            <ToolEmptyBanner
+              title={t("meals.add")}
+              subtitle={t("meals.empty")}
+              onPress={() => setAddMenuOpen(true)}
+            />
           ) : (
             recipes.map((r) => (
               <RecipeCard
@@ -111,6 +95,14 @@ export function MealsTool(props: ToolProps) {
           <AggregatedIngredients recipes={recipes} />
         )}
       </ToolShell>
+
+      {tab === "recipes" && recipes.length > 0 ? (
+        <FAB
+          icon="add"
+          onPress={() => setAddMenuOpen(true)}
+          accessibilityLabel={t("meals.addMenu.title")}
+        />
+      ) : null}
 
       <AddMenu
         visible={addMenuOpen}

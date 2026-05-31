@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Alert, Modal, Platform, Pressable, View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Button, Input, Text } from "@/components/ui";
+import { Button, Input, Text, useConfirm } from "@/components/ui";
 
 type Props = {
   visible: boolean;
@@ -21,6 +21,7 @@ export function NoteEditModal({
   onDelete,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [text, setText] = useState(initialText);
   const [busy, setBusy] = useState(false);
 
@@ -31,21 +32,14 @@ export function NoteEditModal({
     }
   }, [visible, initialText]);
 
-  const confirmDelete = () => {
-    const msg = t("notes.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("notes.cancel"), style: "cancel" },
-      {
-        text: t("notes.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+  const confirmDelete = async () => {
+    const ok = await confirm({
+      title: t("notes.deleteConfirm"),
+      confirmLabel: t("notes.delete"),
+      cancelLabel: t("notes.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {

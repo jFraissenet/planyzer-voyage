@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Alert, Modal, Platform, Pressable, ScrollView, View } from "react-native";
+import { Modal, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Button, Input, Text } from "@/components/ui";
+import { Button, Input, Text, useConfirm } from "@/components/ui";
 import { deleteEventTool, updateEventTool, type EventTool } from "@/lib/events";
 import {
   getEventToolTeamsAccess,
@@ -46,6 +46,7 @@ export function EditToolModal({
   onDeleted,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState<Visibility>("all");
   const [error, setError] = useState<string | null>(null);
@@ -105,25 +106,18 @@ export function EditToolModal({
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!tool) return;
-    const title = t("events.editTool.deleteConfirm", {
-      name: tool.event_tool_name,
+    const ok = await confirm({
+      title: t("events.editTool.deleteConfirm", {
+        name: tool.event_tool_name,
+      }),
+      message: t("events.editTool.deleteConfirmBody"),
+      confirmLabel: t("events.editTool.delete"),
+      cancelLabel: t("common.cancel"),
+      destructive: true,
     });
-    const body = t("events.editTool.deleteConfirmBody");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(`${title}\n\n${body}`)) void doDelete();
-      return;
-    }
-    Alert.alert(title, body, [
-      { text: t("common.cancel"), style: "cancel" },
-      {
-        text: t("events.editTool.delete"),
-        style: "destructive",
-        onPress: () => void doDelete(),
-      },
-    ]);
+    if (ok) void doDelete();
   };
 
   const handleSubmit = async () => {

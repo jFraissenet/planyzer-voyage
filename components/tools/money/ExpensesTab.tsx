@@ -9,6 +9,7 @@ import {
   type Expense,
 } from "@/lib/expenses";
 import { firstName, initialsOf, useIsMobile } from "./shared";
+import { ToolEmptyBanner } from "../ToolEmptyBanner";
 import { theme } from "@/lib/theme";
 
 function ExpenseRow({
@@ -79,11 +80,13 @@ export function ExpensesTab({
   members,
   currentUserId,
   onOpenExpense,
+  onCreate,
 }: {
   expenses: Expense[];
   members: EffectiveMember[];
   currentUserId: string;
   onOpenExpense: (e: Expense) => void;
+  onCreate: () => void;
 }) {
   const { t } = useTranslation();
   const memberIds = members.map((m) => m.user_id);
@@ -104,9 +107,11 @@ export function ExpensesTab({
   return (
     <View>
       {expenses.length === 0 ? (
-        <View className="py-10 items-center">
-          <Text variant="caption">{t("money.empty")}</Text>
-        </View>
+        <ToolEmptyBanner
+          title={t("money.add")}
+          subtitle={t("money.empty")}
+          onPress={onCreate}
+        />
       ) : (
         <View className="mb-4">
           {expenses.map((e) => (

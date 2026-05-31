@@ -13,3 +13,5 @@ export { Separator } from "./Separator";
 export { Text } from "./Text";
 export { ToastProvider, useToast } from "./Toast";
 export type { ToastVariant } from "./Toast";
+export { ConfirmProvider, useConfirm } from "./ConfirmDialog";
+export type { ConfirmOptions } from "./ConfirmDialog";

@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   Dimensions,
   Image,
   Linking,
   Modal,
-  Platform,
   Pressable,
   ScrollView,
   TextInput,
@@ -13,7 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Avatar, Text } from "@/components/ui";
+import { Avatar, Text, useConfirm } from "@/components/ui";
 import {
   addEventToolProposalComment,
   deleteEventToolProposal,
@@ -127,6 +125,7 @@ export function ProposalDetailModal({
   onChanged,
 }: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [comments, setComments] = useState<EventToolProposalComment[]>([]);
   const [commentText, setCommentText] = useState("");
   const [commentBusy, setCommentBusy] = useState(false);
@@ -203,21 +202,14 @@ export function ProposalDetailModal({
     Linking.openURL(url).catch(() => undefined);
   };
 
-  const confirmDelete = () => {
-    const msg = t("proposals.deleteConfirm");
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void runDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("proposals.cancel"), style: "cancel" },
-      {
-        text: t("proposals.delete"),
-        style: "destructive",
-        onPress: () => runDelete(),
-      },
-    ]);
+  const confirmDelete = async () => {
+    const ok = await confirm({
+      title: t("proposals.deleteConfirm"),
+      confirmLabel: t("proposals.delete"),
+      cancelLabel: t("proposals.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   const runDelete = async () => {

@@ -115,6 +115,7 @@ export function MoneyTool(props: ToolProps) {
             members={members}
             currentUserId={currentUserId}
             onOpenExpense={setEditing}
+            onCreate={() => setCreating(true)}
           />
         ) : (
           <BreakdownTab
@@ -130,7 +131,7 @@ export function MoneyTool(props: ToolProps) {
         )}
       </ToolShell>
 
-      {tab === "expenses" ? (
+      {tab === "expenses" && expenses.length > 0 ? (
         <FAB
           icon="add"
           onPress={() => setCreating(true)}

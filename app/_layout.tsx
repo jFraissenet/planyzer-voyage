@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ToastProvider } from "@/components/ui";
+import { ConfirmProvider, ToastProvider } from "@/components/ui";
 import { consumePendingInvite } from "@/lib/pendingInvite";
 import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { SessionProvider, useSession } from "@/lib/useSession";
@@ -90,8 +90,10 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <ToastProvider>
-        <StatusBar style="dark" />
-        <RootLayoutNav />
+        <ConfirmProvider>
+          <StatusBar style="dark" />
+          <RootLayoutNav />
+        </ConfirmProvider>
       </ToastProvider>
     </SessionProvider>
   );

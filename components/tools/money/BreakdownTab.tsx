@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
-import { Alert, Platform, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { Avatar, Card, Text } from "@/components/ui";
+import { Avatar, Card, Text, useConfirm } from "@/components/ui";
 import {
   computeBalances,
   deleteSettlement,
@@ -32,6 +32,7 @@ export function BreakdownTab({
   onChanged: () => void;
 }) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const isMobile = useIsMobile();
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(members.map((m) => m.user_id)),
@@ -72,26 +73,19 @@ export function BreakdownTab({
     );
   };
 
-  const confirmDeleteSettlement = (settlement: Settlement) => {
+  const confirmDeleteSettlement = async (settlement: Settlement) => {
     if (!settlement.settlement_id) return;
-    const msg = t("money.breakdown.recordedDelete");
     const doDelete = async () => {
       await deleteSettlement(settlement.settlement_id!);
       onChanged();
     };
-    if (Platform.OS === "web") {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(msg)) void doDelete();
-      return;
-    }
-    Alert.alert(msg, undefined, [
-      { text: t("settle.cancel"), style: "cancel" },
-      {
-        text: t("money.delete"),
-        style: "destructive",
-        onPress: () => void doDelete(),
-      },
-    ]);
+    const ok = await confirm({
+      title: t("money.breakdown.recordedDelete"),
+      confirmLabel: t("money.delete"),
+      cancelLabel: t("settle.cancel"),
+      destructive: true,
+    });
+    if (ok) void doDelete();
   };
 
   if (expenses.length === 0) {

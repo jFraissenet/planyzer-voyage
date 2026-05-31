@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
-import { AvatarStack, Text } from "@/components/ui";
+import { AvatarStack, FAB, Text } from "@/components/ui";
 import {
   claimTeamResponsable,
   joinEventToolTeam,
@@ -14,6 +14,7 @@ import {
 import { useSession } from "@/lib/useSession";
 import { theme } from "@/lib/theme";
 import { ToolShell, type ToolProps } from "../ToolShell";
+import { ToolEmptyBanner } from "../ToolEmptyBanner";
 import { EditTeamModal } from "./EditTeamModal";
 import { TeamDetailModal } from "./TeamDetailModal";
 import { TeamMembersListModal } from "./TeamMembersListModal";
@@ -395,33 +396,12 @@ export function TeamsTool(props: ToolProps) {
   return (
     <>
       <ToolShell {...props}>
-        <View className="flex-row items-center justify-end mb-4">
-          <Pressable
-            onPress={() => setCreating(true)}
-            accessibilityLabel={t("teams.add")}
-            className="rounded-full items-center justify-center active:opacity-80"
-            style={{
-              width: 36,
-              height: 36,
-              backgroundColor: theme.primary,
-            }}
-          >
-            <Ionicons name="add" size={20} color="#FFFFFF" />
-          </Pressable>
-        </View>
-
         {teams.length === 0 ? (
-          <View className="py-10 items-center">
-            <Ionicons
-              name="people-outline"
-              size={28}
-              color="#9CA3AF"
-              style={{ marginBottom: 8 }}
-            />
-            <Text variant="caption" className="text-center">
-              {t("teams.empty")}
-            </Text>
-          </View>
+          <ToolEmptyBanner
+            title={t("teams.add")}
+            subtitle={t("teams.empty")}
+            onPress={() => setCreating(true)}
+          />
         ) : (
           teams.map((team) => (
             <TeamCard
@@ -474,6 +454,14 @@ export function TeamsTool(props: ToolProps) {
           ))
         )}
       </ToolShell>
+
+      {teams.length > 0 ? (
+        <FAB
+          icon="add"
+          onPress={() => setCreating(true)}
+          accessibilityLabel={t("teams.add")}
+        />
+      ) : null}
 
       <TeamDetailModal
         visible={!!detail}

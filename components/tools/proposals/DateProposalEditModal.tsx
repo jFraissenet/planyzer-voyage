@@ -7,9 +7,10 @@ import DateTimePicker, { useDefaultStyles } from "react-native-ui-datepicker";
 import RNCDateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
-import { Button, Text } from "@/components/ui";
+import { Button, Text, useConfirm } from "@/components/ui";
 import {
   createEventToolProposal,
+  deleteEventToolProposal,
   updateEventToolProposal,
   type EventToolProposal,
 } from "@/lib/proposals";
@@ -87,6 +88,7 @@ export function DateProposalEditModal({
   onSaved,
 }: Props) {
   const { t, i18n } = useTranslation();
+  const confirm = useConfirm();
   const isEdit = !!existing;
   const datePickerStyles = useDefaultStyles("light");
   const [includeTime, setIncludeTime] = useState(false);
@@ -207,6 +209,31 @@ export function DateProposalEditModal({
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const runDelete = async () => {
+    if (!existing) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await deleteEventToolProposal(existing.proposal_id);
+      onSaved();
+    } catch {
+      setError(t("proposals.dateForm.errorGeneric"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!existing) return;
+    const ok = await confirm({
+      title: t("proposals.deleteConfirm"),
+      confirmLabel: t("proposals.delete"),
+      cancelLabel: t("proposals.cancel"),
+      destructive: true,
+    });
+    if (ok) void runDelete();
   };
 
   return (
@@ -531,6 +558,21 @@ export function DateProposalEditModal({
                 onPress={handleSubmit}
                 disabled={submitting}
               />
+              {isEdit ? (
+                <Pressable
+                  onPress={confirmDelete}
+                  disabled={submitting}
+                  className="py-3 items-center"
+                  style={{ opacity: submitting ? 0.5 : 1 }}
+                >
+                  <Text
+                    variant="label"
+                    style={{ color: "#EF4444", fontWeight: "600" }}
+                  >
+                    {t("proposals.delete")}
+                  </Text>
+                </Pressable>
+              ) : null}
               <Button
                 variant="ghost"
                 label={t("common.cancel")}
