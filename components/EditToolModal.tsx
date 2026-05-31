@@ -49,6 +49,9 @@ export function EditToolModal({
   const confirm = useConfirm();
   const [name, setName] = useState("");
   const [visibility, setVisibility] = useState<Visibility>("all");
+  // Teams tool only: custom text for the "you're a member" badge shown on
+  // joined cards (e.g. "Votre chambre", "Votre équipe cuisine").
+  const [memberBadgeLabel, setMemberBadgeLabel] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -59,6 +62,11 @@ export function EditToolModal({
     if (visible && tool) {
       setName(tool.event_tool_name);
       setVisibility(tool.event_tool_visibility);
+      setMemberBadgeLabel(
+        typeof tool.event_tool_settings?.member_badge_label === "string"
+          ? (tool.event_tool_settings.member_badge_label as string)
+          : "",
+      );
       setError(null);
       setBusy(false);
       setDeleting(false);
@@ -133,9 +141,19 @@ export function EditToolModal({
     setError(null);
     setBusy(true);
     try {
+      const settingsPatch =
+        tool.event_tool_type_code === "teams"
+          ? {
+              event_tool_settings: {
+                ...tool.event_tool_settings,
+                member_badge_label: memberBadgeLabel.trim() || null,
+              },
+            }
+          : {};
       await updateEventTool(tool.event_tool_id, {
         event_tool_name: name.trim(),
         event_tool_visibility: visibility,
+        ...settingsPatch,
       });
       if (visibility === "teams") {
         await setEventToolTeamsAccess(tool.event_tool_id, selectedTeamIds);
@@ -208,6 +226,16 @@ export function EditToolModal({
               className="mb-5"
               required
             />
+
+            {tool?.event_tool_type_code === "teams" ? (
+              <Input
+                label={t("events.editTool.memberBadgeLabel")}
+                placeholder={t("teams.yourTeam")}
+                value={memberBadgeLabel}
+                onChangeText={setMemberBadgeLabel}
+                className="mb-5"
+              />
+            ) : null}
 
             <SectionLabel>{t("events.newTool.visibilityLabel")}</SectionLabel>
             <View className="gap-2 mb-5">

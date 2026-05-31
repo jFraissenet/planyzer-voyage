@@ -26,6 +26,7 @@ export function MealsTool(props: ToolProps) {
   const currentUserId = session?.user?.id ?? "";
 
   const [recipes, setRecipes] = useState<MealRecipe[]>([]);
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<MealRecipe | null>(null);
   const [openDetail, setOpenDetail] = useState<MealRecipe | null>(null);
@@ -39,6 +40,8 @@ export function MealsTool(props: ToolProps) {
       setRecipes(list);
     } catch {
       setRecipes([]);
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id]);
 
@@ -59,7 +62,7 @@ export function MealsTool(props: ToolProps) {
 
   return (
     <>
-      <ToolShell {...props}>
+      <ToolShell {...props} loading={loading}>
         <View className="flex-row mb-3" style={{ gap: 8 }}>
           <TabButton
             label={t("meals.tabs.recipes")}

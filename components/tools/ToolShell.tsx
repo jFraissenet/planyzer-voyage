@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { AvatarStack, ScreenHeader, Text } from "@/components/ui";
 import type { EventTool, ToolParticipant } from "@/lib/events";
@@ -26,9 +26,13 @@ export function ToolShell({
   onManageMembers,
   onEdit,
   headerActions,
+  loading = false,
   children,
 }: ToolProps & {
   headerActions?: React.ReactNode;
+  // While true, a spinner replaces the content area so the tool's empty state
+  // doesn't flash before its data has loaded.
+  loading?: boolean;
   children?: React.ReactNode;
 }) {
   const { t } = useTranslation();
@@ -176,7 +180,13 @@ export function ToolShell({
           </View>
         ) : null}
 
-        {children}
+        {loading ? (
+          <View className="py-16 items-center justify-center">
+            <ActivityIndicator color={theme.primary} />
+          </View>
+        ) : (
+          children
+        )}
       </ScrollView>
 
       <TeamMembersListModal

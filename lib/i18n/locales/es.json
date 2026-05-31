@@ -124,6 +124,7 @@
     "editTool": {
       "title": "Editar herramienta",
       "subtitle": "Cambia el nombre o la visibilidad",
+      "memberBadgeLabel": "Etiqueta del distintivo «miembro»",
       "action": "Editar",
       "save": "Guardar",
       "saving": "Guardando...",

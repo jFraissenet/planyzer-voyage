@@ -178,6 +178,7 @@ export function NotesTool(props: ToolProps) {
   const [newText, setNewText] = useState("");
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<EventToolNote | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     try {
@@ -185,6 +186,8 @@ export function NotesTool(props: ToolProps) {
       setNotes(list);
     } catch {
       setNotes([]);
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id]);
 
@@ -245,7 +248,7 @@ export function NotesTool(props: ToolProps) {
     note.author_id === currentUserId || props.isToolAdmin;
 
   return (
-    <ToolShell {...props}>
+    <ToolShell {...props} loading={loading}>
       <View
         className="flex-row items-center rounded-2xl px-3 py-1.5 mb-6"
         style={{

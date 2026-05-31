@@ -311,6 +311,7 @@ export function CarSharingTool(props: ToolProps) {
   const currentUserId = session?.user?.id ?? "";
   const [members, setMembers] = useState<EffectiveMember[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(true);
   const [mySeatVehicleIds, setMySeatVehicleIds] = useState<Set<string>>(
     new Set(),
   );
@@ -359,6 +360,8 @@ export function CarSharingTool(props: ToolProps) {
       setVehicles([]);
       setSeatsByVehicle(new Map());
       setMySeatVehicleIds(new Set());
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id, currentUserId]);
 
@@ -385,7 +388,7 @@ export function CarSharingTool(props: ToolProps) {
 
   return (
     <>
-      <ToolShell {...props}>
+      <ToolShell {...props} loading={loading}>
         {vehicles.length === 0 ? (
           <ToolEmptyBanner
             title={t("carpool.addVehicle")}

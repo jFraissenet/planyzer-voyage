@@ -74,6 +74,7 @@ export function ProposalsTool(props: ToolProps) {
   const currentUserId = session?.user?.id ?? "";
 
   const [proposals, setProposals] = useState<EventToolProposal[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isManager, setIsManager] = useState(false);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<EventToolProposal | null>(null);
@@ -131,6 +132,8 @@ export function ProposalsTool(props: ToolProps) {
       setProposals(list);
     } catch {
       setProposals([]);
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id]);
 
@@ -380,7 +383,7 @@ export function ProposalsTool(props: ToolProps) {
 
   return (
     <>
-      <ToolShell {...props} headerActions={headerActions}>
+      <ToolShell {...props} headerActions={headerActions} loading={loading}>
         {isClosed && proposals.length > 0 ? (
           <View
             className="flex-row items-center rounded-xl px-3 py-2 mb-4"

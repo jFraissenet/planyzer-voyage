@@ -74,6 +74,7 @@ export function MoneyTool(props: ToolProps) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [members, setMembers] = useState<EffectiveMember[]>([]);
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
   const [settle, setSettle] = useState<{
@@ -96,6 +97,8 @@ export function MoneyTool(props: ToolProps) {
       setMembers([]);
       setExpenses([]);
       setSettlements([]);
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id]);
 
@@ -107,7 +110,7 @@ export function MoneyTool(props: ToolProps) {
 
   return (
     <>
-      <ToolShell {...props}>
+      <ToolShell {...props} loading={loading}>
         <TopTabs value={tab} onChange={setTab} />
         {tab === "expenses" ? (
           <ExpensesTab

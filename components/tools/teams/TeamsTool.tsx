@@ -47,6 +47,7 @@ function TeamCard({
   locale,
   canEdit,
   youAreIn,
+  badgeLabel,
   currentUserId,
   onOpen,
   onEdit,
@@ -60,6 +61,7 @@ function TeamCard({
   locale: string;
   canEdit: boolean;
   youAreIn: boolean;
+  badgeLabel: string;
   currentUserId: string;
   onOpen: () => void;
   onEdit: () => void;
@@ -108,7 +110,7 @@ function TeamCard({
               letterSpacing: 0.4,
             }}
           >
-            {t("teams.yourTeam").toUpperCase()}
+            {badgeLabel.toUpperCase()}
           </Text>
         </View>
       ) : null}
@@ -312,11 +314,11 @@ function TeamCard({
               onClaim();
             }}
             className="flex-row items-center px-3 py-1.5 rounded-full active:opacity-70"
-            style={{ backgroundColor: "#FEF3C7", gap: 4 }}
+            style={{ backgroundColor: "#F3F4F6", gap: 4 }}
           >
             <Text style={{ fontSize: 12 }}>👑</Text>
             <Text
-              style={{ color: "#92400E", fontSize: 12, fontWeight: "700" }}
+              style={{ color: "#374151", fontSize: 12, fontWeight: "700" }}
             >
               {t("teams.claimResponsable")}
             </Text>
@@ -349,7 +351,16 @@ export function TeamsTool(props: ToolProps) {
   const { session } = useSession();
   const currentUserId = session?.user?.id ?? "";
 
+  // Custom "you're a member" badge label, configurable per tool (e.g. "Votre
+  // chambre"). Falls back to the default "Votre équipe".
+  const rawBadgeLabel = props.tool.event_tool_settings?.member_badge_label;
+  const badgeLabel =
+    typeof rawBadgeLabel === "string" && rawBadgeLabel.trim()
+      ? rawBadgeLabel.trim()
+      : t("teams.yourTeam");
+
   const [teams, setTeams] = useState<EventToolTeam[]>([]);
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [detail, setDetail] = useState<EventToolTeam | null>(null);
   const [editing, setEditing] = useState<EventToolTeam | null>(null);
@@ -361,6 +372,8 @@ export function TeamsTool(props: ToolProps) {
       setTeams(list);
     } catch {
       setTeams([]);
+    } finally {
+      setLoading(false);
     }
   }, [props.tool.event_tool_id]);
 
@@ -395,7 +408,7 @@ export function TeamsTool(props: ToolProps) {
 
   return (
     <>
-      <ToolShell {...props}>
+      <ToolShell {...props} loading={loading}>
         {teams.length === 0 ? (
           <ToolEmptyBanner
             title={t("teams.add")}
@@ -410,6 +423,7 @@ export function TeamsTool(props: ToolProps) {
               locale={i18n.language}
               canEdit={canEditTeam(team)}
               youAreIn={team.members.some((m) => m.user_id === currentUserId)}
+              badgeLabel={badgeLabel}
               currentUserId={currentUserId}
               onOpen={() => setDetail(team)}
               onEdit={() => setEditing(team)}

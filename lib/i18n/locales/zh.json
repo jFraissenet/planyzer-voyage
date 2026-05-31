@@ -124,6 +124,7 @@
     "editTool": {
       "title": "编辑工具",
       "subtitle": "修改名称或可见性",
+      "memberBadgeLabel": "“成员”徽章标签",
       "action": "编辑",
       "save": "保存",
       "saving": "保存中...",

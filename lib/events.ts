@@ -426,6 +426,7 @@ export async function updateEventTool(
   input: {
     event_tool_name?: string;
     event_tool_visibility?: "all" | "restricted" | "teams";
+    event_tool_settings?: Record<string, unknown>;
   },
 ): Promise<void> {
   const patch: Record<string, unknown> = {};
@@ -433,6 +434,8 @@ export async function updateEventTool(
     patch.event_tool_name = input.event_tool_name;
   if (input.event_tool_visibility !== undefined)
     patch.event_tool_visibility = input.event_tool_visibility;
+  if (input.event_tool_settings !== undefined)
+    patch.event_tool_settings = input.event_tool_settings;
   if (Object.keys(patch).length === 0) return;
   const { error } = await supabase
     .from("event_tools")

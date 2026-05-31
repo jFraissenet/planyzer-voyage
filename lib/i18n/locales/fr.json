@@ -124,6 +124,7 @@
     "editTool": {
       "title": "Modifier l'outil",
       "subtitle": "Change le nom ou la visibilité",
+      "memberBadgeLabel": "Libellé du badge « membre »",
       "action": "Modifier",
       "save": "Enregistrer",
       "saving": "Enregistrement...",

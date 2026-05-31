@@ -124,6 +124,7 @@
     "editTool": {
       "title": "Edit tool",
       "subtitle": "Change the name or visibility",
+      "memberBadgeLabel": "\"Member\" badge label",
       "action": "Edit",
       "save": "Save",
       "saving": "Saving...",
