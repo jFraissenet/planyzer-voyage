@@ -220,7 +220,7 @@ export function InviteModal({
               {t("invite.subtitle")}
             </Text>
 
-            {onShare ? (
+            {isAdmin && onShare ? (
               <Pressable
                 onPress={onShare}
                 disabled={sharing}
