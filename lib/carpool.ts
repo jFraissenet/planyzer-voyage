@@ -347,6 +347,7 @@ export async function removeSeat(
 // === Seat layout options ===
 
 export const LAYOUT_OPTIONS: Record<number, string[]> = {
+  1: ["1"],
   2: ["2", "1,1"],
   3: ["2,1", "1,2", "3"],
   4: ["2,2", "1,3"],

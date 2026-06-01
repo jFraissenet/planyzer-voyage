@@ -9,10 +9,12 @@ import {
   DateTimeInput,
   Input,
   Text,
+  useConfirm,
 } from "@/components/ui";
 import {
   createRoundTripVehicles,
   createVehicle,
+  deleteVehicle,
   LAYOUT_OPTIONS,
   layoutTotal,
   parseLayout,
@@ -95,8 +97,17 @@ type Props = CommonProps &
 
 export function VehicleEditModal(props: Props) {
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const { visible, toolId, members, currentUserId, onClose, onSaved } = props;
   const isEdit = props.mode === "edit";
+
+  // Only the driver (when they are a real user) or the person who created the
+  // vehicle may delete it.
+  const canDelete =
+    props.mode === "edit" &&
+    !!currentUserId &&
+    (props.existing.driver_id === currentUserId ||
+      props.existing.created_by === currentUserId);
 
   const [driverId, setDriverId] = useState(currentUserId);
   const [description, setDescription] = useState("");
@@ -242,6 +253,28 @@ export function VehicleEditModal(props: Props) {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("vehicle save failed:", err);
+      setError(t("carpool.errorGeneric"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (props.mode !== "edit") return;
+    const ok = await confirm({
+      title: t("carpool.deleteConfirm"),
+      confirmLabel: t("carpool.delete"),
+      cancelLabel: t("carpool.cancel"),
+      destructive: true,
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      await deleteVehicle(props.existing.vehicle_id);
+      onSaved();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("vehicle delete failed:", err);
       setError(t("carpool.errorGeneric"));
     } finally {
       setBusy(false);
@@ -465,8 +498,8 @@ export function VehicleEditModal(props: Props) {
 
             <SectionLabel>{t("carpool.seatCount")}</SectionLabel>
             <View className="flex-row flex-wrap mb-4" style={{ gap: 8 }}>
-              {Array.from({ length: 9 }).map((_, i) => {
-                const n = i + 2;
+              {Array.from({ length: 10 }).map((_, i) => {
+                const n = i + 1;
                 const active = seatCount === n;
                 return (
                   <Pressable
@@ -565,6 +598,21 @@ export function VehicleEditModal(props: Props) {
                 onPress={onClose}
                 disabled={busy}
               />
+              {canDelete ? (
+                <Pressable
+                  onPress={handleDelete}
+                  disabled={busy}
+                  className="py-3 items-center"
+                  style={{ opacity: busy ? 0.5 : 1 }}
+                >
+                  <Text
+                    variant="label"
+                    style={{ color: "#EF4444", fontWeight: "600" }}
+                  >
+                    {t("carpool.delete")}
+                  </Text>
+                </Pressable>
+              ) : null}
             </View>
           </ScrollView>
         </Pressable>
