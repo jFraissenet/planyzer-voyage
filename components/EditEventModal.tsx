@@ -16,6 +16,7 @@ import {
   type Event,
 } from "@/lib/events";
 import { theme } from "@/lib/theme";
+import { TEXT_MAX } from "@/lib/formValidation";
 
 function isoToLocalInput(iso: string | null): string {
   if (!iso) return "";
@@ -228,7 +229,12 @@ export function EditEventModal({
                 label={t("events.new.titleLabel")}
                 placeholder={t("events.new.titlePlaceholder")}
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={(v) => {
+                  setTitle(v);
+                  if (errors.title)
+                    setErrors((e) => ({ ...e, title: undefined }));
+                }}
+                maxLength={TEXT_MAX.name}
                 error={errors.title}
                 autoFocus
                 required
@@ -238,6 +244,7 @@ export function EditEventModal({
                 placeholder={t("events.new.descriptionPlaceholder")}
                 value={description}
                 onChangeText={setDescription}
+                maxLength={TEXT_MAX.description}
                 multiline
                 numberOfLines={3}
                 style={{ minHeight: 80, textAlignVertical: "top" }}

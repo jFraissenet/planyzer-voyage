@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Button, Input, Text, useConfirm } from "@/components/ui";
+import { TEXT_MAX } from "@/lib/formValidation";
 
 type Props = {
   visible: boolean;
@@ -86,6 +87,7 @@ export function NoteEditModal({
             label={t("notes.textLabel")}
             value={text}
             onChangeText={setText}
+            maxLength={TEXT_MAX.longText}
             multiline
             numberOfLines={4}
             style={{ minHeight: 100, textAlignVertical: "top" }}

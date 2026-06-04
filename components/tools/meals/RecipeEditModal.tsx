@@ -20,8 +20,28 @@ import {
 } from "@/lib/meals";
 import { IngredientPicker, type IngredientPick } from "./IngredientPicker";
 import { theme } from "@/lib/theme";
+import {
+  clampDecimal,
+  clampInt,
+  digitsOf,
+  parseIntOrNull,
+} from "@/lib/formValidation";
+import { useFieldErrors } from "@/lib/useFieldErrors";
 
 type Mode = "create" | "edit";
+
+// Hard limits — kept well below the DB column ceilings (int columns for
+// time/calories/servings, numeric(10,2) for quantities) so an out-of-range
+// value can never reach Postgres and surface as a raw "erreur".
+const LIMITS = {
+  title: 120,
+  description: 1000,
+  step: 1000,
+  timeMax: 10000, // minutes (~7 days)
+  caloriesMax: 100000,
+  servingsMax: 500,
+  quantityMax: 100000,
+} as const;
 
 type Props = {
   mode: Mode;
@@ -106,6 +126,22 @@ export function RecipeEditModal({
   const [steps, setSteps] = useState<DraftStep[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Per-field validation messages, shown inline (red border + text under the
+  // field). Keys: "title", "servings", and each ingredient row id. `error`
+  // above is reserved for the save-failure safety net.
+  const fieldErrors = useFieldErrors();
+  // Scroll offset of each validated section (direct children of the scroll
+  // content, so onLayout y == scroll offset), so we can jump to the first
+  // field in error on save.
+  const sectionY = useRef<{
+    numbers: number;
+    ingredients: number;
+    steps: number;
+  }>({
+    numbers: 0,
+    ingredients: 0,
+    steps: 0,
+  });
   // Which ingredient's unit picker is expanded (only one at a time). Inline
   // chip grid rather than an absolute dropdown so it never stacks behind the
   // search field / following rows.
@@ -140,6 +176,7 @@ export function RecipeEditModal({
     );
     setSteps(fromExistingSteps(existing?.steps));
     setError(null);
+    fieldErrors.reset();
     setBusy(false);
     setOpenUnitId(null);
   }, [visible, existing]);
@@ -165,10 +202,12 @@ export function RecipeEditModal({
     setIngredients((prev) =>
       prev.map((i) => (i.id === id ? { ...i, ...patch } : i)),
     );
+    fieldErrors.clear(id);
   };
 
   const removeIngredient = (id: string) => {
     setIngredients((prev) => prev.filter((i) => i.id !== id));
+    fieldErrors.clear(id);
   };
 
   const addStep = () => {
@@ -182,28 +221,64 @@ export function RecipeEditModal({
 
   const updateStep = (id: string, text: string) => {
     setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, text } : s)));
+    fieldErrors.clear(id);
   };
 
   const removeStep = (id: string) => {
     setSteps((prev) => prev.filter((s) => s.id !== id));
+    fieldErrors.clear(id);
+  };
+
+  const scrollToError = (
+    which: "title" | "servings" | "ingredients" | "steps",
+  ) => {
+    const y =
+      which === "title"
+        ? 0
+        : which === "servings"
+          ? sectionY.current.numbers
+          : which === "ingredients"
+            ? sectionY.current.ingredients
+            : sectionY.current.steps;
+    scrollViewRef.current?.scrollTo({ y, animated: true });
   };
 
   const build = (): MealRecipeInput | null => {
+    const errs: Record<string, string> = {};
+    let firstError:
+      | "title"
+      | "servings"
+      | "ingredients"
+      | "steps"
+      | null = null;
+
     const titleTrim = title.trim();
     if (!titleTrim) {
-      setError(t("meals.errorTitleRequired"));
-      return null;
+      errs.title = t("meals.errorTitleRequired");
+      firstError = firstError ?? "title";
     }
-    const serv = servings.trim() === "" ? 4 : Number(servings);
-    const safeServings = Number.isFinite(serv) && serv > 0 ? serv : 4;
+
+    const serv = servings.trim() === "" ? 0 : Number(servings);
+    const safeServings = Number.isFinite(serv) && serv >= 1 ? serv : 0;
+    if (safeServings < 1) {
+      errs.servings = t("meals.errorServingsRequired");
+      firstError = firstError ?? "servings";
+    }
+
     // Form holds totals for the current servings; storage is per-serving.
     const cleanIngredients = [];
     for (const i of ingredients) {
       const qty = Number(i.quantity.replace(",", "."));
       const hasName = i.catalog_id || (i.custom_name && i.custom_name.trim());
-      if (!Number.isFinite(qty) || qty <= 0 || !hasName) {
-        setError(t("meals.errorIngredientInvalid"));
-        return null;
+      if (!hasName) {
+        errs[i.id] = t("meals.errorIngredientName");
+        firstError = firstError ?? "ingredients";
+        continue;
+      }
+      if (!Number.isFinite(qty) || qty <= 0) {
+        errs[i.id] = t("meals.errorIngredientQuantity");
+        firstError = firstError ?? "ingredients";
+        continue;
       }
       cleanIngredients.push({
         catalog_id: i.catalog_id,
@@ -212,25 +287,31 @@ export function RecipeEditModal({
         unit: i.unit,
       });
     }
-    const cleanSteps = steps
-      .map((s) => s.text.trim())
-      .filter((s) => s.length > 0);
+    // Steps can't be blank — flag each empty one instead of silently dropping
+    // it, so the user understands why the form won't save.
+    for (const s of steps) {
+      if (s.text.trim().length === 0) {
+        errs[s.id] = t("meals.errorStepEmpty");
+        firstError = firstError ?? "steps";
+      }
+    }
 
-    const parseMin = (v: string): number | null => {
-      const trimmed = v.trim();
-      if (trimmed === "") return null;
-      const n = Number(trimmed);
-      return Number.isFinite(n) && n >= 0 ? n : null;
-    };
-    const cal = calories.trim() === "" ? null : Number(calories);
+    fieldErrors.replace(errs);
+
+    if (firstError) {
+      scrollToError(firstError);
+      return null;
+    }
+
+    const cleanSteps = steps.map((s) => s.text.trim());
 
     return {
       title: titleTrim,
       description: description.trim() ? description.trim() : null,
-      time_prep_minutes: parseMin(timePrep),
-      time_cook_minutes: parseMin(timeCook),
-      time_rest_minutes: parseMin(timeRest),
-      calories: Number.isFinite(cal as number) ? (cal as number) : null,
+      time_prep_minutes: parseIntOrNull(timePrep),
+      time_cook_minutes: parseIntOrNull(timeCook),
+      time_rest_minutes: parseIntOrNull(timeRest),
+      calories: parseIntOrNull(calories),
       servings: safeServings,
       ingredients: cleanIngredients,
       steps: cleanSteps,
@@ -244,7 +325,9 @@ export function RecipeEditModal({
   // We compare against `lastValidServingsRef`, NOT the current servings state,
   // because intermediate edits (typing "" between "12" and "5") would otherwise
   // poison the ratio with prev=0 and break subsequent scaling.
-  const handleServingsChange = (next: string) => {
+  const handleServingsChange = (raw: string) => {
+    const next = clampInt(raw, LIMITS.servingsMax);
+    fieldErrors.clear("servings");
     const newServ = Number(next);
     if (Number.isFinite(newServ) && newServ > 0) {
       const prev = lastValidServingsRef.current;
@@ -278,7 +361,7 @@ export function RecipeEditModal({
       );
       onSaved();
     } catch (e) {
-      setError(t("common.error"));
+      setError(t("meals.errorSaveFailed"));
     } finally {
       setBusy(false);
     }
@@ -352,7 +435,12 @@ export function RecipeEditModal({
               label={t("meals.titleLabel")}
               placeholder={t("meals.titlePlaceholder")}
               value={title}
-              onChangeText={setTitle}
+              onChangeText={(v) => {
+                setTitle(v);
+                fieldErrors.clear("title");
+              }}
+              maxLength={LIMITS.title}
+              error={fieldErrors.get("title")}
               autoFocus
               required
             />
@@ -361,6 +449,7 @@ export function RecipeEditModal({
               placeholder={t("meals.descriptionPlaceholder")}
               value={description}
               onChangeText={setDescription}
+              maxLength={LIMITS.description}
               multiline
               numberOfLines={3}
               style={{ minHeight: 80, textAlignVertical: "top" }}
@@ -370,42 +459,60 @@ export function RecipeEditModal({
               <TimeRow
                 label={t("meals.timePrepLabel")}
                 value={timePrep}
-                onChangeText={setTimePrep}
+                onChangeText={(v) => setTimePrep(clampInt(v, LIMITS.timeMax))}
+                maxLength={digitsOf(LIMITS.timeMax)}
                 placeholder="15"
               />
               <TimeRow
                 label={t("meals.timeCookLabel")}
                 value={timeCook}
-                onChangeText={setTimeCook}
+                onChangeText={(v) => setTimeCook(clampInt(v, LIMITS.timeMax))}
+                maxLength={digitsOf(LIMITS.timeMax)}
                 placeholder="30"
               />
               <TimeRow
                 label={t("meals.timeRestLabel")}
                 value={timeRest}
-                onChangeText={setTimeRest}
+                onChangeText={(v) => setTimeRest(clampInt(v, LIMITS.timeMax))}
+                maxLength={digitsOf(LIMITS.timeMax)}
                 placeholder="0"
               />
             </View>
             <View style={{ height: 1, backgroundColor: "#F2EDE4" }} />
-            <View style={{ gap: 8 }}>
+            <View
+              style={{ gap: 8 }}
+              onLayout={(e) => {
+                sectionY.current.numbers = e.nativeEvent.layout.y;
+              }}
+            >
               <TimeRow
                 label={t("meals.caloriesLabel")}
                 value={calories}
-                onChangeText={setCalories}
+                onChangeText={(v) =>
+                  setCalories(clampInt(v, LIMITS.caloriesMax))
+                }
+                maxLength={digitsOf(LIMITS.caloriesMax)}
                 placeholder="450"
               />
               <TimeRow
                 label={t("meals.servingsLabel")}
                 value={servings}
                 onChangeText={handleServingsChange}
+                maxLength={digitsOf(LIMITS.servingsMax)}
                 placeholder="4"
                 required
+                error={fieldErrors.get("servings")}
               />
             </View>
             <View style={{ height: 1, backgroundColor: "#F2EDE4" }} />
 
             {/* Ingredients */}
-            <View style={{ gap: 8 }}>
+            <View
+              style={{ gap: 8 }}
+              onLayout={(e) => {
+                sectionY.current.ingredients = e.nativeEvent.layout.y;
+              }}
+            >
               <Text variant="label">{t("meals.ingredientsSection")}</Text>
               {ingredients.length === 0 ? (
                 <Text variant="caption" style={{ fontSize: 12 }}>
@@ -457,7 +564,9 @@ export function RecipeEditModal({
                       <TextInput
                         value={ing.quantity}
                         onChangeText={(v) =>
-                          updateIngredient(ing.id, { quantity: v })
+                          updateIngredient(ing.id, {
+                            quantity: clampDecimal(v, LIMITS.quantityMax),
+                          })
                         }
                         placeholder={t("meals.quantityLabel")}
                         placeholderTextColor="#9ca3af"
@@ -466,7 +575,9 @@ export function RecipeEditModal({
                           flex: 1,
                           backgroundColor: "#F9FAFB",
                           borderWidth: 1,
-                          borderColor: "#E8E3DB",
+                          borderColor: fieldErrors.has(ing.id)
+                            ? "#EF4444"
+                            : "#E8E3DB",
                           borderRadius: 8,
                           paddingHorizontal: 12,
                           paddingVertical: 8,
@@ -543,6 +654,11 @@ export function RecipeEditModal({
                         })}
                       </View>
                     ) : null}
+                    {fieldErrors.get(ing.id) ? (
+                      <Text style={{ color: "#991B1B", fontSize: 12 }}>
+                        {fieldErrors.get(ing.id)}
+                      </Text>
+                    ) : null}
                   </View>
                 ))
               )}
@@ -550,7 +666,12 @@ export function RecipeEditModal({
             </View>
 
             {/* Steps */}
-            <View style={{ gap: 8 }}>
+            <View
+              style={{ gap: 8 }}
+              onLayout={(e) => {
+                sectionY.current.steps = e.nativeEvent.layout.y;
+              }}
+            >
               <Text variant="label">{t("meals.stepsSection")}</Text>
               {steps.length === 0 ? (
                 <Text variant="caption" style={{ fontSize: 12 }}>
@@ -558,11 +679,8 @@ export function RecipeEditModal({
                 </Text>
               ) : (
                 steps.map((s, idx) => (
-                  <View
-                    key={s.id}
-                    className="flex-row items-start"
-                    style={{ gap: 6 }}
-                  >
+                  <View key={s.id} style={{ gap: 4 }}>
+                    <View className="flex-row items-start" style={{ gap: 6 }}>
                     <View
                       className="rounded-full items-center justify-center"
                       style={{
@@ -587,12 +705,15 @@ export function RecipeEditModal({
                       onChangeText={(v) => updateStep(s.id, v)}
                       placeholder={t("meals.stepPlaceholder")}
                       placeholderTextColor="#9ca3af"
+                      maxLength={LIMITS.step}
                       multiline
                       style={{
                         flex: 1,
                         backgroundColor: "#FFFFFF",
                         borderWidth: 1,
-                        borderColor: "#E8E3DB",
+                        borderColor: fieldErrors.has(s.id)
+                          ? "#EF4444"
+                          : "#E8E3DB",
                         borderRadius: 8,
                         paddingHorizontal: 12,
                         paddingVertical: 8,
@@ -614,6 +735,18 @@ export function RecipeEditModal({
                     >
                       <Ionicons name="close" size={12} color="#991B1B" />
                     </Pressable>
+                    </View>
+                    {fieldErrors.get(s.id) ? (
+                      <Text
+                        style={{
+                          color: "#991B1B",
+                          fontSize: 12,
+                          marginLeft: 30,
+                        }}
+                      >
+                        {fieldErrors.get(s.id)}
+                      </Text>
+                    ) : null}
                   </View>
                 ))
               )}
@@ -686,40 +819,52 @@ function TimeRow({
   onChangeText,
   placeholder,
   required,
+  maxLength,
+  error,
 }: {
   label: string;
   value: string;
   onChangeText: (v: string) => void;
   placeholder: string;
   required?: boolean;
+  maxLength?: number;
+  error?: string;
 }) {
   return (
-    <View className="flex-row items-center" style={{ gap: 8 }}>
-      <Text style={{ flex: 1, fontSize: 14, color: "#1A1A1A" }}>
-        {label}
-        {required ? <Text style={{ color: "#EF4444" }}> *</Text> : null}
-      </Text>
-      <View style={{ width: 110 }}>
-        <TextInput
-          value={value}
-          onChangeText={onChangeText}
-          placeholder={placeholder}
-          placeholderTextColor="#9ca3af"
-          keyboardType="number-pad"
-          style={{
-            width: "100%",
-            backgroundColor: "#FFFFFF",
-            borderWidth: 1,
-            borderColor: "#E8E3DB",
-            borderRadius: 8,
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            fontSize: 14,
-            color: "#1A1A1A",
-            textAlign: "right",
-          }}
-        />
+    <View style={{ gap: 4 }}>
+      <View className="flex-row items-center" style={{ gap: 8 }}>
+        <Text style={{ flex: 1, fontSize: 14, color: "#1A1A1A" }}>
+          {label}
+          {required ? <Text style={{ color: "#EF4444" }}> *</Text> : null}
+        </Text>
+        <View style={{ width: 110 }}>
+          <TextInput
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            placeholderTextColor="#9ca3af"
+            keyboardType="number-pad"
+            maxLength={maxLength}
+            style={{
+              width: "100%",
+              backgroundColor: "#FFFFFF",
+              borderWidth: 1,
+              borderColor: error ? "#EF4444" : "#E8E3DB",
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              fontSize: 14,
+              color: "#1A1A1A",
+              textAlign: "right",
+            }}
+          />
+        </View>
       </View>
+      {error ? (
+        <Text style={{ color: "#991B1B", fontSize: 12, textAlign: "right" }}>
+          {error}
+        </Text>
+      ) : null}
     </View>
   );
 }

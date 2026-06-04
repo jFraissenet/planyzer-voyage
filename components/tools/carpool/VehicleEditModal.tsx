@@ -26,6 +26,7 @@ import {
 import type { EffectiveMember } from "@/lib/expenses";
 import { SeatLayoutPreview } from "./SeatLayout";
 import { theme } from "@/lib/theme";
+import { TEXT_MAX } from "@/lib/formValidation";
 
 function initialsOf(name: string | null): string {
   if (!name) return "?";
@@ -364,6 +365,7 @@ export function VehicleEditModal(props: Props) {
                 placeholder={t("carpool.descriptionPlaceholder")}
                 value={description}
                 onChangeText={setDescription}
+                maxLength={TEXT_MAX.shortText}
               />
               <AddressInput
                 label={t("carpool.departureLocation")}
@@ -465,6 +467,7 @@ export function VehicleEditModal(props: Props) {
                       placeholder={t("carpool.stopPlaceholder")}
                       value={s}
                       onChangeText={(v) => updateStop(idx, v)}
+                      maxLength={TEXT_MAX.shortText}
                     />
                   </View>
                   <Pressable

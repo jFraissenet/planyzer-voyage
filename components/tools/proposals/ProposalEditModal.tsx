@@ -27,6 +27,14 @@ import {
 import { isoToLocalInput, localInputToIso } from "./dateHelpers";
 import type { ProposalMode } from "@/lib/proposals/modes";
 import { theme } from "@/lib/theme";
+import {
+  clampDecimal,
+  clampInt,
+  digitsOf,
+  NUM_MAX,
+  TEXT_MAX,
+} from "@/lib/formValidation";
+import { useFieldErrors } from "@/lib/useFieldErrors";
 
 type Mode = "create" | "edit";
 
@@ -148,6 +156,9 @@ export function ProposalEditModal({
   const [links, setLinks] = useState<LinkDraft[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Inline per-field errors (title, price, capacity); `error` keeps the
+  // cross-field/date messages and the generic save failure.
+  const fieldErrors = useFieldErrors();
 
   const [essentialOpen, setEssentialOpen] = useState(true);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -157,6 +168,7 @@ export function ProposalEditModal({
     if (!visible) return;
     setBusy(false);
     setError(null);
+    fieldErrors.reset();
     if (mode === "edit" && existing) {
       setTitle(existing.title);
       setDescription(existing.description ?? "");
@@ -244,32 +256,56 @@ export function ProposalEditModal({
     return parts.join(" ");
   }, [images, links]);
 
+  const handleTitleChange = (v: string) => {
+    setTitle(v);
+    fieldErrors.clear("title");
+  };
+  // Price/capacity range errors are surfaced on the "max" field, so editing
+  // either bound clears them.
+  const handlePriceMin = (v: string) => {
+    setPriceMin(clampDecimal(v, NUM_MAX.amount));
+    fieldErrors.clear("priceMax");
+  };
+  const handlePriceMax = (v: string) => {
+    setPriceMax(clampDecimal(v, NUM_MAX.amount));
+    fieldErrors.clear("priceMax");
+  };
+  const handleCapacityMin = (v: string) => {
+    setCapacityMin(clampInt(v, NUM_MAX.count));
+    fieldErrors.clear("capacityMax");
+  };
+  const handleCapacityMax = (v: string) => {
+    setCapacityMax(clampInt(v, NUM_MAX.count));
+    fieldErrors.clear("capacityMax");
+  };
+
   const build = (): ProposalInput | null => {
+    const errs: Record<string, string> = {};
+    let bottom: string | null = null;
+
     const titleTrim = title.trim();
     if (!titleTrim) {
-      setError(t("proposals.errorTitleRequired"));
+      errs.title = t("proposals.errorTitleRequired");
       setEssentialOpen(true);
-      return null;
     }
+
     const isoStart = localInputToIso(dateStart);
     const isoEnd = localInputToIso(dateEnd);
     if ((dateStart && !isoStart) || (dateEnd && !isoEnd)) {
-      setError(t("proposals.errorInvalidDate"));
+      bottom = t("proposals.errorInvalidDate");
       setDetailsOpen(true);
-      return null;
-    }
-    if (
+    } else if (
       isoStart &&
       isoEnd &&
       new Date(isoStart).getTime() > new Date(isoEnd).getTime()
     ) {
-      setError(t("proposals.errorEndBeforeStart"));
+      bottom = t("proposals.errorEndBeforeStart");
       setDetailsOpen(true);
-      return null;
     }
+
     const parseNumber = (s: string) =>
       s.trim() ? Number(s.replace(",", ".")) : null;
-    const parseInt = (s: string) =>
+    const parseIntOr = (s: string) =>
       s.trim() ? Number.parseInt(s, 10) : null;
 
     const parsedPriceMin = parseNumber(priceMin);
@@ -278,39 +314,42 @@ export function ProposalEditModal({
       (parsedPriceMin != null && Number.isNaN(parsedPriceMin)) ||
       (parsedPriceMax != null && Number.isNaN(parsedPriceMax))
     ) {
-      setError(t("proposals.errorInvalidPrice"));
+      errs.priceMax = t("proposals.errorInvalidPrice");
       setDetailsOpen(true);
-      return null;
-    }
-    if (
+    } else if (
       parsedPriceMin != null &&
       parsedPriceMax != null &&
       parsedPriceMin > parsedPriceMax
     ) {
-      setError(t("proposals.errorInvalidPriceRange"));
+      errs.priceMax = t("proposals.errorInvalidPriceRange");
       setDetailsOpen(true);
-      return null;
     }
 
-    const parsedCapacityMin = parseInt(capacityMin);
-    const parsedCapacityMax = parseInt(capacityMax);
+    const parsedCapacityMin = parseIntOr(capacityMin);
+    const parsedCapacityMax = parseIntOr(capacityMax);
     if (
       (parsedCapacityMin != null && Number.isNaN(parsedCapacityMin)) ||
       (parsedCapacityMax != null && Number.isNaN(parsedCapacityMax))
     ) {
-      setError(t("proposals.errorInvalidCapacity"));
+      errs.capacityMax = t("proposals.errorInvalidCapacity");
       setDetailsOpen(true);
-      return null;
-    }
-    if (
+    } else if (
       parsedCapacityMin != null &&
       parsedCapacityMax != null &&
       parsedCapacityMin > parsedCapacityMax
     ) {
-      setError(t("proposals.errorInvalidCapacityRange"));
+      errs.capacityMax = t("proposals.errorInvalidCapacityRange");
       setDetailsOpen(true);
+    }
+
+    if (Object.keys(errs).length > 0 || bottom) {
+      fieldErrors.replace(errs);
+      setError(bottom);
       return null;
     }
+    fieldErrors.reset();
+    setError(null);
+
     const cleanImages = images
       .map((u) => u.trim())
       .filter((u) => u.length > 0)
@@ -483,7 +522,9 @@ export function ProposalEditModal({
                 label={t("proposals.titleLabel")}
                 placeholder={t("proposals.titlePlaceholder")}
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={handleTitleChange}
+                maxLength={TEXT_MAX.name}
+                error={fieldErrors.get("title")}
                 autoFocus
                 required
               />
@@ -497,7 +538,9 @@ export function ProposalEditModal({
                   label={t("proposals.titleLabel")}
                   placeholder={t("proposals.titlePlaceholder")}
                   value={title}
-                  onChangeText={setTitle}
+                  onChangeText={handleTitleChange}
+                  maxLength={TEXT_MAX.name}
+                  error={fieldErrors.get("title")}
                   autoFocus
                   required
                 />
@@ -521,6 +564,7 @@ export function ProposalEditModal({
                   placeholder={t("proposals.descriptionPlaceholder")}
                   value={description}
                   onChangeText={setDescription}
+                  maxLength={TEXT_MAX.description}
                   multiline
                   numberOfLines={3}
                   style={{ minHeight: 80, textAlignVertical: "top" }}
@@ -530,7 +574,7 @@ export function ProposalEditModal({
                     label={t("proposals.priceLabel")}
                     placeholder="0,00"
                     value={priceMin}
-                    onChangeText={setPriceMin}
+                    onChangeText={handlePriceMin}
                     keyboardType="decimal-pad"
                   />
                 ) : null}
@@ -551,7 +595,7 @@ export function ProposalEditModal({
                     label={t("proposals.priceMinLabel")}
                     placeholder="0,00"
                     value={priceMin}
-                    onChangeText={setPriceMin}
+                    onChangeText={handlePriceMin}
                     keyboardType="decimal-pad"
                   />
                 </View>
@@ -560,8 +604,9 @@ export function ProposalEditModal({
                     label={t("proposals.priceMaxLabel")}
                     placeholder="0,00"
                     value={priceMax}
-                    onChangeText={setPriceMax}
+                    onChangeText={handlePriceMax}
                     keyboardType="decimal-pad"
+                    error={fieldErrors.get("priceMax")}
                   />
                 </View>
               </View>
@@ -571,8 +616,9 @@ export function ProposalEditModal({
                     label={t("proposals.capacityMinLabel")}
                     placeholder="0"
                     value={capacityMin}
-                    onChangeText={setCapacityMin}
+                    onChangeText={handleCapacityMin}
                     keyboardType="number-pad"
+                    maxLength={digitsOf(NUM_MAX.count)}
                   />
                 </View>
                 <View className="flex-1">
@@ -580,8 +626,10 @@ export function ProposalEditModal({
                     label={t("proposals.capacityMaxLabel")}
                     placeholder="0"
                     value={capacityMax}
-                    onChangeText={setCapacityMax}
+                    onChangeText={handleCapacityMax}
                     keyboardType="number-pad"
+                    maxLength={digitsOf(NUM_MAX.count)}
+                    error={fieldErrors.get("capacityMax")}
                   />
                 </View>
               </View>

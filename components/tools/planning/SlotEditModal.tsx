@@ -23,6 +23,8 @@ import { isoToLocalInput, localInputToIso } from "../proposals/dateHelpers";
 import { MemberMultiSelect } from "../teams/MemberMultiSelect";
 import { LinkPicker, type PickedLink } from "./LinkPicker";
 import { theme } from "@/lib/theme";
+import { TEXT_MAX } from "@/lib/formValidation";
+import { useFieldErrors } from "@/lib/useFieldErrors";
 
 type Mode = "create" | "edit";
 
@@ -87,6 +89,8 @@ export function SlotEditModal({
   const [links, setLinks] = useState<DraftLink[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Inline error for the required title; `error` keeps the date messages.
+  const fieldErrors = useFieldErrors();
 
   const [eventParticipants, setEventParticipants] = useState<ParticipantEntry[]>(
     [],
@@ -120,6 +124,7 @@ export function SlotEditModal({
       })) ?? [],
     );
     setError(null);
+    fieldErrors.reset();
     setBusy(false);
 
     listParticipants(eventId)
@@ -193,9 +198,11 @@ export function SlotEditModal({
   };
 
   const build = (): PlanningSlotInput | null => {
+    fieldErrors.clear("title");
+    setError(null);
     const titleTrim = title.trim();
     if (!titleTrim) {
-      setError(t("planning.errorTitleRequired"));
+      fieldErrors.set("title", t("planning.errorTitleRequired"));
       return null;
     }
     const startIso = localInputToIso(startsAt);
@@ -310,7 +317,12 @@ export function SlotEditModal({
               label={t("planning.titleLabel")}
               placeholder={t("planning.titlePlaceholder")}
               value={title}
-              onChangeText={setTitle}
+              onChangeText={(v) => {
+                setTitle(v);
+                fieldErrors.clear("title");
+              }}
+              maxLength={TEXT_MAX.name}
+              error={fieldErrors.get("title")}
               autoFocus
               required
             />
@@ -319,6 +331,7 @@ export function SlotEditModal({
               placeholder={t("planning.descriptionPlaceholder")}
               value={description}
               onChangeText={setDescription}
+              maxLength={TEXT_MAX.description}
               multiline
               numberOfLines={3}
               style={{ minHeight: 70, textAlignVertical: "top" }}

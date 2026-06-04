@@ -10,6 +10,7 @@ import {
 } from "@/components/ui";
 import { createEvent } from "@/lib/events";
 import { theme } from "@/lib/theme";
+import { TEXT_MAX } from "@/lib/formValidation";
 
 function parseDate(value: string): string | null | "invalid" {
   const trimmed = value.trim();
@@ -154,7 +155,12 @@ export function NewEventModal({
                 label={t("events.new.titleLabel")}
                 placeholder={t("events.new.titlePlaceholder")}
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={(v) => {
+                  setTitle(v);
+                  if (errors.title)
+                    setErrors((e) => ({ ...e, title: undefined }));
+                }}
+                maxLength={TEXT_MAX.name}
                 error={errors.title}
                 autoFocus
                 required
@@ -164,6 +170,7 @@ export function NewEventModal({
                 placeholder={t("events.new.descriptionPlaceholder")}
                 value={description}
                 onChangeText={setDescription}
+                maxLength={TEXT_MAX.description}
                 multiline
                 numberOfLines={3}
                 style={{ minHeight: 80, textAlignVertical: "top" }}

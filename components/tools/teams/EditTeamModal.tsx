@@ -24,6 +24,8 @@ import {
 } from "../proposals/dateHelpers";
 import { ColorPicker } from "./ColorPicker";
 import { MemberMultiSelect } from "./MemberMultiSelect";
+import { clampInt, NUM_MAX, TEXT_MAX } from "@/lib/formValidation";
+import { useFieldErrors } from "@/lib/useFieldErrors";
 
 type Mode = "create" | "edit";
 
@@ -61,6 +63,9 @@ export function EditTeamModal({
   const [maxMembers, setMaxMembers] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Inline per-field errors for name & maxMembers; `error` keeps the
+  // cross-field messages (date order, planning-needs-date, team full).
+  const fieldErrors = useFieldErrors();
 
   const [eventParticipants, setEventParticipants] = useState<ParticipantEntry[]>(
     [],
@@ -82,6 +87,7 @@ export function EditTeamModal({
       existing?.max_members != null ? String(existing.max_members) : "",
     );
     setError(null);
+    fieldErrors.reset();
     setBusy(false);
 
     listParticipants(eventId)
@@ -100,10 +106,24 @@ export function EditTeamModal({
 
   const save = async () => {
     const nameTrim = name.trim();
-    if (!nameTrim) {
-      setError(t("teams.errorNameRequired"));
+    const errs: Record<string, string> = {};
+
+    let maxParsed: number | null = null;
+    if (maxMembers.trim()) {
+      const n = parseInt(maxMembers.trim(), 10);
+      if (Number.isNaN(n) || n < 1 || n < memberIds.length) {
+        errs.maxMembers = t("teams.errorMaxTooLow");
+      } else {
+        maxParsed = n;
+      }
+    }
+    if (!nameTrim) errs.name = t("teams.errorNameRequired");
+    if (Object.keys(errs).length > 0) {
+      fieldErrors.replace(errs);
       return;
     }
+    fieldErrors.reset();
+
     const startIso = localInputToIso(startsAt);
     const endIso = localInputToIso(endsAt);
     if (
@@ -117,19 +137,6 @@ export function EditTeamModal({
     if (planningIds.length > 0 && !startIso) {
       setError(t("teams.errorPlanningRequiresDate"));
       return;
-    }
-    let maxParsed: number | null = null;
-    if (maxMembers.trim()) {
-      const n = parseInt(maxMembers.trim(), 10);
-      if (Number.isNaN(n) || n < 1) {
-        setError(t("teams.errorMaxTooLow"));
-        return;
-      }
-      if (n < memberIds.length) {
-        setError(t("teams.errorMaxTooLow"));
-        return;
-      }
-      maxParsed = n;
     }
     setError(null);
     setBusy(true);
@@ -226,7 +233,12 @@ export function EditTeamModal({
               label={t("teams.nameLabel")}
               placeholder={t("teams.namePlaceholder")}
               value={name}
-              onChangeText={setName}
+              onChangeText={(v) => {
+                setName(v);
+                fieldErrors.clear("name");
+              }}
+              maxLength={TEXT_MAX.name}
+              error={fieldErrors.get("name")}
               autoFocus
               required
             />
@@ -243,6 +255,7 @@ export function EditTeamModal({
               placeholder={t("teams.typePlaceholder")}
               value={type}
               onChangeText={setType}
+              maxLength={TEXT_MAX.name}
             />
 
             <Input
@@ -250,6 +263,7 @@ export function EditTeamModal({
               placeholder={t("teams.descriptionPlaceholder")}
               value={description}
               onChangeText={setDescription}
+              maxLength={TEXT_MAX.description}
               multiline
               numberOfLines={3}
               style={{ minHeight: 72, textAlignVertical: "top" }}
@@ -259,8 +273,12 @@ export function EditTeamModal({
               label={t("teams.maxMembersLabel")}
               placeholder={t("teams.maxMembersPlaceholder")}
               value={maxMembers}
-              onChangeText={(v) => setMaxMembers(v.replace(/[^0-9]/g, ""))}
+              onChangeText={(v) => {
+                setMaxMembers(clampInt(v, NUM_MAX.members));
+                fieldErrors.clear("maxMembers");
+              }}
               keyboardType="number-pad"
+              error={fieldErrors.get("maxMembers")}
             />
 
             <View style={{ gap: 8 }}>

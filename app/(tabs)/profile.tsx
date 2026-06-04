@@ -25,6 +25,7 @@ import {
   type BugReport,
 } from "@/lib/bugReports";
 import { theme } from "@/lib/theme";
+import { TEXT_MAX } from "@/lib/formValidation";
 
 const languages = [
   { code: "fr", label: "Français" },
@@ -312,6 +313,7 @@ export default function ProfileScreen() {
           placeholder={t("profile.accountHolderPlaceholder")}
           value={accountHolder}
           onChangeText={setAccountHolder}
+          maxLength={TEXT_MAX.name}
           className="mb-3"
         />
         <Input
@@ -321,6 +323,7 @@ export default function ProfileScreen() {
           onChangeText={setPhone}
           keyboardType="phone-pad"
           autoCapitalize="none"
+          maxLength={20}
           className="mb-3"
         />
         <Input
@@ -329,6 +332,7 @@ export default function ProfileScreen() {
           value={iban}
           onChangeText={setIban}
           autoCapitalize="characters"
+          maxLength={34}
           className="mb-3"
         />
         <Input
@@ -337,6 +341,7 @@ export default function ProfileScreen() {
           value={bic}
           onChangeText={setBic}
           autoCapitalize="characters"
+          maxLength={11}
           className="mb-3"
         />
         <Button
@@ -401,6 +406,7 @@ export default function ProfileScreen() {
               placeholder={t("profile.bugTitlePlaceholder")}
               value={bugTitle}
               onChangeText={setBugTitle}
+              maxLength={TEXT_MAX.shortText}
               className="mb-3"
               required
             />
@@ -409,6 +415,7 @@ export default function ProfileScreen() {
               placeholder={t("profile.bugDescriptionPlaceholder")}
               value={bugDescription}
               onChangeText={setBugDescription}
+              maxLength={TEXT_MAX.longText}
               multiline
               numberOfLines={4}
               className="mb-4"

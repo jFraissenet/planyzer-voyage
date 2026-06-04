@@ -22,6 +22,8 @@ import {
 } from "@/lib/expenses";
 import { initialsOf, SectionLabel } from "./shared";
 import { theme } from "@/lib/theme";
+import { clampDecimal, NUM_MAX, TEXT_MAX } from "@/lib/formValidation";
+import { useFieldErrors } from "@/lib/useFieldErrors";
 
 type LocalShare = {
   user_id: string;
@@ -82,6 +84,9 @@ export function ExpenseEditModal({
   const [shares, setShares] = useState<LocalShare[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // Inline per-field errors for label & amount; `formError` keeps the
+  // cross-field messages (payer, share math, generic save failure).
+  const fieldErrors = useFieldErrors();
 
   useEffect(() => {
     if (!visible) return;
@@ -103,6 +108,7 @@ export function ExpenseEditModal({
       );
     }
     setFormError(null);
+    fieldErrors.reset();
     setSubmitting(false);
   }, [visible, existing, members, currentUserId]);
 
@@ -129,15 +135,23 @@ export function ExpenseEditModal({
   };
 
   const setShareValue = (user_id: string, text: string) => {
+    const clamped = clampDecimal(text, NUM_MAX.amount);
     setShares((prev) =>
-      prev.map((s) => (s.user_id === user_id ? { ...s, valueText: text } : s)),
+      prev.map((s) =>
+        s.user_id === user_id ? { ...s, valueText: clamped } : s,
+      ),
     );
   };
 
-  const validate = (): string | null => {
-    if (!label.trim()) return t("money.errorLabelRequired");
-    if (!(amount > 0)) return t("money.errorAmountRequired");
-    if (!paidBy) return t("money.errorPayerRequired");
+  // Fills inline field errors (label/amount) + the cross-field `formError`
+  // (payer, share math). Returns true when the form is valid.
+  const validate = (): boolean => {
+    const errs: Record<string, string> = {};
+    if (!label.trim()) errs.label = t("money.errorLabelRequired");
+    if (!(amount > 0)) errs.amount = t("money.errorAmountRequired");
+
+    let formMsg: string | null = null;
+    if (!paidBy) formMsg = t("money.errorPayerRequired");
 
     let percentSum = 0;
     let fixedSum = 0;
@@ -147,24 +161,20 @@ export function ExpenseEditModal({
       else if (s.mode === "amount") fixedSum += parseValue(s.valueText);
       else equalCount++;
     }
-    if (percentSum > 100 + 0.01) return t("money.errorPercentOver");
     const percentAmount = (percentSum * amount) / 100;
-    if (percentAmount + fixedSum > amount + 0.01)
-      return t("money.errorAmountOver");
-    if (
-      equalCount === 0 &&
-      Math.abs(percentAmount + fixedSum - amount) > 0.01
-    )
-      return t("money.errorNoEqualLeft");
-    return null;
+    if (percentSum > 100 + 0.01) formMsg = formMsg ?? t("money.errorPercentOver");
+    else if (percentAmount + fixedSum > amount + 0.01)
+      formMsg = formMsg ?? t("money.errorAmountOver");
+    else if (equalCount === 0 && Math.abs(percentAmount + fixedSum - amount) > 0.01)
+      formMsg = formMsg ?? t("money.errorNoEqualLeft");
+
+    fieldErrors.replace(errs);
+    setFormError(formMsg);
+    return Object.keys(errs).length === 0 && !formMsg;
   };
 
   const handleSubmit = async () => {
-    const err = validate();
-    if (err) {
-      setFormError(err);
-      return;
-    }
+    if (!validate()) return;
     setFormError(null);
     setSubmitting(true);
     try {
@@ -260,7 +270,12 @@ export function ExpenseEditModal({
                 label={t("money.labelField")}
                 placeholder={t("money.labelPlaceholder")}
                 value={label}
-                onChangeText={setLabel}
+                onChangeText={(v) => {
+                  setLabel(v);
+                  fieldErrors.clear("label");
+                }}
+                maxLength={TEXT_MAX.name}
+                error={fieldErrors.get("label")}
                 autoFocus
                 required
               />
@@ -268,8 +283,12 @@ export function ExpenseEditModal({
                 label={t("money.amountField")}
                 placeholder={t("money.amountPlaceholder")}
                 value={amountText}
-                onChangeText={setAmountText}
+                onChangeText={(v) => {
+                  setAmountText(clampDecimal(v, NUM_MAX.amount));
+                  fieldErrors.clear("amount");
+                }}
                 keyboardType="decimal-pad"
+                error={fieldErrors.get("amount")}
                 required
               />
             </View>

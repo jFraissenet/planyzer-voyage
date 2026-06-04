@@ -7,6 +7,7 @@ import {
   formatAmount,
   type EffectiveMember,
 } from "@/lib/expenses";
+import { clampDecimal, NUM_MAX } from "@/lib/formValidation";
 
 type Props = {
   visible: boolean;
@@ -34,6 +35,7 @@ export function SettleModal({
 }: Props) {
   const { t } = useTranslation();
   const [amountText, setAmountText] = useState("");
+  const [amountError, setAmountError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -44,6 +46,7 @@ export function SettleModal({
           ? suggestedAmount.toFixed(2).replace(".", ",")
           : "",
       );
+      setAmountError(null);
       setError(null);
       setBusy(false);
     }
@@ -53,9 +56,10 @@ export function SettleModal({
     if (!from || !to) return;
     const amount = parseAmount(amountText);
     if (!(amount > 0)) {
-      setError(t("settle.errorAmount"));
+      setAmountError(t("settle.errorAmount"));
       return;
     }
+    setAmountError(null);
     setError(null);
     setBusy(true);
     try {
@@ -101,11 +105,15 @@ export function SettleModal({
           <Input
             label={t("settle.amountLabel")}
             value={amountText}
-            onChangeText={setAmountText}
+            onChangeText={(v) => {
+              setAmountText(clampDecimal(v, NUM_MAX.amount));
+              if (amountError) setAmountError(null);
+            }}
             keyboardType="decimal-pad"
             autoFocus
             className="mb-2"
             required
+            error={amountError ?? undefined}
           />
           {suggestedAmount > 0 ? (
             <Text variant="caption" className="mb-4">
