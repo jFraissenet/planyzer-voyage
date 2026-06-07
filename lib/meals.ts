@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 // Closed enums — must stay in sync with public.meal_unit / public.meal_rayon
 // in migration 040. Add a value here AND a migration in lockstep.
@@ -246,7 +247,17 @@ export async function upsertEventToolMealRecipe(
     p_steps: input.steps,
   });
   if (error) throw error;
-  return data as string;
+  const recipeIdOut = data as string;
+  // Notify only on creation (not edits), broadcast to the Meals tool.
+  if (!recipeId) {
+    void logActivity({
+      toolId,
+      type: "meal.created",
+      objectId: recipeIdOut,
+      payload: { title: input.title },
+    });
+  }
+  return recipeIdOut;
 }
 
 export async function deleteEventToolMealRecipe(
@@ -363,7 +374,21 @@ export async function cloneRecipeToEventTool(
     p_target_servings: targetServings,
   });
   if (error) throw error;
-  return data as string;
+  const newId = data as string;
+  // Adding from the catalogue feeds the tool just like creating a recipe →
+  // notify like meal.created (fetch the cloned title for the message).
+  const { data: row } = await supabase
+    .from("event_tool_meal_recipe")
+    .select("event_tool_meal_recipe_title")
+    .eq("event_tool_meal_recipe_id", newId)
+    .maybeSingle();
+  void logActivity({
+    toolId,
+    type: "meal.created",
+    objectId: newId,
+    payload: { title: (row?.event_tool_meal_recipe_title as string) ?? "" },
+  });
+  return newId;
 }
 
 // Eager-copy a trip recipe back into the user's personal catalogue

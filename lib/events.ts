@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 export type Event = {
   event_id: string;
@@ -151,6 +152,8 @@ export async function updateEvent(
     .update(input)
     .eq("event_id", eventId);
   if (error) throw error;
+  // Broadcast to participants (minus the editor).
+  void logActivity({ eventId, type: "event.updated" });
 }
 
 export async function getEvent(eventId: string): Promise<Event | null> {
@@ -312,6 +315,40 @@ export async function listParticipants(
   return (data ?? []) as ParticipantEntry[];
 }
 
+// Broadcast "<name> joined/left the event" to the members already there (the
+// subject keeps their own personal notif; the actor is excluded by the
+// relevance filter). The name comes from the participants RPCs (security
+// definer) — a direct `users` read would be blocked by RLS. Best-effort.
+async function notifyMembershipChange(
+  eventId: string,
+  userId: string,
+  type: "participant.joined" | "participant.left",
+): Promise<void> {
+  try {
+    const participants = await listParticipants(eventId);
+    // "joined" → the subject is in the current list. "left" → they were
+    // soft-removed, so look them up among the former participants instead.
+    let name =
+      participants.find((p) => p.user_id === userId)?.full_name ?? null;
+    if (name === null) {
+      const former = await listFormerParticipants(eventId);
+      name = former.find((p) => p.user_id === userId)?.full_name ?? null;
+    }
+    const targets = participants
+      .map((p) => p.user_id)
+      .filter((id) => id !== userId);
+    if (targets.length === 0) return;
+    await logActivity({
+      eventId,
+      type,
+      targetUserIds: targets,
+      payload: { name: name ?? "" },
+    });
+  } catch {
+    // best-effort — never block the membership change
+  }
+}
+
 export async function addParticipant(
   eventId: string,
   userId: string,
@@ -326,6 +363,16 @@ export async function addParticipant(
   });
   // 23505 = unique_violation (already participant)
   if (error && error.code !== "23505") throw error;
+  // Notify the newly added person + broadcast the arrival to existing members
+  // (skip if they were already a participant).
+  if (!error) {
+    void logActivity({
+      eventId,
+      type: "participant.added",
+      targetUserIds: [userId],
+    });
+    void notifyMembershipChange(eventId, userId, "participant.joined");
+  }
 }
 
 export async function removeParticipant(
@@ -337,6 +384,8 @@ export async function removeParticipant(
     p_user_id: userId,
   });
   if (error) throw error;
+  // Broadcast the departure to the remaining members.
+  void notifyMembershipChange(eventId, userId, "participant.left");
 }
 
 export type FormerParticipantEntry = {
@@ -366,6 +415,13 @@ export async function rejoinParticipant(
     p_user_id: userId,
   });
   if (error) throw error;
+  // Notify the re-added person + broadcast the arrival to existing members.
+  void logActivity({
+    eventId,
+    type: "participant.added",
+    targetUserIds: [userId],
+  });
+  void notifyMembershipChange(eventId, userId, "participant.joined");
 }
 
 export type ToolMemberEntry = {
@@ -397,6 +453,16 @@ export async function addToolMember(
     event_tool_member_role_code: roleCode,
   });
   if (error && error.code !== "23505") throw error;
+  // Personal: tell the user they now have access to this (restricted) tool.
+  if (!error) {
+    const tool = await getEventTool(toolId).catch(() => null);
+    void logActivity({
+      toolId,
+      type: "tool.access_granted",
+      targetUserIds: [userId],
+      payload: { name: tool?.event_tool_name ?? "" },
+    });
+  }
 }
 
 export async function removeToolMember(
@@ -536,5 +602,14 @@ export async function createEventTool(input: {
     .limit(1)
     .maybeSingle();
   if (error) throw error;
-  return data as EventTool;
+  const tool = data as EventTool;
+  // Broadcast to everyone who can see the new tool (minus the creator).
+  void logActivity({
+    eventId: input.event_tool_event_id,
+    toolId: tool.event_tool_id,
+    type: "tool.created",
+    objectId: tool.event_tool_id,
+    payload: { name: input.event_tool_name },
+  });
+  return tool;
 }

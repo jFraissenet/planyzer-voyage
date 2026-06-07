@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 // Kinds of items a planning slot can link to. Must stay in sync with the
 // public.planning_link_kind enum.
@@ -131,7 +132,17 @@ export async function upsertEventToolPlanningSlot(
     },
   );
   if (error) throw error;
-  return data as string;
+  const slotIdOut = data as string;
+  // Notify only on creation (not edits), broadcast to the Planning tool.
+  if (!slotId) {
+    void logActivity({
+      toolId,
+      type: "planning.created",
+      objectId: slotIdOut,
+      payload: { title: input.title },
+    });
+  }
+  return slotIdOut;
 }
 
 export async function deleteEventToolPlanningSlot(

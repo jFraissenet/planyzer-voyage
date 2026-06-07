@@ -59,7 +59,62 @@
   "tabs": {
     "events": "Événements",
     "about": "À propos",
-    "profile": "Profil"
+    "profile": "Profil",
+    "notifications": "Notifs"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Rien de neuf pour l'instant. Tu verras ici l'activité de tes événements.",
+    "someone": "Quelqu'un",
+    "time": {
+      "now": "à l'instant",
+      "minute": "{{count}} min",
+      "hour": "{{count}} h",
+      "day": "{{count}} j",
+      "week": "{{count}} sem"
+    },
+    "feed": {
+      "fallback": "{{actor}} a fait une mise à jour",
+      "expense.updated": "{{actor}} a modifié une dépense : {{label}}",
+      "tool.access_granted": "{{actor}} t'a donné accès à l'outil « {{name}} »",
+      "carpool.trip.updated": "{{actor}} a modifié le trajet",
+      "participant.added": "{{actor}} t'a ajouté à l'événement",
+      "participant.joined": "{{name}} a rejoint l'événement",
+      "participant.left": "{{name}} a quitté l'événement",
+      "event.updated": "{{actor}} a mis à jour l'événement",
+      "tool.created": "{{actor}} a ajouté l'outil « {{name}} »",
+      "expense.created": "{{actor}} a ajouté une dépense : {{label}}",
+      "expense.shared": "{{actor}} t'a inclus dans une dépense : {{label}}",
+      "settlement.created": "{{name}} t'a remboursé {{amount}}",
+      "proposal.created": "{{actor}} a fait une proposition : {{title}}",
+      "proposal.validated": "{{actor}} a validé : {{title}}",
+      "proposal.rejected": "{{actor}} a rejeté : {{title}}",
+      "proposal.comment": "{{actor}} a commenté ta proposition",
+      "planning.created": "{{actor}} a ajouté un créneau : {{title}}",
+      "meal.created": "{{actor}} a ajouté une recette : {{title}}",
+      "note.created": "{{actor}} a ajouté une note",
+      "vehicle.created": "{{actor}} a ajouté un trajet",
+      "team.created": "{{actor}} a créé une équipe : {{name}}",
+      "team.member.added": "{{actor}} t'a ajouté à l'équipe « {{name}} »",
+      "team.responsable": "{{actor}} t'a nommé responsable de « {{name}} »",
+      "carpool.seat.assigned": "{{actor}} t'a réservé une place de covoiturage",
+      "carpool.seat.joined": "{{actor}} a rejoint ta voiture",
+      "carpool.seat.left": "{{actor}} a quitté ta voiture",
+      "carpool.seat.removed": "{{actor}} t'a retiré du covoiturage"
+    },
+    "feedGroup": {
+      "fallback": "{{actor}} a fait {{count}} mises à jour",
+      "participant.joined": "{{count}} personnes ont rejoint l'événement",
+      "participant.left": "{{count}} personnes ont quitté l'événement",
+      "tool.created": "{{actor}} a ajouté {{count}} outils",
+      "expense.created": "{{actor}} a ajouté {{count}} dépenses",
+      "proposal.created": "{{actor}} a fait {{count}} propositions",
+      "planning.created": "{{actor}} a ajouté {{count}} créneaux",
+      "meal.created": "{{actor}} a ajouté {{count}} recettes",
+      "note.created": "{{actor}} a ajouté {{count}} notes",
+      "vehicle.created": "{{actor}} a ajouté {{count}} trajets",
+      "team.created": "{{actor}} a créé {{count}} équipes"
+    }
   },
   "events": {
     "title": "Événements",

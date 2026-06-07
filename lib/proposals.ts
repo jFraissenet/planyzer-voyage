@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 import type {
   ProposalMode,
   ProposalOrderBy,
@@ -179,6 +180,13 @@ export async function createEventToolProposal(
   const proposalId = data.event_tool_proposal_id as string;
   if (input.images?.length) await replaceProposalImages(proposalId, input.images);
   if (input.links?.length) await replaceProposalLinks(proposalId, input.links);
+  // Broadcast to everyone who can see the Proposals tool (minus the author).
+  void logActivity({
+    toolId,
+    type: "proposal.created",
+    objectId: proposalId,
+    payload: { title: input.title },
+  });
   return proposalId;
 }
 
@@ -221,11 +229,24 @@ export async function setEventToolProposalStatus(
   proposalId: string,
   status: ProposalStatus,
 ): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("event_tool_proposals")
     .update({ event_tool_proposal_status: status })
-    .eq("event_tool_proposal_id", proposalId);
+    .eq("event_tool_proposal_id", proposalId)
+    .select(
+      "event_tool_proposal_event_tool_id, event_tool_proposal_title",
+    )
+    .single();
   if (error) throw error;
+  // Broadcast a decision (validated / rejected) to the Proposals tool.
+  if (status === "validated" || status === "rejected") {
+    void logActivity({
+      toolId: data.event_tool_proposal_event_tool_id as string,
+      type: `proposal.${status}`,
+      objectId: proposalId,
+      payload: { title: data.event_tool_proposal_title },
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -345,6 +366,24 @@ export async function addEventToolProposalComment(
     event_tool_proposal_comment_text: text,
   });
   if (error) throw error;
+  // Personal: notify the proposal's author (unless commenting on their own).
+  const { data: prop } = await supabase
+    .from("event_tool_proposals")
+    .select(
+      "event_tool_proposal_author_id, event_tool_proposal_event_tool_id, event_tool_proposal_title",
+    )
+    .eq("event_tool_proposal_id", proposalId)
+    .maybeSingle();
+  const author = (prop?.event_tool_proposal_author_id as string | null) ?? null;
+  if (prop && author && author !== userId) {
+    void logActivity({
+      toolId: prop.event_tool_proposal_event_tool_id as string,
+      type: "proposal.comment",
+      objectId: proposalId,
+      targetUserIds: [author],
+      payload: { title: prop.event_tool_proposal_title },
+    });
+  }
 }
 
 export async function deleteEventToolProposalComment(

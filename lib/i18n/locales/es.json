@@ -59,7 +59,62 @@
   "tabs": {
     "events": "Eventos",
     "about": "Acerca de",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "notifications": "Avisos"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "Nada nuevo por ahora. Aquí verás la actividad de tus eventos.",
+    "someone": "Alguien",
+    "time": {
+      "now": "ahora mismo",
+      "minute": "{{count}} min",
+      "hour": "{{count}} h",
+      "day": "{{count}} d",
+      "week": "{{count}} sem"
+    },
+    "feed": {
+      "fallback": "{{actor}} hizo una actualización",
+      "expense.updated": "{{actor}} modificó un gasto: {{label}}",
+      "tool.access_granted": "{{actor}} te dio acceso a la herramienta «{{name}}»",
+      "carpool.trip.updated": "{{actor}} modificó el viaje",
+      "participant.added": "{{actor}} te añadió al evento",
+      "participant.joined": "{{name}} se unió al evento",
+      "participant.left": "{{name}} dejó el evento",
+      "event.updated": "{{actor}} actualizó el evento",
+      "tool.created": "{{actor}} añadió la herramienta «{{name}}»",
+      "expense.created": "{{actor}} añadió un gasto: {{label}}",
+      "expense.shared": "{{actor}} te incluyó en un gasto: {{label}}",
+      "settlement.created": "{{name}} te reembolsó {{amount}}",
+      "proposal.created": "{{actor}} hizo una propuesta: {{title}}",
+      "proposal.validated": "{{actor}} validó: {{title}}",
+      "proposal.rejected": "{{actor}} rechazó: {{title}}",
+      "proposal.comment": "{{actor}} comentó tu propuesta",
+      "planning.created": "{{actor}} añadió una franja: {{title}}",
+      "meal.created": "{{actor}} añadió una receta: {{title}}",
+      "note.created": "{{actor}} añadió una nota",
+      "vehicle.created": "{{actor}} añadió un viaje",
+      "team.created": "{{actor}} creó un equipo: {{name}}",
+      "team.member.added": "{{actor}} te añadió al equipo «{{name}}»",
+      "team.responsable": "{{actor}} te nombró responsable de «{{name}}»",
+      "carpool.seat.assigned": "{{actor}} te reservó una plaza de transporte",
+      "carpool.seat.joined": "{{actor}} se unió a tu coche",
+      "carpool.seat.left": "{{actor}} dejó tu coche",
+      "carpool.seat.removed": "{{actor}} te quitó del transporte compartido"
+    },
+    "feedGroup": {
+      "fallback": "{{actor}} hizo {{count}} actualizaciones",
+      "participant.joined": "{{count}} personas se unieron al evento",
+      "participant.left": "{{count}} personas dejaron el evento",
+      "tool.created": "{{actor}} añadió {{count}} herramientas",
+      "expense.created": "{{actor}} añadió {{count}} gastos",
+      "proposal.created": "{{actor}} hizo {{count}} propuestas",
+      "planning.created": "{{actor}} añadió {{count}} franjas",
+      "meal.created": "{{actor}} añadió {{count}} recetas",
+      "note.created": "{{actor}} añadió {{count}} notas",
+      "vehicle.created": "{{actor}} añadió {{count}} viajes",
+      "team.created": "{{actor}} creó {{count}} equipos"
+    }
   },
   "events": {
     "title": "Eventos",

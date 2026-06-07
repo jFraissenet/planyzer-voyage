@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 export type ShareMode = "equal" | "percent" | "amount";
 
@@ -143,6 +144,14 @@ export async function createExpense(input: {
     if (sErr) throw sErr;
   }
 
+  // Broadcast to everyone who can see the Money tool (minus the creator).
+  void logActivity({
+    toolId: input.tool_id,
+    type: "expense.created",
+    objectId: newId,
+    payload: { label: input.label },
+  });
+
   return newId;
 }
 
@@ -222,6 +231,9 @@ export async function createSettlement(input: {
   from_user_id: string;
   to_user_id: string;
   amount: number;
+  // Display name of the payer (the settlement's "from" — the person on the
+  // row). The message names them; the feed avatar stays the actor (clicker).
+  from_name?: string | null;
 }): Promise<void> {
   const userId = await requireUserId();
   const { error } = await supabase.from("event_tool_settlements").insert({
@@ -232,6 +244,18 @@ export async function createSettlement(input: {
     event_tool_settlement_created_by: userId,
   });
   if (error) throw error;
+
+  // Personal: notify the recipient. The message names the payer (the row),
+  // even when someone else recorded it on their behalf.
+  void logActivity({
+    toolId: input.tool_id,
+    type: "settlement.created",
+    targetUserIds: [input.to_user_id],
+    payload: {
+      amount: formatAmount(input.amount),
+      name: input.from_name ?? "",
+    },
+  });
 }
 
 export async function deleteSettlement(settlementId: string): Promise<void> {

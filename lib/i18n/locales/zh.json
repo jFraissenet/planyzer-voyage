@@ -59,7 +59,62 @@
   "tabs": {
     "events": "活动",
     "about": "关于",
-    "profile": "个人资料"
+    "profile": "个人资料",
+    "notifications": "通知"
+  },
+  "notifications": {
+    "title": "通知",
+    "empty": "暂时没有新动态。你的活动动态会显示在这里。",
+    "someone": "某人",
+    "time": {
+      "now": "刚刚",
+      "minute": "{{count}} 分钟",
+      "hour": "{{count}} 小时",
+      "day": "{{count}} 天",
+      "week": "{{count}} 周"
+    },
+    "feed": {
+      "fallback": "{{actor}} 进行了更新",
+      "expense.updated": "{{actor}} 修改了一笔支出：{{label}}",
+      "tool.access_granted": "{{actor}} 授予你访问工具「{{name}}」的权限",
+      "carpool.trip.updated": "{{actor}} 修改了行程",
+      "participant.added": "{{actor}} 把你加入了活动",
+      "participant.joined": "{{name}} 加入了活动",
+      "participant.left": "{{name}} 离开了活动",
+      "event.updated": "{{actor}} 更新了活动",
+      "tool.created": "{{actor}} 添加了工具「{{name}}」",
+      "expense.created": "{{actor}} 添加了一笔支出：{{label}}",
+      "expense.shared": "{{actor}} 把你加入了一笔支出：{{label}}",
+      "settlement.created": "{{name}} 还给你 {{amount}}",
+      "proposal.created": "{{actor}} 发起了提议：{{title}}",
+      "proposal.validated": "{{actor}} 通过了：{{title}}",
+      "proposal.rejected": "{{actor}} 否决了：{{title}}",
+      "proposal.comment": "{{actor}} 评论了你的提议",
+      "planning.created": "{{actor}} 添加了时间段：{{title}}",
+      "meal.created": "{{actor}} 添加了菜谱：{{title}}",
+      "note.created": "{{actor}} 添加了一条备注",
+      "vehicle.created": "{{actor}} 添加了一段行程",
+      "team.created": "{{actor}} 创建了队伍：{{name}}",
+      "team.member.added": "{{actor}} 把你加入了队伍「{{name}}」",
+      "team.responsable": "{{actor}} 任命你为「{{name}}」负责人",
+      "carpool.seat.assigned": "{{actor}} 为你预订了拼车座位",
+      "carpool.seat.joined": "{{actor}} 加入了你的车",
+      "carpool.seat.left": "{{actor}} 离开了你的车",
+      "carpool.seat.removed": "{{actor}} 把你移出了拼车"
+    },
+    "feedGroup": {
+      "fallback": "{{actor}} 进行了 {{count}} 次更新",
+      "participant.joined": "{{count}} 人加入了活动",
+      "participant.left": "{{count}} 人离开了活动",
+      "tool.created": "{{actor}} 添加了 {{count}} 个工具",
+      "expense.created": "{{actor}} 添加了 {{count}} 笔支出",
+      "proposal.created": "{{actor}} 发起了 {{count}} 个提议",
+      "planning.created": "{{actor}} 添加了 {{count}} 个时间段",
+      "meal.created": "{{actor}} 添加了 {{count}} 个菜谱",
+      "note.created": "{{actor}} 添加了 {{count}} 条备注",
+      "vehicle.created": "{{actor}} 添加了 {{count}} 段行程",
+      "team.created": "{{actor}} 创建了 {{count}} 个队伍"
+    }
   },
   "events": {
     "title": "活动",

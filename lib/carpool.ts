@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 export type JourneyType = "outbound" | "return";
 
@@ -177,6 +178,13 @@ export async function createVehicle(input: {
     }
   }
 
+  // Broadcast to everyone who can see the Carpool tool (minus the creator).
+  void logActivity({
+    toolId: input.tool_id,
+    type: "vehicle.created",
+    objectId: vehicleId,
+  });
+
   return vehicleId;
 }
 
@@ -243,6 +251,35 @@ export async function updateVehicle(
         .from("event_tool_vehicle_stops")
         .insert(rows);
       if (iErr) throw iErr;
+    }
+  }
+
+  // Notify the car's passengers when the departure time or place changed —
+  // that's what they need to know. (Internal calls that only set
+  // linked_vehicle_id leave these undefined and don't trigger anything.)
+  if (
+    input.departure_date !== undefined ||
+    input.departure_location !== undefined
+  ) {
+    const { data: veh } = await supabase
+      .from("event_tool_vehicles")
+      .select("event_tool_vehicle_event_tool_id")
+      .eq("event_tool_vehicle_id", vehicleId)
+      .maybeSingle();
+    const { data: seats } = await supabase
+      .from("event_tool_vehicle_seats")
+      .select("event_tool_vehicle_seat_user_id")
+      .eq("event_tool_vehicle_seat_vehicle_id", vehicleId);
+    const targets = ((seats ?? [])
+      .map((s) => s.event_tool_vehicle_seat_user_id as string | null)
+      .filter(Boolean) as string[]);
+    if (veh && targets.length > 0) {
+      void logActivity({
+        toolId: veh.event_tool_vehicle_event_tool_id as string,
+        type: "carpool.trip.updated",
+        objectId: vehicleId,
+        targetUserIds: targets,
+      });
     }
   }
 }
@@ -315,6 +352,41 @@ export async function addSeatUser(
     event_tool_vehicle_seat_added_by: me,
   });
   if (error) throw error;
+
+  const { data: veh } = await supabase
+    .from("event_tool_vehicles")
+    .select("event_tool_vehicle_event_tool_id")
+    .eq("event_tool_vehicle_id", vehicleId)
+    .maybeSingle();
+  if (!veh) return;
+  const toolId = veh.event_tool_vehicle_event_tool_id as string;
+
+  // Personal: notify the seated passenger when someone else placed them.
+  if (userId !== me) {
+    void logActivity({
+      toolId,
+      type: "carpool.seat.assigned",
+      targetUserIds: [userId],
+    });
+  }
+
+  // Personal: notify the driver (seat 0) that someone joined their car —
+  // covers the common case where a passenger seats themselves.
+  const { data: driverSeat } = await supabase
+    .from("event_tool_vehicle_seats")
+    .select("event_tool_vehicle_seat_user_id")
+    .eq("event_tool_vehicle_seat_vehicle_id", vehicleId)
+    .eq("event_tool_vehicle_seat_index", 0)
+    .maybeSingle();
+  const driverId =
+    (driverSeat?.event_tool_vehicle_seat_user_id as string | null) ?? null;
+  if (driverId && driverId !== userId) {
+    void logActivity({
+      toolId,
+      type: "carpool.seat.joined",
+      targetUserIds: [driverId],
+    });
+  }
 }
 
 export async function addSeatLabel(
@@ -336,12 +408,56 @@ export async function removeSeat(
   vehicleId: string,
   seatIndex: number,
 ): Promise<void> {
+  const me = await requireUserId();
+  // Look up the seat's occupant and the driver (seat 0) BEFORE deleting.
+  const { data: seats } = await supabase
+    .from("event_tool_vehicle_seats")
+    .select("event_tool_vehicle_seat_index, event_tool_vehicle_seat_user_id")
+    .eq("event_tool_vehicle_seat_vehicle_id", vehicleId)
+    .in("event_tool_vehicle_seat_index", [0, seatIndex]);
+  const leaverId =
+    (seats?.find((s) => s.event_tool_vehicle_seat_index === seatIndex)
+      ?.event_tool_vehicle_seat_user_id as string | null) ?? null;
+  const driverId =
+    (seats?.find((s) => s.event_tool_vehicle_seat_index === 0)
+      ?.event_tool_vehicle_seat_user_id as string | null) ?? null;
+
   const { error } = await supabase
     .from("event_tool_vehicle_seats")
     .delete()
     .eq("event_tool_vehicle_seat_vehicle_id", vehicleId)
     .eq("event_tool_vehicle_seat_index", seatIndex);
   if (error) throw error;
+
+  // Nothing personal to notify for an empty seat or a label-only seat.
+  if (!leaverId) return;
+
+  const { data: veh } = await supabase
+    .from("event_tool_vehicles")
+    .select("event_tool_vehicle_event_tool_id")
+    .eq("event_tool_vehicle_id", vehicleId)
+    .maybeSingle();
+  if (!veh) return;
+  const toolId = veh.event_tool_vehicle_event_tool_id as string;
+
+  // Personal: notify the passenger when someone else removed them.
+  if (leaverId !== me) {
+    void logActivity({
+      toolId,
+      type: "carpool.seat.removed",
+      targetUserIds: [leaverId],
+    });
+  }
+
+  // Personal: notify the driver that someone left their car (unless the
+  // driver is the one leaving).
+  if (driverId && driverId !== leaverId) {
+    void logActivity({
+      toolId,
+      type: "carpool.seat.left",
+      targetUserIds: [driverId],
+    });
+  }
 }
 
 // === Seat layout options ===

@@ -68,6 +68,7 @@ export function SettleModal({
         from_user_id: from.user_id,
         to_user_id: to.user_id,
         amount,
+        from_name: from.full_name,
       });
       onSaved();
     } catch {

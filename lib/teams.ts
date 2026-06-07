@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 export type TeamMember = {
   user_id: string;
@@ -61,6 +62,20 @@ export type UpsertTeamInput = {
 export async function upsertEventToolTeam(
   input: UpsertTeamInput,
 ): Promise<string> {
+  // For edits, capture the previous member set so we can notify only the
+  // people newly added to the team.
+  let previousMemberIds: string[] = [];
+  if (input.team_id) {
+    try {
+      const teams = await listEventToolTeams(input.tool_id);
+      previousMemberIds =
+        teams
+          .find((tm) => tm.team_id === input.team_id)
+          ?.members.map((m) => m.user_id) ?? [];
+    } catch {
+      // best-effort — if we can't diff, we just skip the personal notifs
+    }
+  }
   const { data, error } = await supabase.rpc("upsert_event_tool_team", {
     p_team_id: input.team_id,
     p_tool_id: input.tool_id,
@@ -76,7 +91,31 @@ export async function upsertEventToolTeam(
     p_max_members: input.max_members,
   });
   if (error) throw error;
-  return data as string;
+  const teamIdOut = data as string;
+  if (!input.team_id) {
+    // New team → broadcast to the Teams tool (members see it via the broadcast).
+    void logActivity({
+      toolId: input.tool_id,
+      type: "team.created",
+      objectId: teamIdOut,
+      payload: { name: input.name },
+    });
+  } else {
+    // Edit → personally notify members newly added to the team.
+    const added = input.member_ids.filter(
+      (id) => !previousMemberIds.includes(id),
+    );
+    for (const uid of added) {
+      void logActivity({
+        toolId: input.tool_id,
+        type: "team.member.added",
+        objectId: teamIdOut,
+        targetUserIds: [uid],
+        payload: { name: input.name },
+      });
+    }
+  }
+  return teamIdOut;
 }
 
 export async function joinEventToolTeam(teamId: string): Promise<void> {

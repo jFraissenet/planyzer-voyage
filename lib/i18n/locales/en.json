@@ -59,7 +59,62 @@
   "tabs": {
     "events": "Events",
     "about": "About",
-    "profile": "Profile"
+    "profile": "Profile",
+    "notifications": "Alerts"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Nothing new yet. Your events' activity will show up here.",
+    "someone": "Someone",
+    "time": {
+      "now": "just now",
+      "minute": "{{count}}m",
+      "hour": "{{count}}h",
+      "day": "{{count}}d",
+      "week": "{{count}}w"
+    },
+    "feed": {
+      "fallback": "{{actor}} made an update",
+      "expense.updated": "{{actor}} updated an expense: {{label}}",
+      "tool.access_granted": "{{actor}} gave you access to the tool “{{name}}”",
+      "carpool.trip.updated": "{{actor}} updated the trip",
+      "participant.added": "{{actor}} added you to the event",
+      "participant.joined": "{{name}} joined the event",
+      "participant.left": "{{name}} left the event",
+      "event.updated": "{{actor}} updated the event",
+      "tool.created": "{{actor}} added the tool “{{name}}”",
+      "expense.created": "{{actor}} added an expense: {{label}}",
+      "expense.shared": "{{actor}} included you in an expense: {{label}}",
+      "settlement.created": "{{name}} paid you back {{amount}}",
+      "proposal.created": "{{actor}} made a proposal: {{title}}",
+      "proposal.validated": "{{actor}} validated: {{title}}",
+      "proposal.rejected": "{{actor}} rejected: {{title}}",
+      "proposal.comment": "{{actor}} commented on your proposal",
+      "planning.created": "{{actor}} added a slot: {{title}}",
+      "meal.created": "{{actor}} added a recipe: {{title}}",
+      "note.created": "{{actor}} added a note",
+      "vehicle.created": "{{actor}} added a trip",
+      "team.created": "{{actor}} created a team: {{name}}",
+      "team.member.added": "{{actor}} added you to the team “{{name}}”",
+      "team.responsable": "{{actor}} made you lead of “{{name}}”",
+      "carpool.seat.assigned": "{{actor}} booked you a carpool seat",
+      "carpool.seat.joined": "{{actor}} joined your car",
+      "carpool.seat.left": "{{actor}} left your car",
+      "carpool.seat.removed": "{{actor}} removed you from the carpool"
+    },
+    "feedGroup": {
+      "fallback": "{{actor}} made {{count}} updates",
+      "participant.joined": "{{count}} people joined the event",
+      "participant.left": "{{count}} people left the event",
+      "tool.created": "{{actor}} added {{count}} tools",
+      "expense.created": "{{actor}} added {{count}} expenses",
+      "proposal.created": "{{actor}} made {{count}} proposals",
+      "planning.created": "{{actor}} added {{count}} slots",
+      "meal.created": "{{actor}} added {{count}} recipes",
+      "note.created": "{{actor}} added {{count}} notes",
+      "vehicle.created": "{{actor}} added {{count}} trips",
+      "team.created": "{{actor}} created {{count}} teams"
+    }
   },
   "events": {
     "title": "Events",

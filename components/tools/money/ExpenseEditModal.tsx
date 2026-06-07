@@ -24,6 +24,7 @@ import { initialsOf, SectionLabel } from "./shared";
 import { theme } from "@/lib/theme";
 import { clampDecimal, NUM_MAX, TEXT_MAX } from "@/lib/formValidation";
 import { useFieldErrors } from "@/lib/useFieldErrors";
+import { logActivity } from "@/lib/notifications";
 
 type LocalShare = {
   user_id: string;
@@ -191,6 +192,14 @@ export function ExpenseEditModal({
           paid_by: paidBy,
         });
         await replaceExpenseShares(existing.expense_id, outShares);
+        // Notify everyone on the (new) split that the expense changed.
+        void logActivity({
+          toolId,
+          type: "expense.updated",
+          objectId: existing.expense_id,
+          targetUserIds: outShares.map((s) => s.user_id),
+          payload: { label: label.trim() },
+        });
       } else {
         const newId = await createExpense({
           tool_id: toolId,

@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { logActivity } from "./notifications";
 
 export type EventToolNote = {
   note_id: string;
@@ -42,6 +43,8 @@ export async function createEventToolNote(
     event_tool_note_author_id: userId,
   });
   if (error) throw error;
+  // Broadcast to everyone who can see the Notes tool (minus the author).
+  void logActivity({ toolId, type: "note.created" });
 }
 
 export async function toggleEventToolNote(

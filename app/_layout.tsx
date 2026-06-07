@@ -13,6 +13,7 @@ import { ConfirmProvider, ToastProvider } from "@/components/ui";
 import { consumePendingInvite } from "@/lib/pendingInvite";
 import { MAX_CONTENT_WIDTH } from "@/lib/responsive";
 import { SessionProvider, useSession } from "@/lib/useSession";
+import { NotificationsProvider } from "@/lib/useNotifications";
 
 function WebFrame({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
@@ -91,8 +92,10 @@ export default function RootLayout() {
     <SessionProvider>
       <ToastProvider>
         <ConfirmProvider>
-          <StatusBar style="dark" />
-          <RootLayoutNav />
+          <NotificationsProvider>
+            <StatusBar style="dark" />
+            <RootLayoutNav />
+          </NotificationsProvider>
         </ConfirmProvider>
       </ToastProvider>
     </SessionProvider>
